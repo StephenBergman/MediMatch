@@ -7,9 +7,9 @@
     "development": {
       "developmentClient": true,
       "distribution": "internal",
-      "android": {
-        "buildType": "apk",
-        "gradleCommand": ":app:assembleDevelopmentDebug -PreactNativeArchitectures=arm64-v8a,x86,x86_64"
+      "android": { "buildType": "apk" },
+      "env": {
+        "ORG_GRADLE_PROJECT_reactNativeArchitectures": "arm64-v8a,x86,x86_64"
       }
     },
     "preview": {
