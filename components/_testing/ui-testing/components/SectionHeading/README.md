@@ -1,6 +1,6 @@
 # SectionHeading
 
-`SectionHeading` is a reusable component for displaying a section title, optional notes, and a divider. It is used in the UI testing suite of the Overwatch-Connect project.
+`SectionHeading` is a reusable component for displaying a section title, optional notes, and a divider. It is used in the UI testing suite of the MediMatch project.
 
 ## Props
 
@@ -15,9 +15,13 @@
 Import and use `SectionHeading` in your test screens or component documentation:
 
 ```tsx
-import SectionHeading from './components/ui-testing/components/SectionHeading';
+import SectionHeading from "./components/ui-testing/components/SectionHeading";
 
-<SectionHeading id="example-section" title="Example Section" notes="This is an optional note." />;
+<SectionHeading
+  id="example-section"
+  title="Example Section"
+  notes="This is an optional note."
+/>;
 ```
 
 ## Implementation

@@ -1,6 +1,6 @@
 # ComponentSnippet
 
-`ComponentSnippet` is a flexible component for displaying formatted code snippets, examples, notes, warnings, and errors. It is used for documentation, UI testing, and developer previews in the Overwatch-Connect project.
+`ComponentSnippet` is a flexible component for displaying formatted code snippets, examples, notes, warnings, and errors. It is used for documentation, UI testing, and developer previews in the Medimatch project.
 
 ## Props
 
@@ -20,7 +20,7 @@
 Import and use `ComponentSnippet` in your test screens or component showcases:
 
 ```tsx
-import ComponentSnippet from './components/ui-testing/components/ComponentSnippet';
+import ComponentSnippet from "./components/ui-testing/components/ComponentSnippet";
 
 <ComponentSnippet
   title="Button"
