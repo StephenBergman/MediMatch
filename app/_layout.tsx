@@ -1,31 +1,124 @@
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
-import { Stack } from 'expo-router';
-import { StatusBar } from 'expo-status-bar';
-import 'react-native-reanimated';
+import {
+  DarkTheme,
+  DefaultTheme,
+  ThemeProvider,
+} from "@react-navigation/native";
+import * as NavigationBar from "expo-navigation-bar";
+import { Stack } from "expo-router";
+import { StatusBar } from "expo-status-bar";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { Platform } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
-import { useColorScheme } from '@/hooks/use-color-scheme';
-
-import { GluestackUIProvider } from '@/components/ui/gluestack-ui-provider';
-import '@/global.css';
+import { ErrorFallback } from "@/components/Tools/ErrorHandling/ErrorFallback";
+import { GluestackUIProvider } from "@/components/ui/gluestack-ui-provider";
+import "@/global.css";
+import { useColorScheme } from "@/hooks/use-color-scheme";
+import {
+  installGlobalErrorHandlers,
+  registerFatalPromoter,
+  registerOriginLogger,
+} from "@/utils/ErrorHandling/helpers/capture";
+import ErrorBoundary from "@/utils/ErrorHandling/helpers/errorboundary";
+import { ErrorNotificationsHost } from "@/utils/ErrorHandling/helpers/ErrorNotificationsHost";
+import {
+  FeedbackHost,
+  requestFeedbackModal,
+} from "@/utils/ErrorHandling/helpers/FeedbackHost";
 
 export const unstable_settings = {
-  anchor: '(tabs)',
+  anchor: "(protected)/(tabs)",
 };
 
-export default function RootLayout() {
-  const colorScheme = useColorScheme();
+function AppShell() {
+  const scheme = useColorScheme() ?? "light";
+
+  const navigationTheme = useMemo(() => {
+    const base = scheme === "dark" ? DarkTheme : DefaultTheme;
+    return {
+      ...base,
+      colors: {
+        ...base.colors,
+        background: scheme === "dark" ? "#000000" : "#ffffff",
+      },
+    };
+  }, [scheme]);
+
+  const [fatal, setFatal] = useState<Error | null>(null);
+  const [origin, setOrigin] = useState<string | undefined>();
+  const resetFatal = useCallback(() => setFatal(null), []);
+
+  useEffect(() => {
+    registerFatalPromoter(setFatal);
+    registerOriginLogger(setOrigin);
+    installGlobalErrorHandlers({ escalateUnhandled: true });
+    return () => {
+      registerFatalPromoter(() => {});
+      registerOriginLogger(() => {});
+    };
+  }, []);
+
+  useEffect(() => {
+    if (Platform.OS === "android") {
+      NavigationBar.setBackgroundColorAsync(
+        navigationTheme.colors.background
+      ).catch(() => {});
+      NavigationBar.setButtonStyleAsync(
+        scheme === "dark" ? "light" : "dark"
+      ).catch(() => {});
+    }
+  }, [navigationTheme.colors.background, scheme]);
 
   return (
-    
-    <GluestackUIProvider mode="dark">
-      <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="modal" options={{ presentation: 'modal', title: 'Modal' }} />
-      </Stack>
-      <StatusBar style="auto" />
-    </ThemeProvider>
-    </GluestackUIProvider>
-  
+    <SafeAreaView
+      style={{
+        flex: 1,
+        backgroundColor: navigationTheme.colors.background,
+      }}
+      edges={["top", "left", "right"]}
+    >
+      <GluestackUIProvider mode={scheme}>
+        <ErrorBoundary>
+          <ErrorNotificationsHost>
+            <FeedbackHost>
+              {fatal ? (
+                <ErrorFallback
+                  error={fatal}
+                  origin={origin}
+                  onRetry={resetFatal}
+                  onReport={requestFeedbackModal}
+                />
+              ) : (
+                <ThemeProvider value={navigationTheme}>
+                  <Stack
+                    screenOptions={{
+                      headerShown: false,
+                      animation: "none",
+                      contentStyle: {
+                        backgroundColor: navigationTheme.colors.background,
+                      },
+                    }}
+                  >
+                    <Stack.Screen name="(protected)" />
+                    <Stack.Screen
+                      name="modal"
+                      options={{ presentation: "modal", title: "Modal" }}
+                    />
+                  </Stack>
+                  <StatusBar
+                    style={scheme === "dark" ? "light" : "dark"}
+                    translucent
+                  />
+                </ThemeProvider>
+              )}
+            </FeedbackHost>
+          </ErrorNotificationsHost>
+        </ErrorBoundary>
+      </GluestackUIProvider>
+    </SafeAreaView>
   );
+}
+
+export default function RootLayout() {
+  return <AppShell />;
 }
