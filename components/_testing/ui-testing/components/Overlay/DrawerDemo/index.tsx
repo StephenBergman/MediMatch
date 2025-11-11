@@ -57,8 +57,7 @@ const DrawerDemo = () => {
           </Drawer>
         </>
       }
-      snippet="NO SNIPPET"
-      badSnippet
+      snippet="gs-DrawerBasic"
     />
   );
 };

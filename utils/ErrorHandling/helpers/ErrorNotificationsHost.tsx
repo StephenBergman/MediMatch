@@ -26,7 +26,6 @@ export function ErrorNotificationsHost({ children }: PropsWithChildren) {
 
       const action = ux.intent ?? "error";
       const title = ux.title ?? "An error occurred";
-
       toast.show({
         placement: Platform.OS === "web" ? "top" : "bottom",
         duration: null,
@@ -51,6 +50,7 @@ export function ErrorNotificationsHost({ children }: PropsWithChildren) {
     [toast]
   );
 
+  // Ensure notifier is available immediately during render so the first guard call can emit a toast.
   useEffect(() => {
     registerUxNotifier(notify);
     return () => registerUxNotifier(null);

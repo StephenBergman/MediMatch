@@ -60,20 +60,6 @@ const resolveSandboxStatus = (url: string, shouldError: boolean) => {
   return entry?.success ?? 200;
 };
 
-const emptyMessage = "";
-
-const authThrow = (options?: Parameters<typeof authError>[1]) =>
-  authError(undefined, options);
-
-const validationThrow = (options?: Parameters<typeof validationError>[1]) =>
-  validationError(emptyMessage, options);
-
-const invariantThrow = (options?: Parameters<typeof invariantError>[1]) =>
-  invariantError(emptyMessage, options);
-
-const networkThrow = (context?: number | Parameters<typeof networkError>[1]) =>
-  networkError(emptyMessage, context);
-
 export default function ErrorTesting() {
   const [showBuggyComponent, setShowBuggyComponent] = useState(false);
   const toast = useToast();
@@ -93,180 +79,182 @@ export default function ErrorTesting() {
     [toast]
   );
 
-  const authExamples = useMemo<ExampleConfig[]>(
-    () => [
-      {
-        key: "auth-session-expired",
-        label: "Auth • Session expired",
-        action: guard(() => {
-          throw authThrow({ code: "AUTH_SESSION_EXPIRED", status: 401 });
-        }),
-      },
-      {
-        key: "auth-email-unverified",
-        label: "Auth • Email unverified",
-        action: guard(() => {
-          throw authThrow({ code: "AUTH_EMAIL_UNVERIFIED", status: 401 });
-        }),
-      },
-      {
-        key: "auth-provider-mismatch",
-        label: "Auth • Provider mismatch",
-        action: guard(() => {
-          throw authThrow({
-            code: "AUTH_PROVIDER_MISMATCH",
-            metadata: { expected: "google", actual: "apple" },
-          });
-        }),
-      },
-      {
-        key: "auth-login-required",
-        label: "Auth • Login required",
-        action: guard(() => {
-          throw authThrow({ code: "AUTH_LOGIN_REQUIRED" });
-        }),
-      },
-      {
-        key: "auth-cancelled",
-        label: "Auth • Cancelled",
-        action: guard(() => {
-          throw authThrow({ code: "AUTH_CANCELLED" });
-        }),
-      },
-      {
-        key: "auth-request-failed",
-        label: "Auth • Request failed",
-        action: guard(() => {
-          throw authThrow({ code: "AUTH_REQUEST_FAILED", status: 500 });
-        }),
-      },
-    ],
+  const throwAuthSessionExpired = useMemo(
+    () =>
+      guard(() => {
+        throw authError("Session expired (demo)", {
+          code: "AUTH_SESSION_EXPIRED",
+          status: 401,
+        });
+      }),
+    []
+  );
+  const throwAuthEmailUnverified = useMemo(
+    () =>
+      guard(() => {
+        throw authError("Email not verified (demo)", {
+          code: "AUTH_EMAIL_UNVERIFIED",
+          status: 401,
+        });
+      }),
+    []
+  );
+  const throwAuthProviderMismatch = useMemo(
+    () =>
+      guard(() => {
+        throw authError("Provider mismatch (demo)", {
+          code: "AUTH_PROVIDER_MISMATCH",
+          metadata: { expected: "google", actual: "apple" },
+        });
+      }),
+    []
+  );
+  const throwAuthLoginRequired = useMemo(
+    () =>
+      guard(() => {
+        throw authError("Login required (demo)", {
+          code: "AUTH_LOGIN_REQUIRED",
+        });
+      }),
+    []
+  );
+  const throwAuthCancelled = useMemo(
+    () =>
+      guard(() => {
+        throw authError("Authentication cancelled (demo)", {
+          code: "AUTH_CANCELLED",
+        });
+      }),
+    []
+  );
+  const throwAuthRequestFailed = useMemo(
+    () =>
+      guard(() => {
+        throw authError("Authentication failed (demo)", {
+          code: "AUTH_REQUEST_FAILED",
+          status: 500,
+        });
+      }),
     []
   );
 
-  const validationExamples = useMemo<ExampleConfig[]>(
-    () => [
-      {
-        key: "validation-required",
-        label: "Validation • Required",
-        action: guard(() => {
-          throw validationThrow({ code: "VALIDATION_REQUIRED" });
-        }),
-      },
-      {
-        key: "validation-pattern",
-        label: "Validation • Pattern mismatch",
-        action: guard(() => {
-          throw validationThrow({ code: "VALIDATION_PATTERN_MISMATCH" });
-        }),
-      },
-      {
-        key: "validation-range",
-        label: "Validation • Out of range",
-        action: guard(() => {
-          throw validationThrow({ code: "VALIDATION_OUT_OF_RANGE" });
-        }),
-      },
-      {
-        key: "validation-unique",
-        label: "Validation • Unique constraint",
-        action: guard(() => {
-          throw validationThrow({ code: "VALIDATION_UNIQUE" });
-        }),
-      },
-      {
-        key: "validation-conflict",
-        label: "Validation • Conflict",
-        action: guard(() => {
-          throw validationThrow({ code: "VALIDATION_CONFLICT" });
-        }),
-      },
-    ],
+  const throwValidationRequired = useMemo(
+    () =>
+      guard(() => {
+        throw validationError("Name is required (demo)", {
+          code: "VALIDATION_REQUIRED",
+        });
+      }),
+    []
+  );
+  const throwValidationPattern = useMemo(
+    () =>
+      guard(() => {
+        throw validationError("Phone number format mismatch (demo)", {
+          code: "VALIDATION_PATTERN_MISMATCH",
+        });
+      }),
+    []
+  );
+  const throwValidationRange = useMemo(
+    () =>
+      guard(() => {
+        throw validationError("Value out of range (demo)", {
+          code: "VALIDATION_OUT_OF_RANGE",
+        });
+      }),
+    []
+  );
+  const throwValidationUnique = useMemo(
+    () =>
+      guard(() => {
+        throw validationError("Email already taken (demo)", {
+          code: "VALIDATION_UNIQUE",
+        });
+      }),
+    []
+  );
+  const throwValidationConflict = useMemo(
+    () =>
+      guard(() => {
+        throw validationError("Conflicting selections (demo)", {
+          code: "VALIDATION_CONFLICT",
+        });
+      }),
     []
   );
 
-  const networkExamples = useMemo<ExampleConfig[]>(
-    () => [
-      {
-        key: "network-offline",
-        label: "Network • Offline",
-        action: guard(() => {
-          throw networkThrow({ status: 0, retryable: false });
-        }),
-      },
-      {
-        key: "network-404",
-        label: "Network • 404 Not Found",
-        action: guard(() => {
-          throw networkThrow(404);
-        }),
-      },
-      {
-        key: "network-500",
-        label: "Network • 500 Server error",
-        action: guard(() => {
-          throw networkThrow(500);
-        }),
-      },
-      {
-        key: "network-retryable",
-        label: "Network • Retryable timeout",
-        action: guard(() => {
-          throw networkThrow({ status: 503, retryable: true, attempt: 1 });
-        }),
-      },
-    ],
+  const throwNetworkOffline = useMemo(
+    () =>
+      guard(() => {
+        throw networkError("Offline (demo)", {
+          status: 0,
+          retryable: false,
+          metadata: { reason: "offline" },
+        });
+      }),
+    []
+  );
+  const throwNetwork404 = useMemo(
+    () =>
+      guard(() => {
+        throw networkError("Resource missing (demo)", 404);
+      }),
+    []
+  );
+  const throwNetwork500 = useMemo(
+    () =>
+      guard(() => {
+        throw networkError("Server exploded (demo)", 500);
+      }),
+    []
+  );
+  const throwNetworkRetryable = useMemo(
+    () =>
+      guard(() => {
+        throw networkError("Timeout (demo)", {
+          status: 503,
+          retryable: true,
+          attempt: 1,
+        });
+      }),
     []
   );
 
-  const invariantExamples = useMemo<ExampleConfig[]>(
-    () => [
-      {
-        key: "invariant-state",
-        label: "Invariant • State corrupted",
-        action: guard(() => {
-          throw invariantThrow({ code: "INVARIANT_STATE_CORRUPTED" });
-        }),
-        actionStyle: "negative",
-      },
-      {
-        key: "invariant-unreachable",
-        label: "Invariant • Unreachable",
-        action: guard(() => {
-          throw invariantThrow({ code: "INVARIANT_UNREACHABLE" });
-        }),
-        actionStyle: "negative",
-      },
-      {
-        key: "invariant-unsupported",
-        label: "Invariant • Unsupported feature",
-        action: guard(() => {
-          throw invariantThrow({ code: "INVARIANT_UNSUPPORTED" });
-        }),
-        actionStyle: "negative",
-      },
-    ],
+  const throwInvariantStateCorrupted = useMemo(
+    () =>
+      guard(() => {
+        throw invariantError("State corrupted (demo)", {
+          code: "INVARIANT_STATE_CORRUPTED",
+        });
+      }),
+    []
+  );
+  const throwInvariantUnreachable = useMemo(
+    () =>
+      guard(() => {
+        throw invariantError("Reached unreachable code (demo)", {
+          code: "INVARIANT_UNREACHABLE",
+        });
+      }),
+    []
+  );
+  const throwInvariantUnsupported = useMemo(
+    () =>
+      guard(() => {
+        throw invariantError("Unsupported feature (demo)", {
+          code: "INVARIANT_UNSUPPORTED",
+        });
+      }),
     []
   );
 
-  const miscExamples = useMemo<ExampleConfig[]>(
-    () => [
-      {
-        key: "render-bug",
-        label: "Render • Trigger component crash",
-        action: guard(() => setShowBuggyComponent(true)),
-        actionStyle: "negative",
-      },
-      {
-        key: "unguarded-throw",
-        label: "Throw • Unguarded Error",
-        action: () => {
-          throw new Error("A wild error instance appeared!");
-        },
-        actionStyle: "negative",
-      },
-    ],
-    []
+  const triggerRenderBug = useMemo(
+    () =>
+      guard(() => {
+        setShowBuggyComponent(true);
+      }),
+    [setShowBuggyComponent]
   );
 
   const callSandboxApi = useCallback(
@@ -304,60 +292,215 @@ export default function ErrorTesting() {
     []
   );
 
+  const callSandboxSuccess = useMemo(
+    () =>
+      guard(async () => {
+        try {
+          const response = await callSandboxApi({
+            url: "/users/sandbox/test",
+            method: "POST",
+            body: { throwError: false },
+          });
+          console.log(
+            "Sandbox API • Success => response",
+            response ?? "(no payload)"
+          );
+          showSandboxToast(
+            "success",
+            "Sandbox call succeeded",
+            "Test endpoint responded successfully."
+          );
+        } catch (error) {
+          console.error("Sandbox API • Success → failure", error);
+          showSandboxToast(
+            "error",
+            "Sandbox call failed",
+            "Check logs for the error details."
+          );
+          throw error;
+        }
+      }),
+    [callSandboxApi, showSandboxToast]
+  );
+
+  const callSandboxFailure = useMemo(
+    () =>
+      guard(async () => {
+        await callSandboxApi({
+          url: "/users/sandbox/test",
+          method: "POST",
+          body: { throwError: true },
+        });
+      }),
+    [callSandboxApi]
+  );
+
+  const callSandboxLogin = useMemo(
+    () =>
+      guard(async () => {
+        await callSandboxApi({
+          url: "/auth/login",
+          method: "POST",
+        });
+      }),
+    [callSandboxApi]
+  );
+
+  const authExamples = useMemo<ExampleConfig[]>(
+    () => [
+      {
+        key: "auth-session-expired",
+        label: "Auth • Session expired",
+        action: throwAuthSessionExpired,
+      },
+      {
+        key: "auth-email-unverified",
+        label: "Auth • Email unverified",
+        action: throwAuthEmailUnverified,
+      },
+      {
+        key: "auth-provider-mismatch",
+        label: "Auth • Provider mismatch",
+        action: throwAuthProviderMismatch,
+      },
+      {
+        key: "auth-login-required",
+        label: "Auth • Login required",
+        action: throwAuthLoginRequired,
+      },
+      {
+        key: "auth-cancelled",
+        label: "Auth • Cancelled",
+        action: throwAuthCancelled,
+      },
+      {
+        key: "auth-request-failed",
+        label: "Auth • Request failed",
+        action: throwAuthRequestFailed,
+      },
+    ],
+    []
+  );
+
+  const validationExamples = useMemo<ExampleConfig[]>(
+    () => [
+      {
+        key: "validation-required",
+        label: "Validation • Required",
+        action: throwValidationRequired,
+      },
+      {
+        key: "validation-pattern",
+        label: "Validation • Pattern mismatch",
+        action: throwValidationPattern,
+      },
+      {
+        key: "validation-range",
+        label: "Validation • Out of range",
+        action: throwValidationRange,
+      },
+      {
+        key: "validation-unique",
+        label: "Validation • Unique constraint",
+        action: throwValidationUnique,
+      },
+      {
+        key: "validation-conflict",
+        label: "Validation • Conflict",
+        action: throwValidationConflict,
+      },
+    ],
+    []
+  );
+
+  const networkExamples = useMemo<ExampleConfig[]>(
+    () => [
+      {
+        key: "network-offline",
+        label: "Network • Offline",
+        action: throwNetworkOffline,
+      },
+      {
+        key: "network-404",
+        label: "Network • 404 Not Found",
+        action: throwNetwork404,
+      },
+      {
+        key: "network-500",
+        label: "Network • 500 Server error",
+        action: throwNetwork500,
+      },
+      {
+        key: "network-retryable",
+        label: "Network • Retryable timeout",
+        action: throwNetworkRetryable,
+      },
+    ],
+    []
+  );
+
+  const invariantExamples = useMemo<ExampleConfig[]>(
+    () => [
+      {
+        key: "invariant-state",
+        label: "Invariant • State corrupted",
+        action: throwInvariantStateCorrupted,
+        actionStyle: "negative",
+      },
+      {
+        key: "invariant-unreachable",
+        label: "Invariant • Unreachable",
+        action: throwInvariantUnreachable,
+        actionStyle: "negative",
+      },
+      {
+        key: "invariant-unsupported",
+        label: "Invariant • Unsupported feature",
+        action: throwInvariantUnsupported,
+        actionStyle: "negative",
+      },
+    ],
+    []
+  );
+
+  const miscExamples = useMemo<ExampleConfig[]>(
+    () => [
+      {
+        key: "render-bug",
+        label: "Render • Trigger component crash",
+        action: triggerRenderBug,
+        actionStyle: "negative",
+      },
+      {
+        key: "unguarded-throw",
+        label: "Throw • Unguarded Error",
+        action: () => {
+          throw new Error("A wild error instance appeared!");
+        },
+        actionStyle: "negative",
+      },
+    ],
+    []
+  );
+
   const sandboxExamples = useMemo<ExampleConfig[]>(
     () => [
       {
         key: "sandbox-success",
         label: "Sandbox API • Success",
-        action: guard(async () => {
-          try {
-            const response = await callSandboxApi({
-              url: "/users/sandbox/test",
-              method: "POST",
-              body: { throwError: false },
-            });
-            console.log(
-              "Sandbox API • Success => response",
-              response ?? "(no payload)"
-            );
-            showSandboxToast(
-              "success",
-              "Sandbox call succeeded",
-              "Test endpoint responded successfully."
-            );
-          } catch (error) {
-            console.error("Sandbox API • Success → failure", error);
-            showSandboxToast(
-              "error",
-              "Sandbox call failed",
-              "Check logs for the error details."
-            );
-            throw error;
-          }
-        }),
+        action: callSandboxSuccess,
         actionStyle: "positive",
       },
       {
         key: "sandbox-failure",
         label: "Sandbox API • Failure",
-        action: guard(async () => {
-          await callSandboxApi({
-            url: "/users/sandbox/test",
-            method: "POST",
-            body: { throwError: true },
-          });
-        }),
+        action: callSandboxFailure,
         actionStyle: "negative",
       },
       {
         key: "sandbox-login",
         label: "Sandbox API • Login",
-        action: guard(async () => {
-          await callSandboxApi({
-            url: "/auth/login",
-            method: "POST",
-          });
-        }),
+        action: callSandboxLogin,
         actionStyle: "primary",
       },
     ],

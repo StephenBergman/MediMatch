@@ -156,6 +156,7 @@ export const registerOriginLogger = (fn: (str: string) => void) => {
 };
 
 let uxNotifier: ((ux: UxDecision, err: AppError) => void) | null = null;
+const pendingUxQueue: Array<{ ux: UxDecision; err: AppError }> = [];
 
 /**
  * Registers a UI-side notifier invoked whenever guardAsync decides not to escalate.
@@ -167,10 +168,17 @@ let uxNotifier: ((ux: UxDecision, err: AppError) => void) | null = null;
  */
 export function registerUxNotifier(fn: typeof uxNotifier) {
   uxNotifier = fn;
+  if (uxNotifier && pendingUxQueue.length) {
+    pendingUxQueue.splice(0).forEach(({ ux, err }) => uxNotifier?.(ux, err));
+  }
 }
 
 export function notifyUx(ux: UxDecision, err: AppError) {
-  uxNotifier?.(ux, err);
+  if (uxNotifier) {
+    uxNotifier(ux, err);
+  } else {
+    pendingUxQueue.push({ ux, err });
+  }
 }
 
 /**
@@ -393,6 +401,7 @@ const IGNORED_NAMES = [
   "native",
   "unknown",
   "svg",
+  "action",
 ];
 
 const cleanOriginString = (str?: string) => {
@@ -600,7 +609,7 @@ export function captureException(
     ]
       .filter(Boolean)
       .join(" ");
-    console.error(summary);
+    console.debug(summary);
     if (formattedGuardFrames?.length) {
       // console.log(
       //   `[captureException] guard stack\n${formattedGuardFrames.join("\n")}`
@@ -748,9 +757,11 @@ export function guard<T extends (...args: any[]) => any>(
         }
       }
       const ux = decideUx(appErr);
-      onUxDecision?.(ux, appErr);
-      const notify = onUxDecision ?? uxNotifier;
-      notify?.(ux, appErr);
+      if (onUxDecision) {
+        onUxDecision(ux, appErr);
+      } else {
+        notifyUx(ux, appErr);
+      }
       if (ux.escalate) promoteToBoundary(appErr);
       return { appErr, ux };
     };

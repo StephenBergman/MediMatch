@@ -12,7 +12,7 @@ const index = () => {
         <Pressable
           className="w-1/3 bg-primary-500"
           onPress={() => {
-            router.push("dev/kitchensink");
+            router.push("/dev/kitchensink/kitchensink");
           }}
         >
           <Image
@@ -27,7 +27,7 @@ const index = () => {
         <Pressable
           className="w-1/3 bg-primary-500"
           onPress={() => {
-            router.push("dev/errortesting");
+            router.push("/dev/errortesting");
           }}
         >
           <Image

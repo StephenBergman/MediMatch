@@ -33,8 +33,7 @@ const PortalDemo = () => {
           </Button>
         </>
       }
-      snippet="NO SNIPPET"
-      badSnippet
+      snippet="gs-PortalBasic"
       notes="Portals render custom content outside of the DOM."
     />
   );

@@ -10,19 +10,26 @@ import {
 } from '@/components/ui/bottomsheet';
 import { Box } from '@/components/ui/box';
 import { Text } from '@/components/ui/text';
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Platform } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import * as Reanimated from 'react-native-reanimated';
 import ComponentSnippet from '../../ComponentSnippet';
 
 const BottomSheetDemo = () => {
+  const supportsWorklets = useMemo(
+    () => typeof (Reanimated as { useWorkletCallback?: unknown }).useWorkletCallback === 'function',
+    [],
+  );
+
+  const showPreview = Platform.OS === 'web' && supportsWorklets;
+
   return (
     <ComponentSnippet
       title="BottomSheet"
-      snippet="NO SNIPPET"
-      badSnippet
+      snippet="gs-BottomSheetBasic"
       example={
-        Platform.OS === 'web' ? (
+        showPreview ? (
           <GestureHandlerRootView
             style={{
               width: '100%',
@@ -55,7 +62,9 @@ const BottomSheetDemo = () => {
           </GestureHandlerRootView>
         ) : (
           <Box className="h-[600px] w-full items-center justify-center bg-background-100">
-            <Text className="mb-4 text-center">Preview disabled on mobile, see errors below.</Text>
+            <Text className="mb-4 text-center">
+              Preview disabled {Platform.OS === 'web' ? ' because Reanimated worklets are unavailable.' : 'on mobile, see errors below.'}
+            </Text>
           </Box>
         )
       }

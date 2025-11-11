@@ -78,8 +78,8 @@ function AppShell() {
       edges={["top", "left", "right"]}
     >
       <GluestackUIProvider mode={scheme}>
-        <ErrorBoundary>
-          <ErrorNotificationsHost>
+        <ErrorNotificationsHost>
+          <ErrorBoundary>
             <FeedbackHost>
               {fatal ? (
                 <ErrorFallback
@@ -99,11 +99,7 @@ function AppShell() {
                       },
                     }}
                   >
-                    <Stack.Screen name="(protected)" />
-                    <Stack.Screen
-                      name="modal"
-                      options={{ presentation: "modal", title: "Modal" }}
-                    />
+                    <Stack.Screen name="(protected)/(tabs)" options={{ headerShown: false }} />
                   </Stack>
                   <StatusBar
                     style={scheme === "dark" ? "light" : "dark"}
@@ -112,8 +108,8 @@ function AppShell() {
                 </ThemeProvider>
               )}
             </FeedbackHost>
-          </ErrorNotificationsHost>
-        </ErrorBoundary>
+          </ErrorBoundary>
+        </ErrorNotificationsHost>
       </GluestackUIProvider>
     </SafeAreaView>
   );

@@ -3,12 +3,12 @@ import type {
   LoggingService,
 } from "utils/ErrorHandling/helpers/types";
 
-const levelToConsole: Record<string, "debug" | "info" | "warn" | "error"> = {
+const levelToConsole: Record<string, "debug" | "info"> = {
   debug: "debug",
   info: "info",
-  warning: "warn",
-  error: "error",
-  fatal: "error",
+  warning: "info",
+  error: "info",
+  fatal: "info",
 };
 
 const summarize = (payload: LoggingPayload) => {
@@ -29,7 +29,10 @@ const summarize = (payload: LoggingPayload) => {
 
 export const ConsoleLoggingService: LoggingService = {
   async submit(payload: LoggingPayload) {
-    const method = levelToConsole[payload.level ?? "info"] ?? "log";
+    const method =
+      process.env.NODE_ENV === "development"
+        ? levelToConsole[payload.level ?? "info"] ?? "info"
+        : "debug";
     console[method](summarize(payload));
 
     const componentStack = payload.context?.componentStack as
@@ -43,11 +46,7 @@ export const ConsoleLoggingService: LoggingService = {
       console.debug("[guard trace]", guardFrames.join("\n"));
     }
 
-    if (
-      payload.error
-      //   ((typeof __DEV__ !== 'undefined' && __DEV__) || process.env.NODE_ENV === 'development')
-    )
-      console.log("[raw error]", payload.error.raw);
+    // Intentionally skip dumping raw errors to avoid RN call stacks for every warning.
   },
 
   async capture(error, payload) {
