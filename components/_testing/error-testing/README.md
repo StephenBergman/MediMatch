@@ -8,7 +8,7 @@ The `ErrorTesting` component provides a UI for triggering and testing various er
 - Demonstrates use of error handling helpers: `guardAsync`, `captureException`, `notifyUx`, `promoteToBoundary`, and `decideUx`
 - Includes a buggy component to test React render errors
 - Sandbox API buttons surface success/failure toasts and log the upstream payload, making it easy to verify end-to-end behavior of the `useAPI` hook
-- Uses gluestack-ui primitives for consistent UI
+- Uses React Native Paper components for the interface so we can iterate quickly across platforms.
 
 ## Implementation Notes
 

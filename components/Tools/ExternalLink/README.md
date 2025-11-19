@@ -19,8 +19,7 @@ A cross-platform React component for opening external URLs in a platform-appropr
 ## Example
 
 ```tsx
-<ExternalLink href="https://gluestack.io">
-  <Text>Gluestack Docs</Text>
-  <Icon as={LinkIcon} />
+<ExternalLink href="https://callstack.github.io/react-native-paper/">
+  <Text>React Native Paper Docs</Text>
 </ExternalLink>
 ```

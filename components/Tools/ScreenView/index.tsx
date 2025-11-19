@@ -23,8 +23,8 @@ interface ScreenViewProps {
 }
 
 /**
- * A cross-platform, flexible wrapper for app screens using gluestack-ui and React Native primitives.
- * Handles safe area, optional padding, centering, responsive width, and scroll support.
+ * A cross-platform, flexible wrapper for app screens. Uses Expo/React Native primitives
+ * so it plays nicely with React Native Paper components.
  *
  * @param {ScreenViewProps} props - Props for ScreenView.
  * @param {React.ReactNode} [props.children] - Content to render inside the screen.
@@ -46,6 +46,7 @@ const ScreenView: React.FC<ScreenViewProps> = ({
   return (
     <ScrollView
       className={`bg-background-0 ${className}`}
+      keyboardShouldPersistTaps="always"
       contentContainerStyle={[
         {
           flexGrow: 1,

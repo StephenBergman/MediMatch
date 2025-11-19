@@ -1,13 +1,5 @@
 import ScreenView from "@/components/Tools/ScreenView";
-import { Box } from "@/components/ui/box";
-import { Button, ButtonText } from "@/components/ui/button";
-import { Text } from "@/components/ui/text";
-import {
-  Toast,
-  ToastDescription,
-  ToastTitle,
-  useToast,
-} from "@/components/ui/toast";
+import { useAppToast } from "@/components/common/AppToastProvider";
 import {
   authError,
   invariantError,
@@ -15,7 +7,9 @@ import {
   validationError,
 } from "@/utils/ErrorHandling/errors/types";
 import axios, { Method, isAxiosError } from "axios";
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useMemo, useState } from "react";
+import { StyleSheet, View } from "react-native";
+import { Button, Card, Divider, Text } from "react-native-paper";
 import { guard } from "utils/ErrorHandling/helpers/capture";
 
 type ButtonAction = () => void | Promise<unknown>;
@@ -24,13 +18,8 @@ type ExampleConfig = {
   key: string;
   label: string;
   action: ButtonAction;
-  actionStyle?: "primary" | "secondary" | "negative" | "positive";
 };
 
-/**
- * Developer-only playground that triggers each error factory and guard path so the
- * error-handling stack (capture, policy, UX notifications) can be exercised end-to-end.
- */
 const SANDBOX_FALLBACK_BASE_URL = "https://httpstat.us";
 const SANDBOX_API_BASE_URL =
   process.env.EXPO_PUBLIC_SANDBOX_API_BASE_URL ?? SANDBOX_FALLBACK_BASE_URL;
@@ -39,12 +28,6 @@ const sandboxHttp = axios.create({
   timeout: 4500,
   headers: { Accept: "text/plain" },
 });
-
-type SandboxCallArgs = {
-  url: string;
-  method?: Method;
-  body?: Record<string, unknown>;
-};
 
 const ROUTE_STATUS_MAP: Record<string, { success: number; failure?: number }> =
   {
@@ -60,24 +43,42 @@ const resolveSandboxStatus = (url: string, shouldError: boolean) => {
   return entry?.success ?? 200;
 };
 
-export default function ErrorTesting() {
-  const [showBuggyComponent, setShowBuggyComponent] = useState(false);
-  const toast = useToast();
+type SandboxCallArgs = {
+  url: string;
+  method?: Method;
+  body?: Record<string, unknown>;
+};
 
-  const showSandboxToast = useCallback(
-    (action: "success" | "error", title: string, description: string) => {
-      toast.show({
-        placement: "bottom",
-        render: ({ id }) => (
-          <Toast nativeID={`toast-${id}`} action={action} variant="solid">
-            <ToastTitle>{title}</ToastTitle>
-            <ToastDescription>{description}</ToastDescription>
-          </Toast>
-        ),
-      });
-    },
-    [toast]
-  );
+const ExampleCard = ({
+  title,
+  description,
+  examples,
+}: {
+  title: string;
+  description?: string;
+  examples: ExampleConfig[];
+}) => (
+  <Card style={styles.card}>
+    <Card.Title title={title} subtitle={description} />
+    <Card.Content>
+      <View style={styles.cardContent}>
+        {examples.map((example) => (
+          <Button
+            key={example.key}
+            mode="outlined"
+            onPress={example.action}
+            accessibilityLabel={example.label}
+          >
+            {example.label}
+          </Button>
+        ))}
+      </View>
+    </Card.Content>
+  </Card>
+);
+
+export default function ErrorTesting() {
+  const { showToast } = useAppToast();
 
   const throwAuthSessionExpired = useMemo(
     () =>
@@ -198,371 +199,138 @@ export default function ErrorTesting() {
   const throwNetwork404 = useMemo(
     () =>
       guard(() => {
-        throw networkError("Resource missing (demo)", 404);
+        throw networkError("Not found (demo)", {
+          status: 404,
+          retryable: false,
+        });
       }),
     []
   );
-  const throwNetwork500 = useMemo(
+  const throwNetworkTimeout = useMemo(
     () =>
       guard(() => {
-        throw networkError("Server exploded (demo)", 500);
-      }),
-    []
-  );
-  const throwNetworkRetryable = useMemo(
-    () =>
-      guard(() => {
-        throw networkError("Timeout (demo)", {
-          status: 503,
+        throw networkError("Request timed out (demo)", {
+          status: 408,
           retryable: true,
-          attempt: 1,
         });
       }),
     []
   );
 
-  const throwInvariantStateCorrupted = useMemo(
+  const throwInvariant = useMemo(
     () =>
       guard(() => {
-        throw invariantError("State corrupted (demo)", {
-          code: "INVARIANT_STATE_CORRUPTED",
-        });
-      }),
-    []
-  );
-  const throwInvariantUnreachable = useMemo(
-    () =>
-      guard(() => {
-        throw invariantError("Reached unreachable code (demo)", {
-          code: "INVARIANT_UNREACHABLE",
-        });
-      }),
-    []
-  );
-  const throwInvariantUnsupported = useMemo(
-    () =>
-      guard(() => {
-        throw invariantError("Unsupported feature (demo)", {
-          code: "INVARIANT_UNSUPPORTED",
-        });
+        throw invariantError("Invariant violated (demo)");
       }),
     []
   );
 
-  const triggerRenderBug = useMemo(
-    () =>
-      guard(() => {
-        setShowBuggyComponent(true);
-      }),
-    [setShowBuggyComponent]
-  );
-
-  const callSandboxApi = useCallback(
-    async ({ url, method = "GET", body }: SandboxCallArgs) => {
-      const shouldThrow =
-        typeof body === "object" && body !== null
-          ? Boolean((body as { throwError?: boolean }).throwError)
-          : false;
-
-      const status = resolveSandboxStatus(url, shouldThrow);
-      const isFallbackBase = SANDBOX_API_BASE_URL === SANDBOX_FALLBACK_BASE_URL;
-      const sleep = status >= 500 ? 1400 : 650;
-      const targetUrl = isFallbackBase ? `/${status}?sleep=${sleep}` : url;
-
+  const callSandbox = useCallback(
+    async ({ url, method = "GET", body }: SandboxCallArgs, shouldError = false) => {
+      const status = resolveSandboxStatus(url, shouldError);
+      const fullUrl = `${url}?status=${status}`;
       try {
-        const response = await sandboxHttp.request({
-          url: targetUrl,
+        await sandboxHttp.request({
+          url: fullUrl,
           method,
           data: body,
         });
-        return response.data;
+        showToast("Sandbox call succeeded");
       } catch (error) {
         if (isAxiosError(error)) {
-          throw networkError(error.message || "Sandbox request failed", {
-            status: error.response?.status ?? status,
-            method,
-            url,
-            retryable: error.code === "ECONNABORTED",
-            metadata: { simulatedUrl: targetUrl },
+        throw networkError(error.message, {
+            status: error.response?.status,
+            retryable: true,
           });
         }
         throw error;
       }
     },
-    []
+    [showToast]
   );
 
-  const callSandboxSuccess = useMemo(
-    () =>
-      guard(async () => {
-        try {
-          const response = await callSandboxApi({
-            url: "/users/sandbox/test",
-            method: "POST",
-            body: { throwError: false },
-          });
-          console.log(
-            "Sandbox API • Success => response",
-            response ?? "(no payload)"
-          );
-          showSandboxToast(
-            "success",
-            "Sandbox call succeeded",
-            "Test endpoint responded successfully."
-          );
-        } catch (error) {
-          console.error("Sandbox API • Success → failure", error);
-          showSandboxToast(
-            "error",
-            "Sandbox call failed",
-            "Check logs for the error details."
-          );
-          throw error;
-        }
-      }),
-    [callSandboxApi, showSandboxToast]
-  );
-
-  const callSandboxFailure = useMemo(
-    () =>
-      guard(async () => {
-        await callSandboxApi({
-          url: "/users/sandbox/test",
-          method: "POST",
-          body: { throwError: true },
-        });
-      }),
-    [callSandboxApi]
-  );
-
-  const callSandboxLogin = useMemo(
-    () =>
-      guard(async () => {
-        await callSandboxApi({
-          url: "/auth/login",
-          method: "POST",
-        });
-      }),
-    [callSandboxApi]
-  );
-
-  const authExamples = useMemo<ExampleConfig[]>(
-    () => [
-      {
-        key: "auth-session-expired",
-        label: "Auth • Session expired",
-        action: throwAuthSessionExpired,
-      },
-      {
-        key: "auth-email-unverified",
-        label: "Auth • Email unverified",
-        action: throwAuthEmailUnverified,
-      },
-      {
-        key: "auth-provider-mismatch",
-        label: "Auth • Provider mismatch",
-        action: throwAuthProviderMismatch,
-      },
-      {
-        key: "auth-login-required",
-        label: "Auth • Login required",
-        action: throwAuthLoginRequired,
-      },
-      {
-        key: "auth-cancelled",
-        label: "Auth • Cancelled",
-        action: throwAuthCancelled,
-      },
-      {
-        key: "auth-request-failed",
-        label: "Auth • Request failed",
-        action: throwAuthRequestFailed,
-      },
-    ],
-    []
-  );
-
-  const validationExamples = useMemo<ExampleConfig[]>(
-    () => [
-      {
-        key: "validation-required",
-        label: "Validation • Required",
-        action: throwValidationRequired,
-      },
-      {
-        key: "validation-pattern",
-        label: "Validation • Pattern mismatch",
-        action: throwValidationPattern,
-      },
-      {
-        key: "validation-range",
-        label: "Validation • Out of range",
-        action: throwValidationRange,
-      },
-      {
-        key: "validation-unique",
-        label: "Validation • Unique constraint",
-        action: throwValidationUnique,
-      },
-      {
-        key: "validation-conflict",
-        label: "Validation • Conflict",
-        action: throwValidationConflict,
-      },
-    ],
-    []
-  );
-
-  const networkExamples = useMemo<ExampleConfig[]>(
-    () => [
-      {
-        key: "network-offline",
-        label: "Network • Offline",
-        action: throwNetworkOffline,
-      },
-      {
-        key: "network-404",
-        label: "Network • 404 Not Found",
-        action: throwNetwork404,
-      },
-      {
-        key: "network-500",
-        label: "Network • 500 Server error",
-        action: throwNetwork500,
-      },
-      {
-        key: "network-retryable",
-        label: "Network • Retryable timeout",
-        action: throwNetworkRetryable,
-      },
-    ],
-    []
-  );
-
-  const invariantExamples = useMemo<ExampleConfig[]>(
-    () => [
-      {
-        key: "invariant-state",
-        label: "Invariant • State corrupted",
-        action: throwInvariantStateCorrupted,
-        actionStyle: "negative",
-      },
-      {
-        key: "invariant-unreachable",
-        label: "Invariant • Unreachable",
-        action: throwInvariantUnreachable,
-        actionStyle: "negative",
-      },
-      {
-        key: "invariant-unsupported",
-        label: "Invariant • Unsupported feature",
-        action: throwInvariantUnsupported,
-        actionStyle: "negative",
-      },
-    ],
-    []
-  );
-
-  const miscExamples = useMemo<ExampleConfig[]>(
-    () => [
-      {
-        key: "render-bug",
-        label: "Render • Trigger component crash",
-        action: triggerRenderBug,
-        actionStyle: "negative",
-      },
-      {
-        key: "unguarded-throw",
-        label: "Throw • Unguarded Error",
-        action: () => {
-          throw new Error("A wild error instance appeared!");
+  const sections: { title: string; description?: string; examples: ExampleConfig[] }[] = [
+    {
+      title: "Authentication errors",
+      description: "Trigger guard flows for different auth scenarios.",
+      examples: [
+        { key: "auth-session", label: "Session expired", action: throwAuthSessionExpired },
+        { key: "auth-email", label: "Email unverified", action: throwAuthEmailUnverified },
+        { key: "auth-provider", label: "Provider mismatch", action: throwAuthProviderMismatch },
+        { key: "auth-login", label: "Login required", action: throwAuthLoginRequired },
+        { key: "auth-cancel", label: "Cancelled", action: throwAuthCancelled },
+        { key: "auth-failed", label: "Request failed", action: throwAuthRequestFailed },
+      ],
+    },
+    {
+      title: "Validation errors",
+      description: "Test validation error factories.",
+      examples: [
+        { key: "validation-required", label: "Required field", action: throwValidationRequired },
+        { key: "validation-pattern", label: "Pattern mismatch", action: throwValidationPattern },
+        { key: "validation-range", label: "Range violation", action: throwValidationRange },
+        { key: "validation-unique", label: "Unique violation", action: throwValidationUnique },
+        { key: "validation-conflict", label: "Conflict", action: throwValidationConflict },
+      ],
+    },
+    {
+      title: "Network errors",
+      examples: [
+        { key: "network-offline", label: "Offline", action: throwNetworkOffline },
+        { key: "network-404", label: "Not found", action: throwNetwork404 },
+        { key: "network-timeout", label: "Timeout", action: throwNetworkTimeout },
+      ],
+    },
+    {
+      title: "Invariant & Sandbox",
+      examples: [
+        { key: "invariant", label: "Invariant error", action: throwInvariant },
+        {
+          key: "sandbox-success",
+          label: "Sandbox success",
+          action: () => callSandbox({ url: "/users/sandbox/test" }, false),
         },
-        actionStyle: "negative",
-      },
-    ],
-    []
-  );
-
-  const sandboxExamples = useMemo<ExampleConfig[]>(
-    () => [
-      {
-        key: "sandbox-success",
-        label: "Sandbox API • Success",
-        action: callSandboxSuccess,
-        actionStyle: "positive",
-      },
-      {
-        key: "sandbox-failure",
-        label: "Sandbox API • Failure",
-        action: callSandboxFailure,
-        actionStyle: "negative",
-      },
-      {
-        key: "sandbox-login",
-        label: "Sandbox API • Login",
-        action: callSandboxLogin,
-        actionStyle: "primary",
-      },
-    ],
-    [callSandboxApi, showSandboxToast]
-  );
+        {
+          key: "sandbox-error",
+          label: "Sandbox error",
+          action: () => callSandbox({ url: "/users/sandbox/test" }, true),
+        },
+      ],
+    },
+  ];
 
   return (
-    <ScreenView>
-      <Box className="gap-5 p-4">
-        <ExampleSection title="Authentication Errors" examples={authExamples} />
-        <ExampleSection
-          title="Validation Errors"
-          examples={validationExamples}
-        />
-        <ExampleSection title="Network Errors" examples={networkExamples} />
-        <ExampleSection title="Invariant Errors" examples={invariantExamples} />
-        <ExampleSection title="Sandbox API Calls" examples={sandboxExamples} />
-        <ExampleSection title="Miscellaneous" examples={miscExamples} />
-        {showBuggyComponent && (
-          <BuggyComponent
-            onCrashComplete={() => setShowBuggyComponent(false)}
-          />
-        )}
-      </Box>
+    <ScreenView padded responsive={false}>
+      <View style={styles.content}>
+        <Text variant="headlineSmall">Error Handling Sandboxes</Text>
+        <Text variant="bodyMedium">
+          Use these controls to trigger each guard path and error factory. This lets you verify
+          capture, policy, and UX behavior while developing.
+        </Text>
+
+        <Divider />
+
+        {sections.map((section) => (
+          <ExampleCard key={section.title} {...section} />
+        ))}
+      </View>
+
     </ScreenView>
   );
 }
 
-function ExampleSection({
-  title,
-  examples,
-}: {
-  title: string;
-  examples: ExampleConfig[];
-}) {
-  return (
-    <Box className="gap-3">
-      <Text className="text-base font-semibold">{title}</Text>
-      {examples.map(({ key, label, action, actionStyle = "primary" }) => (
-        <Button key={key} action={actionStyle} onPress={action}>
-          <ButtonText>{label}</ButtonText>
-        </Button>
-      ))}
-    </Box>
-  );
-}
-
-function BuggyComponent({ onCrashComplete }: { onCrashComplete: () => void }) {
-  useEffect(() => {
-    onCrashComplete();
-    throw new Error("Buggy component intentionally crashed");
-  }, [onCrashComplete]);
-
-  return (
-    <Box className="mt-4">
-      <Text className="text-base font-semibold">
-        Buggy component (throws render error)
-      </Text>
-      <Text>
-        This component is mounted only after pressing the crash button and then
-        throws to exercise the error boundary.
-      </Text>
-    </Box>
-  );
-}
+const styles = StyleSheet.create({
+  content: {
+    gap: 24,
+    width: "100%",
+    alignSelf: "stretch",
+  },
+  card: {
+    width: "100%",
+    alignSelf: "stretch",
+    marginBottom: 16,
+  },
+  cardContent: {
+    gap: 8,
+  },
+});

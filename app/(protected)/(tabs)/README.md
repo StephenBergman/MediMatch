@@ -17,7 +17,7 @@ This directory contains the core app-level routing, layouts, and entry points fo
 - **Redirects**: Use `router.push()` to navigate between screens.
 - **Authentication**: Place protected screens inside the `(protected)` folder. Use hooks like `useAuth` to manage access.
 - **Platform Support**: Use `.native.tsx` for native-only logic, `.tsx` for web/native shared, and `.web.tsx` for web-only.
-- **UI Library**: All UI components should use [gluestack-ui](https://gluestack.io/docs/) for consistency and cross-platform support.
+- **UI Library**: All shared UI components now rely on [React Native Paper](https://callstack.github.io/react-native-paper/) to stay cross-platform and consistent.
 - **Error Handling**: Use the `utils/ErrorHandling` helpers for consistent error boundaries and reporting.
 - **Our Tools**: A document for our in-house solutions can be found in `src/components/README.md`
 
@@ -31,7 +31,7 @@ This directory contains the core app-level routing, layouts, and entry points fo
 - Keep navigation logic in layout files.
 - Prefer functional components and TypeScript.
 - Follow Expo and React Native Web compatibility guidelines.
-- Refer to the dev tools `gluestack-ui Kitchen Sink` for ui component usage.
+- Refer to the dev tools `React Native Paper Kitchen Sink` for UI component usage.
 
 ### Known Issues
 

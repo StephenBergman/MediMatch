@@ -1,6 +1,6 @@
 # ErrorFallback Component
 
-This component provides a fallback UI for error boundaries in your Expo/React Native app. It is designed to be cross-platform and uses [gluestack-ui](https://gluestack.io/docs/) for consistent styling.
+This component provides a fallback UI for error boundaries in your Expo/React Native app. It is designed to be cross-platform and uses React Native Paper for consistent styling.
 
 ## Usage
 
@@ -17,7 +17,7 @@ import { ErrorBoundary } from "react-error-boundary";
 - Displays a user-friendly error message
 - Optionally shows error details for debugging on dev
 - Provides a button to reload the app
-- Uses gluestack-ui for UI elements
+- Built with React Native Paper components
 
 ## Cross-Platform Notes
 
