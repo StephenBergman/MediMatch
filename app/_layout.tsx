@@ -13,7 +13,7 @@ import { MD3DarkTheme, MD3LightTheme, PaperProvider } from 'react-native-paper';
 import 'react-native-reanimated';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { AppToastProvider } from '@/components/common/AppToastProvider';
+import { AppToastProvider } from '@/components/contexts/AppToastProvider';
 import { ErrorFallback } from '@/components/Tools/ErrorHandling/ErrorFallback';
 import '@/global.css';
 import { useColorScheme } from '@/hooks/use-color-scheme';
@@ -88,41 +88,41 @@ function AppShell() {
 						}}
 						edges={['top', 'left', 'right']}
 					>
-					<ErrorNotificationsHost>
-						<ErrorBoundary>
-							<FeedbackHost>
-								{fatal ? (
-									<ErrorFallback
-										error={fatal}
-										origin={origin}
-										onRetry={resetFatal}
-										onReport={requestFeedbackModal}
-									/>
-								) : (
-									<ThemeProvider value={navigationTheme}>
-										<Stack
-											screenOptions={{
-												headerShown: false,
-												animation: 'none',
-												contentStyle: {
-													backgroundColor: navigationTheme.colors.background,
-												},
-											}}
-										>
-											<Stack.Screen
-												name="(protected)/(tabs)"
-												options={{ headerShown: false }}
-											/>
-										</Stack>
-										<StatusBar
-											style={scheme === 'dark' ? 'light' : 'dark'}
-											translucent
+						<ErrorNotificationsHost>
+							<ErrorBoundary>
+								<FeedbackHost>
+									{fatal ? (
+										<ErrorFallback
+											error={fatal}
+											origin={origin}
+											onRetry={resetFatal}
+											onReport={requestFeedbackModal}
 										/>
-									</ThemeProvider>
-								)}
-							</FeedbackHost>
-						</ErrorBoundary>
-					</ErrorNotificationsHost>
+									) : (
+										<ThemeProvider value={navigationTheme}>
+											<Stack
+												screenOptions={{
+													headerShown: false,
+													animation: 'none',
+													contentStyle: {
+														backgroundColor: navigationTheme.colors.background,
+													},
+												}}
+											>
+												<Stack.Screen
+													name="(protected)/(tabs)"
+													options={{ headerShown: false }}
+												/>
+											</Stack>
+											<StatusBar
+												style={scheme === 'dark' ? 'light' : 'dark'}
+												translucent
+											/>
+										</ThemeProvider>
+									)}
+								</FeedbackHost>
+							</ErrorBoundary>
+						</ErrorNotificationsHost>
 					</SafeAreaView>
 				</AppToastProvider>
 			</PaperProvider>
