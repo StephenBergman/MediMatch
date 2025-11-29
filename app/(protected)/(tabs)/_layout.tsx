@@ -26,7 +26,7 @@ export default function TabLayout() {
 				}}
 			/>
 			<Tabs.Screen
-				name="explore"
+				name="ChatWithRobot"
 				options={{
 					title: 'Assistant',
 					tabBarIcon: ({ color, size }) => (

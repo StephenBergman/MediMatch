@@ -50,10 +50,11 @@ export async function createChatCompletion({
 		throw new Error(message);
 	}
 
-	const content =
-		(json as {
-			choices?: Array<{ message?: { content?: string } }>;
-		})?.choices?.[0]?.message?.content;
+	const content = (
+		json as {
+			choices?: { message?: { content?: string } }[];
+		}
+	)?.choices?.[0]?.message?.content;
 
 	if (!content) {
 		throw new Error('OpenAI did not return a response.');

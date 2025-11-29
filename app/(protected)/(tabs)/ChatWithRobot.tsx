@@ -6,30 +6,22 @@ import {
 	StyleSheet,
 	View,
 } from 'react-native';
+import { Appbar, Button, Text, TextInput } from 'react-native-paper';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import {
-	Appbar,
-	Button,
-	Text,
-	TextInput,
-	useTheme,
-} from 'react-native-paper';
 
+import { Colors } from '@/constants/theme';
 import { ChatMessageBubble } from '@/features/chat/components/ChatMessageBubble';
 import { useChat } from '@/features/chat/hooks/useChat';
 import { type ChatMessage } from '@/features/chat/types';
+import { useColorScheme } from '@/hooks/use-color-scheme';
 
 export default function ChatScreen() {
-	const theme = useTheme();
+	const colorScheme = useColorScheme() ?? 'light';
+	const colors = Colors[colorScheme];
+	const palette = Colors.palette;
 	const [input, setInput] = useState('');
-	const {
-		messages,
-		sendMessage,
-		isSending,
-		error,
-		clearError,
-		resetChat,
-	} = useChat();
+	const { messages, sendMessage, isSending, error, clearError, resetChat } =
+		useChat();
 	const listRef = useRef<FlatList<ChatMessage>>(null);
 
 	const handleSend = async () => {
@@ -49,16 +41,27 @@ export default function ChatScreen() {
 
 	return (
 		<SafeAreaView
-			style={[styles.safeArea, { backgroundColor: theme.colors.background }]}
+			style={[styles.safeArea, { backgroundColor: colors.background }]}
 			edges={['top', 'left', 'right']}
 		>
-			<Appbar.Header mode="small">
-				<Appbar.Content title="Assistant" subtitle="OpenAI-powered chat" />
+			<Appbar.Header mode="small" style={{ backgroundColor: palette.midnight }}>
+				<View style={styles.headerTitleWrap}>
+					<Text
+						variant="titleMedium"
+						style={[styles.headerTitle, { color: colors.inverseText }]}
+					>
+						Assistant
+					</Text>
+					<Text variant="labelSmall" style={{ color: palette.sky }}>
+						OpenAI-powered chat
+					</Text>
+				</View>
 				{messages.length > 0 ? (
 					<Appbar.Action
 						icon="delete-sweep"
 						onPress={resetChat}
 						accessibilityLabel="Clear conversation"
+						color={colors.accent}
 					/>
 				) : null}
 			</Appbar.Header>
@@ -68,9 +71,14 @@ export default function ChatScreen() {
 				behavior={Platform.OS === 'ios' ? 'padding' : undefined}
 				keyboardVerticalOffset={Platform.OS === 'ios' ? 76 : 0}
 			>
-				<View style={styles.container}>
-					<Text style={styles.infoText} variant="bodySmall">
-						Using the built-in MediMatch OpenAI key. Ask anything health related.
+				<View
+					style={[styles.container, { backgroundColor: colors.background }]}
+				>
+					<Text
+						style={[styles.infoText, { color: colors.secondary }]}
+						variant="bodySmall"
+					>
+						Ask me anything health related!
 					</Text>
 
 					<FlatList
@@ -81,13 +89,20 @@ export default function ChatScreen() {
 						contentContainerStyle={[
 							styles.listContent,
 							{
-								backgroundColor: theme.colors.background,
+								backgroundColor: colors.background,
 							},
 						]}
 						ListEmptyComponent={
 							<View style={styles.emptyState}>
-								<Text variant="titleMedium">Start a conversation</Text>
-								<Text style={styles.emptyCopy}>
+								<Text variant="titleMedium" style={{ color: colors.text }}>
+									Start a conversation
+								</Text>
+								<Text
+									style={[
+										styles.emptyCopy,
+										{ color: colors.text, opacity: 0.72 },
+									]}
+								>
 									Type your question below to chat with MediMatch.
 								</Text>
 							</View>
@@ -101,17 +116,12 @@ export default function ChatScreen() {
 					style={[
 						styles.composer,
 						{
-							borderColor: theme.colors.outlineVariant,
-							backgroundColor: theme.colors.surface,
+							borderColor: colors.border,
+							backgroundColor: colors.surface,
 						},
 					]}
 				>
-					<Text
-						style={[
-							styles.composerLabel,
-							{ color: theme.colors.onSurfaceVariant },
-						]}
-					>
+					<Text style={[styles.composerLabel, { color: colors.text }]}>
 						Message
 					</Text>
 					<View style={styles.composerRow}>
@@ -128,9 +138,11 @@ export default function ChatScreen() {
 							style={[
 								styles.messageInput,
 								{
-									backgroundColor: theme.colors.surfaceVariant,
+									backgroundColor: colors.card,
 								},
 							]}
+							textColor={colors.text}
+							placeholderTextColor={palette.sky}
 							multiline
 						/>
 						<Button
@@ -139,14 +151,15 @@ export default function ChatScreen() {
 							disabled={!input.trim() || isSending}
 							loading={isSending}
 							contentStyle={styles.sendContent}
-							style={styles.sendButton}
+							style={[styles.sendButton, { backgroundColor: colors.primary }]}
+							textColor={colors.inverseText}
 							icon="send"
 						>
 							Send
 						</Button>
 					</View>
 					{error ? (
-						<Text style={[styles.errorText, { color: theme.colors.error }]}>
+						<Text style={[styles.errorText, { color: colors.danger }]}>
 							{error}
 						</Text>
 					) : null}
@@ -215,5 +228,12 @@ const styles = StyleSheet.create({
 	sendButton: {
 		minWidth: 96,
 		alignSelf: 'flex-end',
+	},
+	headerTitleWrap: {
+		flex: 1,
+		gap: 2,
+	},
+	headerTitle: {
+		fontWeight: '700',
 	},
 });

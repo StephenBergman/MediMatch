@@ -4,6 +4,7 @@ import {
 	createChatCompletion,
 	getOpenAiApiKey,
 } from '@/features/chat/api/openai';
+import { buildMockMessage } from '@/features/chat/data/mock-guidance';
 import {
 	type ChatMessage,
 	type ChatMessagePayload,
@@ -17,6 +18,30 @@ const SYSTEM_PROMPT: ChatMessagePayload = {
 
 const createId = () =>
 	`${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+
+const useMockAssistant =
+	(process.env.EXPO_PUBLIC_USE_MOCK_ASSISTANT ?? '').toLowerCase() === 'true';
+
+const formatOpenAiError = (message: string) => {
+	const lower = message.toLowerCase();
+
+	if (
+		lower.includes('exceeded your current quota') ||
+		lower.includes('insufficient_quota')
+	) {
+		return 'The shared OpenAI key hit its quota. Add your own key via EXPO_PUBLIC_OPENAI_API_KEY (or OPENAI_API_KEY locally) to keep chatting.';
+	}
+
+	if (lower.includes('api key is not configured')) {
+		return 'OpenAI API key is missing. Set EXPO_PUBLIC_OPENAI_API_KEY (or OPENAI_API_KEY locally).';
+	}
+
+	if (lower.includes('invalid api key') || lower.includes('api key')) {
+		return 'OpenAI rejected the API key. Double-check the value and billing status.';
+	}
+
+	return message;
+};
 
 export function useChat() {
 	const [messages, setMessages] = useState<ChatMessage[]>([]);
@@ -39,7 +64,7 @@ export function useChat() {
 				return false;
 			}
 
-			if (!apiKey) {
+			if (!useMockAssistant && !apiKey) {
 				setError(
 					'OpenAI API key is not configured. Add EXPO_PUBLIC_OPENAI_API_KEY to your app env.'
 				);
@@ -60,15 +85,17 @@ export function useChat() {
 			let wasSuccessful = false;
 
 			try {
-				const reply = await createChatCompletion({
-					messages: [
-						SYSTEM_PROMPT,
-						...conversation.map(({ role, content }) => ({
-							role,
-							content,
-						})),
-					],
-				});
+				const reply = useMockAssistant
+					? buildMockMessage(trimmed)
+					: await createChatCompletion({
+							messages: [
+								SYSTEM_PROMPT,
+								...conversation.map(({ role, content }) => ({
+									role,
+									content,
+								})),
+							],
+						});
 
 				const assistantMessage: ChatMessage = {
 					id: createId(),
@@ -79,17 +106,18 @@ export function useChat() {
 				setMessages((prev) => [...prev, assistantMessage]);
 				wasSuccessful = true;
 			} catch (err) {
-				const message =
-					err instanceof Error
-						? err.message
-						: 'Unable to reach the assistant right now.';
-				setError(message);
+				const message = err instanceof Error ? err.message : '';
+				const friendly =
+					message.trim() ||
+					'Unable to reach the assistant right now. Please try again.';
+				setError(formatOpenAiError(friendly));
 			} finally {
 				setIsSending(false);
 			}
 
 			return wasSuccessful;
 		},
+		//eslint-disable-next-line react-hooks/exhaustive-deps
 		[messages]
 	);
 
