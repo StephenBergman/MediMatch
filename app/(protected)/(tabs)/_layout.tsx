@@ -1,39 +1,41 @@
-import { HapticTab } from '@/components/haptic-tab';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { Colors } from '@/constants/theme';
-import { useColorScheme } from '@/hooks/use-color-scheme';
-import { Tabs } from 'expo-router';
-import React from 'react';
+import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native'
+import { Stack } from 'expo-router'
+import { StatusBar } from 'expo-status-bar'
+import 'react-native-reanimated'
 
-export default function TabLayout() {
-	const colorScheme = useColorScheme();
+import { SplashScreenController } from '@/components/splash-screen-controller'
 
-	return (
-		<Tabs
-			screenOptions={{
-				tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
-				headerShown: false,
-				tabBarButton: HapticTab,
-			}}
-		>
-			<Tabs.Screen
-				name="index"
-				options={{
-					title: 'Home',
-					tabBarIcon: ({ color, size }) => (
-						<MaterialCommunityIcons name="home" size={size ?? 28} color={color} />
-					),
-				}}
-			/>
-			<Tabs.Screen
-				name="explore"
-				options={{
-					title: 'Explore',
-					tabBarIcon: ({ color, size }) => (
-						<MaterialCommunityIcons name="send" size={size ?? 28} color={color} />
-					),
-				}}
-			/>
-		</Tabs>
-	);
+import { useAuthContext } from '@/hooks/use-Auth-context'
+import { useColorScheme } from '@/hooks/use-color-scheme'
+import AuthProvider from '@/providers/auth-provider'
+
+// Separate RootNavigator so we can access the AuthContext
+function RootNavigator() {
+  const { isLoggedIn } = useAuthContext()
+
+  return (
+    <Stack>
+      <Stack.Protected guard={isLoggedIn}>
+        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+      </Stack.Protected>
+      <Stack.Protected guard={!isLoggedIn}>
+        <Stack.Screen name="login" options={{ headerShown: false }} />
+      </Stack.Protected>
+      <Stack.Screen name="+not-found" />
+    </Stack>
+  )
+}
+
+export default function RootLayout() {
+  const colorScheme = useColorScheme()
+
+  return (
+    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+      <AuthProvider>
+        <SplashScreenController />
+        <RootNavigator />
+        <StatusBar style="auto" />
+      </AuthProvider>
+    </ThemeProvider>
+  )
 }
