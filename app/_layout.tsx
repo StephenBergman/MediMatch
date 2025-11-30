@@ -13,9 +13,10 @@ import { MD3DarkTheme, MD3LightTheme, PaperProvider } from 'react-native-paper';
 import 'react-native-reanimated';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { AppToastProvider } from '@/components/common/AppToastProvider';
+import { AppToastProvider } from '@/components/contexts/AppToastProvider';
 import { ErrorFallback } from '@/components/Tools/ErrorHandling/ErrorFallback';
 import '@/global.css';
+import { Colors } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import {
 	installGlobalErrorHandlers,
@@ -35,14 +36,21 @@ export const unstable_settings = {
 
 function AppShell() {
 	const scheme = useColorScheme() ?? 'light';
+	const palette = Colors.palette;
 
 	const navigationTheme = useMemo(() => {
 		const base = scheme === 'dark' ? DarkTheme : DefaultTheme;
+		const tokens = Colors[scheme];
 		return {
 			...base,
 			colors: {
 				...base.colors,
-				background: scheme === 'dark' ? '#000000' : '#ffffff',
+				primary: tokens.primary,
+				background: tokens.background,
+				card: tokens.surface,
+				text: tokens.text,
+				border: tokens.border,
+				notification: tokens.danger,
 			},
 		};
 	}, [scheme]);
@@ -73,7 +81,39 @@ function AppShell() {
 	}, [navigationTheme.colors.background, scheme]);
 
 	const paperTheme = useMemo(
-		() => (scheme === 'dark' ? MD3DarkTheme : MD3LightTheme),
+		() => {
+			const base = scheme === 'dark' ? MD3DarkTheme : MD3LightTheme;
+			const tokens = Colors[scheme];
+			return {
+				...base,
+				colors: {
+					...base.colors,
+					primary: tokens.primary,
+					onPrimary: tokens.inverseText,
+					primaryContainer: scheme === 'dark' ? palette.teal : palette.sky,
+					onPrimaryContainer:
+						scheme === 'dark' ? palette.white : palette.midnight,
+					secondary: tokens.secondary,
+					onSecondary: tokens.inverseText,
+					secondaryContainer: scheme === 'dark' ? palette.violet : palette.sage,
+					onSecondaryContainer:
+						scheme === 'dark' ? palette.white : palette.midnight,
+					background: tokens.background,
+					onBackground: tokens.text,
+					surface: tokens.surface,
+					onSurface: tokens.text,
+					surfaceVariant: scheme === 'dark' ? palette.midnight : palette.sage,
+					onSurfaceVariant: scheme === 'dark' ? palette.sky : palette.midnight,
+					outline: tokens.border,
+					outlineVariant: tokens.border,
+					error: tokens.danger,
+					onError: palette.white,
+					errorContainer: scheme === 'dark' ? palette.crimson : palette.blush,
+					onErrorContainer:
+						scheme === 'dark' ? palette.white : palette.midnight,
+				},
+			};
+		},
 		[scheme]
 	);
 
@@ -88,41 +128,41 @@ function AppShell() {
 						}}
 						edges={['top', 'left', 'right']}
 					>
-					<ErrorNotificationsHost>
-						<ErrorBoundary>
-							<FeedbackHost>
-								{fatal ? (
-									<ErrorFallback
-										error={fatal}
-										origin={origin}
-										onRetry={resetFatal}
-										onReport={requestFeedbackModal}
-									/>
-								) : (
-									<ThemeProvider value={navigationTheme}>
-										<Stack
-											screenOptions={{
-												headerShown: false,
-												animation: 'none',
-												contentStyle: {
-													backgroundColor: navigationTheme.colors.background,
-												},
-											}}
-										>
-											<Stack.Screen
-												name="(protected)/(tabs)"
-												options={{ headerShown: false }}
-											/>
-										</Stack>
-										<StatusBar
-											style={scheme === 'dark' ? 'light' : 'dark'}
-											translucent
+						<ErrorNotificationsHost>
+							<ErrorBoundary>
+								<FeedbackHost>
+									{fatal ? (
+										<ErrorFallback
+											error={fatal}
+											origin={origin}
+											onRetry={resetFatal}
+											onReport={requestFeedbackModal}
 										/>
-									</ThemeProvider>
-								)}
-							</FeedbackHost>
-						</ErrorBoundary>
-					</ErrorNotificationsHost>
+									) : (
+										<ThemeProvider value={navigationTheme}>
+											<Stack
+												screenOptions={{
+													headerShown: false,
+													animation: 'none',
+													contentStyle: {
+														backgroundColor: navigationTheme.colors.background,
+													},
+												}}
+											>
+												<Stack.Screen
+													name="(protected)/(tabs)"
+													options={{ headerShown: false }}
+												/>
+											</Stack>
+											<StatusBar
+												style={scheme === 'dark' ? 'light' : 'dark'}
+												translucent
+											/>
+										</ThemeProvider>
+									)}
+								</FeedbackHost>
+							</ErrorBoundary>
+						</ErrorNotificationsHost>
 					</SafeAreaView>
 				</AppToastProvider>
 			</PaperProvider>

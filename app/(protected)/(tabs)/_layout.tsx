@@ -26,11 +26,15 @@ export default function TabLayout() {
 				}}
 			/>
 			<Tabs.Screen
-				name="explore"
+				name="ChatWithRobot"
 				options={{
-					title: 'Explore',
+					title: 'Assistant',
 					tabBarIcon: ({ color, size }) => (
-						<MaterialCommunityIcons name="send" size={size ?? 28} color={color} />
+						<MaterialCommunityIcons
+							name="robot-outline"
+							size={size ?? 28}
+							color={color}
+						/>
 					),
 				}}
 			/>
