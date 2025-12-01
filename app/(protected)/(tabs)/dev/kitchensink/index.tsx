@@ -1,46 +1,60 @@
-import { Pressable } from "@/components/ui/pressable";
-
 import ScreenView from "@/components/Tools/ScreenView";
-import { HStack } from "@/components/ui/hstack";
-import { Image } from "@/components/ui/image";
 import { router } from "expo-router";
 import React from "react";
-const index = () => {
+import { StyleSheet, View } from "react-native";
+import { Card, Text } from "react-native-paper";
+
+const tiles = [
+  {
+    title: "Paper Kitchen Sink",
+    description: "Explore examples built with React Native Paper.",
+    image:
+      "https://images.unsplash.com/photo-1489515217757-5fd1be406fef?auto=format&fit=crop&w=800&q=80",
+    route: "/dev/kitchensink/kitchensink",
+  },
+  {
+    title: "Error Testing",
+    description: "Trigger runtime errors and test handling.",
+    image:
+      "https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=800&q=80",
+    route: "/dev/errortesting",
+  },
+];
+
+const KitchenSinkHub = () => {
   return (
     <ScreenView padded>
-      <HStack className="mb-4 w-full" space="md">
-        <Pressable
-          className="w-1/3 bg-primary-500"
-          onPress={() => {
-            router.push("/dev/kitchensink/kitchensink");
-          }}
-        >
-          <Image
-            alt="kitchen sink"
-            size="none"
-            className="aspect-[4/3] w-full"
-            source={{
-              uri: "https://images.saymedia-content.com/.image/ar_16:9%2Cc_fill%2Ccs_srgb%2Cfl_progressive%2Cq_auto:eco%2Cw_1200/MTc2Mjk0OTM2ODczMjgwNjg1/turn-of-the-century-farmer-sinks.jpg",
-            }}
-          />
-        </Pressable>
-        <Pressable
-          className="w-1/3 bg-primary-500"
-          onPress={() => {
-            router.push("/dev/errortesting");
-          }}
-        >
-          <Image
-            alt="error testing"
-            size="none"
-            className="aspect-[4/3] w-full"
-            source={{
-              uri: "https://virtualbackgrounds.site/wp-content/uploads/2020/08/blue-screen-of-death-in-windows-xp-1536x864.jpg",
-            }}
-          />
-        </Pressable>
-      </HStack>
+      <Text variant="headlineMedium" style={styles.heading}>
+        Demos
+      </Text>
+      <View style={styles.grid}>
+        {tiles.map((tile) => (
+          <Card
+            key={tile.route}
+            style={styles.card}
+            onPress={() => router.push(tile.route)}
+          >
+            <Card.Cover source={{ uri: tile.image }} />
+            <Card.Title title={tile.title} subtitle={tile.description} />
+          </Card>
+        ))}
+      </View>
     </ScreenView>
   );
 };
-export default index;
+
+const styles = StyleSheet.create({
+  heading: {
+    marginBottom: 16,
+  },
+  grid: {
+    flexDirection: "row",
+    gap: 16,
+    flexWrap: "wrap",
+  },
+  card: {
+    flexBasis: "48%",
+  },
+});
+
+export default KitchenSinkHub;

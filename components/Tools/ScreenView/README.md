@@ -1,7 +1,7 @@
 # ScreenView Component
 
 A flexible, reusable wrapper for your app screens, providing safe area handling, optional padding, centering, responsive width, and scroll support.  
-Built with [gluestack-ui](https://gluestack.io/docs/)
+Styled with React Native Paper + NativeWind utilities.
 
 ## Features
 
@@ -44,4 +44,4 @@ export default function MyScreen() {
 - The `centered` prop should be used sparingly. It is best for single-message or loading screens, and may not be suitable for lists, forms, or complex layouts.
 
 **Cross-platform:**  
-ScreenView is compatible with iOS, Android, and Web. All UI is built with gluestack-ui and Expo
+ScreenView is compatible with iOS, Android, and Web. All UI is built with Expo primitives so it plays nicely with React Native Paper components.
