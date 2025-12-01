@@ -1,5 +1,7 @@
+/** Priority assigned to a mock condition, used to craft the answer. */
 export type TriageLevel = 'emergency' | 'urgent' | 'routine' | 'selfCare';
 
+/** Prebaked content for matching demo inputs to suggested guidance. */
 export type ConditionResponse = {
 	title: string;
 	keywords: string[];
@@ -110,6 +112,7 @@ export const conditionResponses: ConditionResponse[] = [
 	},
 ];
 
+/** Returns the first mock response whose keywords are found in the input. */
 export function findMockResponse(input: string): ConditionResponse | null {
 	const normalized = input.toLowerCase();
 	for (const response of conditionResponses) {
@@ -120,6 +123,7 @@ export function findMockResponse(input: string): ConditionResponse | null {
 	return null;
 }
 
+/** Builds a friendly mock answer for demo/testing when the model is disabled. */
 export function buildMockMessage(input: string): string {
 	const match = findMockResponse(input);
 	if (!match) {
