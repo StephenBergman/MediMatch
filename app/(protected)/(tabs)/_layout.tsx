@@ -1,12 +1,13 @@
 import { HapticTab } from '@/components/haptic-tab';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { Colors } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { Tabs } from 'expo-router';
 import React from 'react';
 
 export default function TabLayout() {
 	const colorScheme = useColorScheme();
+	const showDevTab = __DEV__;
 
 	return (
 		<Tabs
@@ -16,15 +17,21 @@ export default function TabLayout() {
 				tabBarButton: HapticTab,
 			}}
 		>
-			<Tabs.Screen
-				name="index"
-				options={{
-					title: 'Home',
-					tabBarIcon: ({ color, size }) => (
-						<MaterialCommunityIcons name="home" size={size ?? 28} color={color} />
-					),
-				}}
-			/>
+			{showDevTab ? (
+				<Tabs.Screen
+					name="index"
+					options={{
+						title: 'Dev',
+						tabBarIcon: ({ color, size }) => (
+							<MaterialCommunityIcons
+								name="wrench"
+								size={size ?? 28}
+								color={color}
+							/>
+						),
+					}}
+				/>
+			) : null}
 			<Tabs.Screen
 				name="ChatWithRobot"
 				options={{
