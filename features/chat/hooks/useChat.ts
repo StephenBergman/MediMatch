@@ -2,8 +2,8 @@ import { useCallback, useState } from 'react';
 
 import {
 	createChatCompletion,
-	getOpenAiApiKey,
-} from '@/features/chat/api/openai';
+	getGeminiApiKey,
+} from '@/features/chat/api/gemini';
 import { buildMockMessage } from '@/features/chat/data/mock-guidance';
 import {
 	type ChatMessage,
@@ -22,32 +22,37 @@ const createId = () =>
 const useMockAssistant =
 	(process.env.EXPO_PUBLIC_USE_MOCK_ASSISTANT ?? '').toLowerCase() === 'true';
 
-const formatOpenAiError = (message: string) => {
+/** Maps common Gemini errors into user-friendly copy shown in the UI. */
+const formatGeminiError = (message: string) => {
 	const lower = message.toLowerCase();
 
-	if (
-		lower.includes('exceeded your current quota') ||
-		lower.includes('insufficient_quota')
-	) {
-		return 'The shared OpenAI key hit its quota. Add your own key via EXPO_PUBLIC_OPENAI_API_KEY (or OPENAI_API_KEY locally) to keep chatting.';
+	if (lower.includes('quota')) {
+		return 'The Gemini key hit a quota limit. Add your own key via EXPO_PUBLIC_GEMINI_API_KEY (or GEMINI_API_KEY locally) to keep chatting.';
 	}
 
-	if (lower.includes('api key is not configured')) {
-		return 'OpenAI API key is missing. Set EXPO_PUBLIC_OPENAI_API_KEY (or OPENAI_API_KEY locally).';
+	if (
+		lower.includes('api key is not configured') ||
+		lower.includes('missing api key')
+	) {
+		return 'Gemini API key is missing. Set EXPO_PUBLIC_GEMINI_API_KEY (or GEMINI_API_KEY locally).';
 	}
 
 	if (lower.includes('invalid api key') || lower.includes('api key')) {
-		return 'OpenAI rejected the API key. Double-check the value and billing status.';
+		return 'Gemini rejected the API key. Double-check the value and billing status.';
 	}
 
 	return message;
 };
 
+/**
+ * Client-side chat orchestrator: validates input, manages conversation state,
+ * proxies messages to Gemini (or a mock assistant), and exposes loading/error flags.
+ */
 export function useChat() {
 	const [messages, setMessages] = useState<ChatMessage[]>([]);
 	const [isSending, setIsSending] = useState(false);
 	const [error, setError] = useState<string | null>(null);
-	const apiKey = getOpenAiApiKey();
+	const apiKey = getGeminiApiKey();
 
 	const clearError = useCallback(() => setError(null), []);
 
@@ -66,7 +71,7 @@ export function useChat() {
 
 			if (!useMockAssistant && !apiKey) {
 				setError(
-					'OpenAI API key is not configured. Add EXPO_PUBLIC_OPENAI_API_KEY to your app env.'
+					'Gemini API key is not configured. Add EXPO_PUBLIC_GEMINI_API_KEY to your app env.'
 				);
 				return false;
 			}
@@ -110,7 +115,7 @@ export function useChat() {
 				const friendly =
 					message.trim() ||
 					'Unable to reach the assistant right now. Please try again.';
-				setError(formatOpenAiError(friendly));
+				setError(formatGeminiError(friendly));
 			} finally {
 				setIsSending(false);
 			}

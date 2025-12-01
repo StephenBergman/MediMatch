@@ -15,6 +15,10 @@ import { useChat } from '@/features/chat/hooks/useChat';
 import { type ChatMessage } from '@/features/chat/types';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 
+/**
+ * Chat tab that wires the message list, composer, and header actions to the
+ * `useChat` hook so user see the end-to-end assistant experience.
+ */
 export default function ChatScreen() {
 	const colorScheme = useColorScheme() ?? 'light';
 	const colors = Colors[colorScheme];
@@ -53,7 +57,7 @@ export default function ChatScreen() {
 						Assistant
 					</Text>
 					<Text variant="labelSmall" style={{ color: palette.sky }}>
-						OpenAI-powered chat
+						Gemini-powered chat
 					</Text>
 				</View>
 				{messages.length > 0 ? (

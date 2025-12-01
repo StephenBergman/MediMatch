@@ -8,6 +8,7 @@ type Props = {
 	message: ChatMessage;
 };
 
+/** Displays a single chat message with styling that varies by sender role. */
 export function ChatMessageBubble({ message }: Props) {
 	const theme = useTheme();
 	const isUser = message.role === 'user';
