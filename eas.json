@@ -9,21 +9,14 @@
       "distribution": "internal",
       "android": { "buildType": "apk" },
       "env": {
-        "ORG_GRADLE_PROJECT_reactNativeArchitectures": "arm64-v8a,x86,x86_64",
-        "EXPO_USE_NEW_ARCHITECTURE": "1"
+        "ORG_GRADLE_PROJECT_reactNativeArchitectures": "arm64-v8a,x86,x86_64"
       }
     },
     "preview": {
-      "distribution": "internal",
-      "env": {
-        "EXPO_USE_NEW_ARCHITECTURE": "1"
-      }
+      "distribution": "internal"
     },
     "production": {
-      "autoIncrement": true,
-      "env": {
-        "EXPO_USE_NEW_ARCHITECTURE": "1"
-      }
+      "autoIncrement": true
     }
   },
   "submit": {
