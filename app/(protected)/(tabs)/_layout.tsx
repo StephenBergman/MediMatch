@@ -19,7 +19,7 @@ export default function TabLayout() {
 		>
 			{showDevTab ? (
 				<Tabs.Screen
-					name="index"
+					name="ReactDevTestComponents"
 					options={{
 						title: 'Dev',
 						tabBarIcon: ({ color, size }) => (
@@ -97,6 +97,7 @@ export default function TabLayout() {
 					),
 				}}
 			/>
+
 		</Tabs>
 	);
 }

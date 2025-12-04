@@ -4,7 +4,7 @@ import React from 'react'
 const profile = () => {
   return (
     <View>
-      <Text>Rrofile</Text>
+      <Text>Profile</Text>
     </View>
   )
 }
