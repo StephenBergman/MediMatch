@@ -1,16 +1,14 @@
-//This is the settings page that has multiple setting options for the user.
-
 import { StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 
-const settings = () => {
+const profile = () => {
   return (
     <View>
-      <Text>Settings</Text>
+      <Text>Rrofile</Text>
     </View>
   )
 }
 
-export default settings
+export default profile
 
 const styles = StyleSheet.create({})

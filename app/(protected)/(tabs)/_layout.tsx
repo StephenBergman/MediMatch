@@ -1,12 +1,13 @@
 import { HapticTab } from '@/components/haptic-tab';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { Colors } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { Tabs } from 'expo-router';
 import React from 'react';
 
 export default function TabLayout() {
 	const colorScheme = useColorScheme();
+	const showDevTab = __DEV__;
 
 	return (
 		<Tabs
@@ -16,12 +17,31 @@ export default function TabLayout() {
 				tabBarButton: HapticTab,
 			}}
 		>
+			{showDevTab ? (
+				<Tabs.Screen
+					name="index"
+					options={{
+						title: 'Dev',
+						tabBarIcon: ({ color, size }) => (
+							<MaterialCommunityIcons
+								name="wrench"
+								size={size ?? 30}
+								color={color}
+							/>
+						),
+					}}
+				/>
+			) : null}
 			<Tabs.Screen
-				name="index"
+				name="maps"
 				options={{
-					title: 'Home',
+					title: 'Maps',
 					tabBarIcon: ({ color, size }) => (
-						<MaterialCommunityIcons name="home" size={size ?? 28} color={color} />
+						<MaterialCommunityIcons
+							name="map-outline"
+							size={size ?? 30}
+							color={color}
+						/>
 					),
 				}}
 			/>
@@ -32,7 +52,33 @@ export default function TabLayout() {
 					tabBarIcon: ({ color, size }) => (
 						<MaterialCommunityIcons
 							name="robot-outline"
-							size={size ?? 28}
+							size={size ?? 30}
+							color={color}
+						/>
+					),
+				}}
+			/>
+			<Tabs.Screen
+				name="home"
+				options={{
+					title: 'Home',
+					tabBarIcon: ({ color, size }) => (
+						<MaterialCommunityIcons
+							name="home-outline"
+							size={size ?? 30}
+							color={color}
+						/>
+					),
+				}}
+			/>
+			<Tabs.Screen
+				name="profile"
+				options={{
+					title: 'Profile',
+					tabBarIcon: ({ color, size }) => (
+						<MaterialCommunityIcons
+							name="account-outline"
+							size={size ?? 30}
 							color={color}
 						/>
 					),
@@ -45,7 +91,7 @@ export default function TabLayout() {
 					tabBarIcon: ({ color, size }) => (
 						<MaterialCommunityIcons
 							name="cog-outline"
-							size={size ?? 28}
+							size={size ?? 30}
 							color={color}
 						/>
 					),

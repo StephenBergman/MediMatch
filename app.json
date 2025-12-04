@@ -4,7 +4,7 @@
     "slug": "MediMatch",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/medimatch-logo.png",
+    "icon": "./assets/images/medimatch_logoMain.png",
     "scheme": "medimatch",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
@@ -13,7 +13,6 @@
     },
     "android": {
       "adaptiveIcon": {
-        "backgroundColor": "#ffffff"
       },
       "edgeToEdgeEnabled": true,
       "predictiveBackGestureEnabled": false,
@@ -28,9 +27,9 @@
       [
         "expo-splash-screen",
         {
-          "image": "./assets/images/medimatch-logo.png",
+          "image": "./assets/images/medimatch_logoMain.png",
           "resizeMode": "contain",
-          "imageWidth": 150,
+          "imageWidth": 100,
           "backgroundColor": "#ffffff"
         }
       ]
