@@ -2,6 +2,8 @@
 
 import { StyleSheet, View, Image, Text} from 'react-native'
 import React from 'react'
+import { Button } from 'react-native-paper'
+import { ScrollView } from 'react-native-gesture-handler'
 
 const index = () => {
   return (
@@ -17,9 +19,69 @@ const index = () => {
 		</Text>
 		
 		<View style={styles.policyContainer}>
-	
-		</View>
 
+			<Text style={styles.cookieTermsConditions}>
+				Terms and Conditions
+			</Text>
+
+			<ScrollView style={{margin: 10}}>
+				<Text style={styles.cookieTermsConditionsPolicyText}>
+					Medimatch terms and conditions apply
+					{"\n"}{"\n"}
+					Medimatch terms and conditions apply
+					{"\n"}{"\n"}
+					Medimatch terms and conditions apply
+					{"\n"}{"\n"}
+					Medimatch terms and conditions apply
+					{"\n"}{"\n"}
+					Medimatch terms and conditions apply
+					{"\n"}{"\n"}
+					Medimatch terms and conditions apply
+					{"\n"}{"\n"}
+					Medimatch terms and conditions apply
+					{"\n"}{"\n"}
+					Medimatch terms and conditions apply
+					{"\n"}{"\n"}
+					Medimatch terms and conditions apply
+					{"\n"}{"\n"}
+					Medimatch terms and conditions apply
+					{"\n"}{"\n"}
+					Medimatch terms and conditions apply
+					{"\n"}{"\n"}
+					Medimatch terms and conditions apply
+					{"\n"}{"\n"}
+					Medimatch terms and conditions apply
+					{"\n"}{"\n"}
+					Medimatch terms and conditions apply
+					{"\n"}{"\n"}
+					Medimatch terms and conditions apply
+					{"\n"}{"\n"}
+					Medimatch terms and conditions apply
+					{"\n"}{"\n"}
+					Medimatch terms and conditions apply
+					{"\n"}{"\n"}
+					Medimatch terms and conditions apply
+					{"\n"}{"\n"}
+					Medimatch terms and conditions apply
+					{"\n"}{"\n"}
+					Medimatch terms and conditions apply
+					
+				</Text>
+			</ScrollView>
+
+				<View style={styles.ButtonGroup}>
+
+					<Button style={[styles.acceptCookiesButton, styles.declineCookiesButton]} mode="contained" onPress={() => console.log('User Declined terms')}>
+						Decline
+					</Button>
+
+					<Button style={[styles.acceptCookiesButton, styles.declineCookiesButton]} mode="contained" onPress={() => console.log('User Accepted terms')}>
+						Accept
+					</Button>
+
+				</View>
+
+		</View>
     </View>
   )
 }
@@ -57,6 +119,36 @@ const styles = StyleSheet.create({
 	marginBottom: 20,
 	marginHorizontal: 20,
 	fontWeight: 'bold',
+  },
+  cookieTermsConditions: {
+	fontSize: 25,
+	fontWeight: 'bold',
+	textAlign: 'center',
+	marginTop: 10,
+  },
+  acceptCookiesButton: {
+	marginTop: 0,
+	margin: 8,
+	padding: 5,
+	backgroundColor: '#000000ff',
+	flexWrap: 'wrap',
+	alignContent: 'center',
+  },
+  declineCookiesButton: {
+	marginTop: 0,
+	margin: 8,
+	padding: 5,
+	backgroundColor: '#000000ff',
+	flexWrap: 'wrap',
+	alignContent: 'center',
+  },
+  ButtonGroup: {
+	flexDirection: 'row',
+	justifyContent: 'space-around',
+  },
+  cookieTermsConditionsPolicyText: {
+	fontSize: 16,
+	marginBottom: 20,
   },
 
 });
