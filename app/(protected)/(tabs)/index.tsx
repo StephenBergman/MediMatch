@@ -5,7 +5,11 @@ import React from 'react'
 import { Button } from 'react-native-paper'
 import { ScrollView } from 'react-native-gesture-handler'
 
+//this page will route to the login page after user accepts the terms and coniditions policy
+import { useRouter } from 'expo-router'
+
 const index = () => {
+	const router = useRouter();
   return (
 	 <View style={styles.mainContainer}>
 
@@ -71,12 +75,25 @@ const index = () => {
 
 				<View style={styles.ButtonGroup}>
 
-					<Button style={[styles.acceptCookiesButton, styles.declineCookiesButton]} mode="contained" onPress={() => console.log('User Declined terms')}>
+					<Button style={[styles.acceptCookiesButton, styles.declineCookiesButton]} mode="contained" 
+					onPress={() => 
+					{
+						console.log('User Declined terms');
+					}}>
+
 						Decline
+
 					</Button>
 
-					<Button style={[styles.acceptCookiesButton, styles.declineCookiesButton]} mode="contained" onPress={() => console.log('User Accepted terms')}>
+					<Button style={[styles.acceptCookiesButton, styles.declineCookiesButton]} mode="contained" 
+					onPress={() => 
+					{
+						console.log('User Declined terms');
+						router.push('/(protected)/(tabs)/login');
+					}}>
+						
 						Accept
+
 					</Button>
 
 				</View>
