@@ -33,6 +33,24 @@ export default function TabLayout() {
 				/>
 			) : null}
 			<Tabs.Screen
+				name="dev/kitchensink/index"
+				options={{
+					tabBarButton: () => null,
+				}}
+			/>
+			<Tabs.Screen
+				name="dev/kitchensink/kitchensink"
+				options={{
+					tabBarButton: () => null,
+				}}
+			/>
+			<Tabs.Screen
+				name="dev/errortesting/index"
+				options={{
+					tabBarButton: () => null,
+				}}
+			/>
+			<Tabs.Screen
 				name="ChatWithRobot"
 				options={{
 					title: 'Assistant',

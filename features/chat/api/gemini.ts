@@ -1,14 +1,15 @@
 import { ChatMessagePayload } from '@/features/chat/types';
+import { invariantError } from 'utils/ErrorHandling/errors/types/invarient';
+import { networkError } from 'utils/ErrorHandling/errors/types/network';
+import { validationError } from 'utils/ErrorHandling/errors/types/validation';
+import { retry } from 'utils/retry';
 
 const GEMINI_CHAT_URL =
 	'https://generativelanguage.googleapis.com/v1beta/models';
 const DEFAULT_MODEL = 'gemini-3-pro-preview';
-const DEFAULT_APP_API_KEY = 'AIzaSyDobH2E28LXYwaurbdu4RpIcgo3Q39nhtY';
-
 const appGeminiKey =
 	process.env.EXPO_PUBLIC_GEMINI_API_KEY ??
 	process.env.GEMINI_API_KEY ??
-	DEFAULT_APP_API_KEY ??
 	undefined;
 
 /** Returns whichever Gemini API key is available to the client. */
@@ -75,7 +76,10 @@ export async function createChatCompletion({
 	const apiKey = (apiKeyOverride ?? getGeminiApiKey()).trim();
 
 	if (!apiKey) {
-		throw new Error('Gemini API key is not configured for this app.');
+		throw invariantError('Gemini API key is not configured for this app.', {
+			code: 'INVARIANT_CONFIG_MISSING',
+			severity: 'error',
+		});
 	}
 
 	const url = `${GEMINI_CHAT_URL}/${model}:generateContent?key=${encodeURIComponent(
@@ -84,22 +88,61 @@ export async function createChatCompletion({
 
 	const payload = buildGeminiPayload(messages);
 
-	const response = await fetch(url, {
-		method: 'POST',
-		headers: {
-			'Content-Type': 'application/json',
+	const { json } = await retry(
+		async (attempt) => {
+			let response: Response;
+			try {
+				response = await fetch(url, {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json',
+					},
+					body: JSON.stringify(payload),
+				});
+			} catch (err) {
+				const detail =
+					err instanceof Error ? err.message : typeof err === 'string' ? err : '';
+				throw networkError(
+					`Unable to reach Gemini right now.${detail ? ` (${detail})` : ''}`,
+					{
+						method: 'POST',
+						url,
+						retryable: true,
+						metadata: { feature: 'chat' },
+						attempt,
+					}
+				);
+			}
+
+			const json = await response.json().catch(() => null);
+
+			if (!response.ok) {
+				const message =
+					(json as { error?: { message?: string } })?.error?.message ??
+					'Gemini request failed.';
+				const statusSuffix = response.status
+					? ` (status ${response.status}${
+							response.statusText ? ` ${response.statusText}` : ''
+						})`
+					: '';
+				throw networkError(`${message}${statusSuffix}`, {
+					status: response.status,
+					method: 'POST',
+					url,
+					retryable: response.status === 429 || response.status >= 500,
+					attempt,
+				});
+			}
+
+			return { json };
 		},
-		body: JSON.stringify(payload),
-	});
-
-	const json = await response.json().catch(() => null);
-
-	if (!response.ok) {
-		const message =
-			(json as { error?: { message?: string } })?.error?.message ??
-			'Gemini request failed.';
-		throw new Error(message);
-	}
+		{
+			attempts: 3,
+			baseDelayMs: 400,
+			maxDelayMs: 2000,
+			jitter: true,
+		}
+	);
 
 	const text = (
 		(
@@ -113,7 +156,9 @@ export async function createChatCompletion({
 		.trim();
 
 	if (!text) {
-		throw new Error('Gemini did not return a response.');
+		throw validationError('Gemini did not return a response.', {
+			code: 'VALIDATION_REQUIRED',
+		});
 	}
 
 	return text;
