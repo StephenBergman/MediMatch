@@ -1,6 +1,6 @@
 //This will be the cookie policy page before user sees the login screen. User must agree to terms before they are able to continue.
 
-import { StyleSheet, View, Image, Text} from 'react-native'
+import { StyleSheet, View, Image, Text, BackHandler} from 'react-native'
 import React from 'react'
 import { Button } from 'react-native-paper'
 import { ScrollView } from 'react-native-gesture-handler'
@@ -9,13 +9,15 @@ import { ScrollView } from 'react-native-gesture-handler'
 import { useRouter } from 'expo-router'
 
 const index = () => {
+	
 	const router = useRouter();
+
   return (
 	 <View style={styles.mainContainer}>
 
 		<Image
 				style={styles.cookieImage}
-				source={require('../../../assets/images/cookie.png')}
+				source={require('../assets/images/cookie.png')}
 		/>
 
 		<Text style={styles.cookieText}>
@@ -75,29 +77,31 @@ const index = () => {
 
 				<View style={styles.ButtonGroup}>
 
-					<Button style={[styles.acceptCookiesButton, styles.declineCookiesButton]} mode="contained" 
+					<Button style={styles.declineCookiesButton} mode="contained" textColor='#000000'
 					onPress={() => 
 					{
-						console.log('User Declined terms');
+						console.log('User Declined Terms');
+
+						//if user declines terms, they will exit the application
+						BackHandler.exitApp();
 					}}>
 
 						Decline
 
 					</Button>
 
-					<Button style={[styles.acceptCookiesButton, styles.declineCookiesButton]} mode="contained" 
+					<Button style={styles.acceptCookiesButton} mode="contained" 
 					onPress={() => 
 					{
-						console.log('User Declined terms');
-						router.push('/(protected)/(tabs)/login');
+						console.log('User Accepted Terms');
+						//if user accepts terms, they will be routed to the login page
+						router.push('/login');
 					}}>
 						
 						Accept
 
 					</Button>
-
 				</View>
-
 		</View>
     </View>
   )
@@ -150,14 +154,19 @@ const styles = StyleSheet.create({
 	backgroundColor: '#000000ff',
 	flexWrap: 'wrap',
 	alignContent: 'center',
+	borderRadius: 10,
+	borderWidth: 3,
   },
   declineCookiesButton: {
 	marginTop: 0,
 	margin: 8,
 	padding: 5,
-	backgroundColor: '#000000ff',
+	backgroundColor: '#ffffffff',
+	borderColor: '#000000ff',
+	borderWidth: 3,
 	flexWrap: 'wrap',
 	alignContent: 'center',
+	borderRadius: 10,
   },
   ButtonGroup: {
 	flexDirection: 'row',

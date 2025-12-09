@@ -141,6 +141,7 @@ function AppShell() {
 									) : (
 										<ThemeProvider value={navigationTheme}>
 						<Stack
+							initialRouteName="index"
 							screenOptions={{
 								headerShown: false,
 								animation: 'none',
