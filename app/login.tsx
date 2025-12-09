@@ -1,11 +1,27 @@
-import { StyleSheet, Text, View, Image, TextInput } from 'react-native'
+import { StyleSheet, View, Image, TextInput } from 'react-native'
 import React from 'react'
+
+//this page will route to the home page after user signs in successfully
+import { useRouter } from 'expo-router'
+import { Button, Text, Checkbox} from 'react-native-paper';
+
+//for Google Sign-In
+import * as WebBrowser from "expo-web-browser";
+import * as Google from "expo-auth-session/providers/google";
+
+WebBrowser.maybeCompleteAuthSession();
 
 const login = () => {
 
   //for users email and password variables
   const[email, setEmail] = React.useState('');
   const[password, setPassword] = React.useState('');
+
+  //router variable to route to home page after login
+  const router = useRouter();
+
+  //user is able to check the box to stay signed into there account
+  const [rememberMe, setRememberMe] = React.useState(false);
 
   return (
   <View>
@@ -34,6 +50,49 @@ const login = () => {
         value={password}
         secureTextEntry={true}
     />
+
+    <Button
+        mode="text"
+        onPress={() => {
+            router.push('/forgotpassword');
+        }}
+        style={styles.forgotpasswordButton}
+    >
+        Forgot Password?
+    </Button>
+
+    <Button
+        mode="contained"
+        textColor='#ffffff'
+        onPress={() => {
+            router.push('/home');
+        }}
+        style={styles.signInButton}
+    >
+        Sign In
+    </Button>
+
+    <Button
+        mode="outlined"
+        textColor='#ffffff'
+        onPress={() => {
+            console.log('Google Sign-In pressed');
+        }}
+        style={ styles.googleButton }
+    >
+        Sign In with Google
+    </Button> 
+
+    <Button
+        mode="text"
+        textColor='#000000ff'
+        onPress={() => {
+            router.push('/signup');
+        }}
+        style={styles.signupButton}
+    >
+        Don't have an account? Sign Up Here
+    </Button> 
 
   </View>
   )
@@ -74,5 +133,28 @@ const styles = StyleSheet.create({
         width: '75%',
         alignSelf: 'center',
     },
-    
+    forgotpasswordButton: {
+        alignSelf: 'flex-end',
+        marginRight: '11%',
+        marginTop: -20,
+    },
+    signupButton: {
+        width: '75%', 
+        alignSelf: 'center', 
+        marginTop: 20, 
+        padding: 5
+    },
+    googleButton: {
+        width: '50%',
+        alignSelf: 'center',
+        backgroundColor: '#000000',
+        marginTop: 20, 
+        padding: 5
+    },
+    signInButton: {
+        width: '50%', 
+        alignSelf: 'center', 
+        marginTop: 20, 
+        padding: 5
+    },
 })
