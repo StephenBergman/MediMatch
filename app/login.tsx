@@ -51,19 +51,19 @@ const login = () => {
         secureTextEntry={true}
     />
 
-        <View style={styles.buttonHorizontal}>
-            <Button
-            mode="text"
-            textColor='#000000ff'
-            style={styles.rememeberMeButton} 
-            onPress={() => setRememberMe(!rememberMe)}
-            >
-                <Checkbox status={rememberMe ? 'checked' : 'unchecked'}
-                onPress={() => setRememberMe(!rememberMe)}
-                />
+    <View style={styles.buttonHorizontal}>
 
-                <Text> Remember Me </Text>
-            </Button>
+        <View style={styles.rememberMeRow}>
+
+            <Checkbox status={rememberMe ? 'checked' : 'unchecked'} 
+            onPress={() => setRememberMe(!rememberMe)}
+            />
+            <Text 
+                style={styles.rememberMeButton}
+                onPress={() => setRememberMe(!rememberMe)}>
+                    Remember Me
+            </Text>
+        </View>
 
             <Button
                 mode="text"
@@ -75,7 +75,7 @@ const login = () => {
             >
                 Forgot Password?
             </Button>
-        </View>
+    </View>
 
     <Button
         mode="contained"
@@ -171,15 +171,16 @@ const styles = StyleSheet.create({
     },
     forgotpasswordButton: {
         flexDirection: 'row',
-        alignSelf: 'flex-end',
+        alignSelf: 'auto',
         marginRight: '11%',
-        marginTop: -20,
+        marginTop: -25,
     },
-    rememeberMeButton: {
+    rememberMeButton: {
         flexDirection: 'row',
-        alignSelf: 'flex-end',
-        marginLeft: '11%',
-        marginTop: -20,
+        alignSelf: 'auto',
+        fontSize: 14,
+        marginLeft: 4,
+        color:'#000000',
     },
     buttonHorizontal: {
         flexDirection: 'row',
@@ -187,5 +188,13 @@ const styles = StyleSheet.create({
         alignSelf: 'center',
         justifyContent: 'space-between',
         marginTop: 5,
+        alignItems: 'center'
     },
+    rememberMeRow:{
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginTop: -25,
+        marginLeft: '11%',
+    },
+    
 })
