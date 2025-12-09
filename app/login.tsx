@@ -51,23 +51,39 @@ const login = () => {
         secureTextEntry={true}
     />
 
-    <Button
-        mode="text"
-        onPress={() => {
-            router.push('/forgotpassword');
-        }}
-        style={styles.forgotpasswordButton}
-    >
-        Forgot Password?
-    </Button>
+        <View style={styles.buttonHorizontal}>
+            <Button
+            mode="text"
+            textColor='#000000ff'
+            style={styles.rememeberMeButton} 
+            onPress={() => setRememberMe(!rememberMe)}
+            >
+                <Checkbox status={rememberMe ? 'checked' : 'unchecked'}
+                onPress={() => setRememberMe(!rememberMe)}
+                />
+
+                <Text> Remember Me </Text>
+            </Button>
+
+            <Button
+                mode="text"
+                textColor='#000000ff'
+                style={styles.forgotpasswordButton}
+                onPress={() => {
+                    router.push('/forgotpassword');
+                }}
+            >
+                Forgot Password?
+            </Button>
+        </View>
 
     <Button
         mode="contained"
         textColor='#ffffff'
+        style={styles.signInButton}
         onPress={() => {
             router.push('/home');
         }}
-        style={styles.signInButton}
     >
         Sign In
     </Button>
@@ -75,10 +91,10 @@ const login = () => {
     <Button
         mode="outlined"
         textColor='#ffffff'
+        style={ styles.googleButton }
         onPress={() => {
             console.log('Google Sign-In pressed');
         }}
-        style={ styles.googleButton }
     >
         Sign In with Google
     </Button> 
@@ -86,10 +102,10 @@ const login = () => {
     <Button
         mode="text"
         textColor='#000000ff'
+        style={styles.signupButton}
         onPress={() => {
             router.push('/signup');
         }}
-        style={styles.signupButton}
     >
         Don't have an account? Sign Up Here
     </Button> 
@@ -133,11 +149,6 @@ const styles = StyleSheet.create({
         width: '75%',
         alignSelf: 'center',
     },
-    forgotpasswordButton: {
-        alignSelf: 'flex-end',
-        marginRight: '11%',
-        marginTop: -20,
-    },
     signupButton: {
         width: '75%', 
         alignSelf: 'center', 
@@ -153,8 +164,28 @@ const styles = StyleSheet.create({
     },
     signInButton: {
         width: '50%', 
-        alignSelf: 'center', 
+        alignSelf: 'center',
+        backgroundColor: '#000000',
         marginTop: 20, 
         padding: 5
+    },
+    forgotpasswordButton: {
+        flexDirection: 'row',
+        alignSelf: 'flex-end',
+        marginRight: '11%',
+        marginTop: -20,
+    },
+    rememeberMeButton: {
+        flexDirection: 'row',
+        alignSelf: 'flex-end',
+        marginLeft: '11%',
+        marginTop: -20,
+    },
+    buttonHorizontal: {
+        flexDirection: 'row',
+        width: '95%',
+        alignSelf: 'center',
+        justifyContent: 'space-between',
+        marginTop: 5,
     },
 })
