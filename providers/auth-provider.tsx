@@ -5,7 +5,7 @@ import { PropsWithChildren, useEffect, useState } from 'react'
 
 export default function AuthProvider({ children }: PropsWithChildren) {
   const [session, setSession] = useState<Session | undefined | null>()
-  const [profile, setProfile] = useState<any>()
+  const [profile, setProfile] = useState<any>()  
   const [isLoading, setIsLoading] = useState<boolean>(true)
 
   // Fetch the session once, and subscribe to auth state changes
@@ -22,7 +22,7 @@ export default function AuthProvider({ children }: PropsWithChildren) {
         console.error('Error fetching session:', error)
       }
 
-      setSession(session) 
+      setSession(session)
       setIsLoading(false)
     }
 

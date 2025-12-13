@@ -12,4 +12,4 @@ async function onSignOutButtonPress() {
 
 export default function SignOutButton() {
   return <Button title="Sign out" onPress={onSignOutButtonPress} />
-} 
+}  
