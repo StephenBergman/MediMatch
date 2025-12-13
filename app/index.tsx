@@ -81,6 +81,7 @@ const index = () => {
 					onPress={() => 
 					{
 						console.log('User Declined Terms');
+						console.log('Exiting application......');
 
 						//if user declines terms, they will exit the application
 						BackHandler.exitApp();
@@ -93,7 +94,7 @@ const index = () => {
 					<Button style={styles.acceptCookiesButton} mode="contained" 
 					onPress={() => 
 					{
-						console.log('User Accepted Terms');
+						console.log('User Accepted Terms, directing to login');
 						//if user accepts terms, they will be routed to the login page
 						router.push('/login');
 					}}>

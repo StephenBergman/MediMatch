@@ -7,7 +7,6 @@ import { Button, Text, Checkbox} from 'react-native-paper';
 
 //for Google Sign-In
 import * as WebBrowser from "expo-web-browser";
-import * as Google from "expo-auth-session/providers/google";
 
 WebBrowser.maybeCompleteAuthSession();
 
@@ -70,6 +69,7 @@ const login = () => {
                 textColor='#000000ff'
                 style={styles.forgotpasswordButton}
                 onPress={() => {
+                    console.log('Forgot-Password Pressed')
                     router.push('/forgotpassword');
                 }}
             >
@@ -82,7 +82,8 @@ const login = () => {
         textColor='#ffffff'
         style={styles.signInButton}
         onPress={() => {
-            router.push('/home');
+            console.log("Home screen pressed")
+            router.replace('/(protected)/(tabs)/home');
         }}
     >
         Sign In
@@ -104,6 +105,7 @@ const login = () => {
         textColor='#000000ff'
         style={styles.signupButton}
         onPress={() => {
+            console.log('Sign-Up pressed')
             router.push('/signup');
         }}
     >

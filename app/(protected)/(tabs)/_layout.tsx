@@ -11,7 +11,7 @@ export default function TabLayout() {
 
 	return (
 		<Tabs
-		initialRouteName='index'
+		initialRouteName='home'
 			screenOptions={{
 				tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
 				headerShown: false,
