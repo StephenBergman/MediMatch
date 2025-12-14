@@ -2,7 +2,7 @@
 
 import { StyleSheet, View, Image, Text, BackHandler} from 'react-native'
 import React from 'react'
-import { Button, Searchbar } from 'react-native-paper'
+import { Button, List, Searchbar, Divider } from 'react-native-paper'
 import { ScrollView } from 'react-native-gesture-handler'
 
 //this page will route to the login page after user accepts the terms and coniditions policy
@@ -47,6 +47,53 @@ const settings = () => {
           style={styles.SettingsSearchBar}
           inputStyle={styles.SettingsSearchBarInput}
         />
+      
+        <List.Section>
+
+          <List.Subheader style={styles.subheaderTitle}> Account Settings </List.Subheader>
+
+          <List.Item 
+          title="Edit Profile"
+          left={(props) => <List.Icon {...props} icon="account-circle" />} 
+          right={(props) => <List.Icon {...props} icon="chevron-right" />} 
+          />
+
+          <List.Item 
+          title="Edit Password"
+          left={(props) => <List.Icon {...props} icon="lock" />}
+          right={(props) => <List.Icon {...props} icon="chevron-right" />}  
+          />
+
+          <List.Item 
+          title="Notifications"
+          left={(props) => <List.Icon {...props} icon="bell" />} 
+          right={(props) => <List.Icon {...props} icon="chevron-right" />} 
+          />
+
+          <List.Item 
+          title="Chat History"
+          left={(props) => <List.Icon {...props} icon="chat" />} 
+          right={(props) => <List.Icon {...props} icon="chevron-right" />} 
+          />
+          
+          <Divider style={styles.dividerLine} />
+
+          <List.Subheader style={styles.subheaderTitle}> More Settings </List.Subheader>
+
+          <List.Item 
+          title="About Us"
+          left={(props) => <List.Icon {...props} icon="information" />} 
+          right={(props) => <List.Icon {...props} icon="chevron-right" />} 
+          />
+
+          <List.Item 
+          title="Privacy Policy"
+          left={(props) => <List.Icon {...props} icon="shield-account-outline" />} 
+          right={(props) => <List.Icon {...props} icon="chevron-right" />} 
+          />
+
+        </List.Section>
+
 
 				
 			</ScrollView>
@@ -129,7 +176,7 @@ const styles = StyleSheet.create({
   },
   logoutButton: {
 	marginTop: 0,
-	margin: 8,
+	marginBottom: 15,
 	padding: 5,
 	backgroundColor: '#000000ff',
 	flexWrap: 'wrap',
@@ -145,5 +192,19 @@ const styles = StyleSheet.create({
 	fontSize: 16,
 	marginBottom: 20,
   },
+  subheaderTitle:{
+    fontSize:25,
+    fontWeight:'bold',
+    paddingLeft: -1,
+    color: '#000000ff',
+    marginBottom: 5,
+    marginTop: 5,
+  },
+  dividerLine:{
+    backgroundColor: '#000000ff',
+    height: 4,
+    width: '100%',
+    marginLeft: 0,
+  }
  
 });
