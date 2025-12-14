@@ -43,7 +43,6 @@ const settings = () => {
           value={query}
           onChangeText={setQuery}
           style={styles.SettingsSearchBar}
-          inputStyle={styles.SettingsSearchBarInput}
         />
       
         <List.Section>
@@ -157,9 +156,6 @@ const styles = StyleSheet.create({
     borderColor: '#000000ff',
     marginBottom: 10,
     backgroundColor:'#ffffffff',
-  },
-  SettingsSearchBarInput: {
-
   },
    mainSettingsHeader: {
     marginTop: 20,
