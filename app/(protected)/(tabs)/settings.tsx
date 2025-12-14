@@ -11,8 +11,6 @@ import { useRouter } from 'expo-router'
 //icons logic
 import { MaterialCommunityIcons } from '@expo/vector-icons'
 
-
-
 const settings = () => {
 	
 	const router = useRouter();
@@ -20,74 +18,37 @@ const settings = () => {
   //stores for search bar
   const [query, setQuery] = React.useState("");
 
+  
+
   return (
 	 <View style={styles.mainContainer}>
 
-    <MaterialCommunityIcons style={styles.SettingsIcon}
-      name='cog-outline'
-      size={60}
-      color='#000000'>
+    <View style={styles.mainSettingsHeader}>
+      <MaterialCommunityIcons style={styles.SettingsIcon}
+        name='cog-outline'
+        size={60}
+        color='#000000'
+        >
+          <Text style={styles.settingsTitle}>
+            Settings	
+          </Text>
 
-        <Text style={styles.settingsTitle}>
-			    Settings	
-		    </Text>
-
-    </MaterialCommunityIcons>
-		
+      </MaterialCommunityIcons>
+		</View>
 		
 		<View style={styles.subSettingsContainer}>
 
 			<ScrollView style={{margin: 10}}>
-				<Text style={styles.cookieTermsConditionsPolicyText}>
 
-          <Searchbar
+        <Searchbar
           placeholder="Search"
           value={query}
           onChangeText={setQuery}
           style={styles.SettingsSearchBar}
           inputStyle={styles.SettingsSearchBarInput}
         />
-					Medimatch terms and conditions apply
-					{"\n"}{"\n"}
-					Medimatch terms and conditions apply
-					{"\n"}{"\n"}
-					Medimatch terms and conditions apply
-					{"\n"}{"\n"}
-					Medimatch terms and conditions apply
-					{"\n"}{"\n"}
-					Medimatch terms and conditions apply
-					{"\n"}{"\n"}
-					Medimatch terms and conditions apply
-					{"\n"}{"\n"}
-					Medimatch terms and conditions apply
-					{"\n"}{"\n"}
-					Medimatch terms and conditions apply
-					{"\n"}{"\n"}
-					Medimatch terms and conditions apply
-					{"\n"}{"\n"}
-					Medimatch terms and conditions apply
-					{"\n"}{"\n"}
-					Medimatch terms and conditions apply
-					{"\n"}{"\n"}
-					Medimatch terms and conditions apply
-					{"\n"}{"\n"}
-					Medimatch terms and conditions apply
-					{"\n"}{"\n"}
-					Medimatch terms and conditions apply
-					{"\n"}{"\n"}
-					Medimatch terms and conditions apply
-					{"\n"}{"\n"}
-					Medimatch terms and conditions apply
-					{"\n"}{"\n"}
-					Medimatch terms and conditions apply
-					{"\n"}{"\n"}
-					Medimatch terms and conditions apply
-					{"\n"}{"\n"}
-					Medimatch terms and conditions apply
-					{"\n"}{"\n"}
-					Medimatch terms and conditions apply
-					
-				</Text>
+
+				
 			</ScrollView>
 
 				<View style={styles.ButtonGroup}>
@@ -143,15 +104,22 @@ const styles = StyleSheet.create({
   marginLeft: -80,
   },
   SettingsIcon: {
-    marginRight: 10
+    marginTop: 6,
   },
   SettingsSearchBar: {
     borderRadius: 10,
-    borderColor: '#0000000',
-    marginBottom: 10
+    borderWidth: 2,
+    borderColor: '#000000ff',
+    marginBottom: 10,
+    backgroundColor:'#ffffffff',
   },
   SettingsSearchBarInput: {
 
+  },
+   mainSettingsHeader: {
+    marginTop: 20,
+    marginBottom: 25,
+    marginLeft: -170,
   },
   cookieTermsConditions: {
 	fontSize: 25,
@@ -177,4 +145,5 @@ const styles = StyleSheet.create({
 	fontSize: 16,
 	marginBottom: 20,
   },
+ 
 });
