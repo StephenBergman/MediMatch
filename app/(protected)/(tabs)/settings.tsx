@@ -37,8 +37,6 @@ const settings = () => {
 		
 		<View style={styles.subSettingsContainer}>
 
-			
-
 			<ScrollView style={{margin: 10}}>
 				<Text style={styles.cookieTermsConditionsPolicyText}>
 
@@ -120,16 +118,20 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'flex-start',
     paddingTop: 0,
+    borderRadius:'',
+    borderWidth:3,
+    borderColor: '#0000000000'
   },
   subSettingsContainer: {
 	flex: 1,
 	backgroundColor: '#ffffffff',
-	borderRadius: 10,
+	borderRadius: 15,
+  borderWidth:3,
+  borderColor: '#0000000000',
 	width: '100%',
 	marginTop: -10,
-  marginBottom: -5,
+  marginBottom: -15,
   },
-
   settingsTitle: {
 	fontSize: 40,
 	textAlign: 'center',
@@ -139,6 +141,17 @@ const styles = StyleSheet.create({
 	marginHorizontal: 20,
 	fontWeight: 'bold',
   marginLeft: -80,
+  },
+  SettingsIcon: {
+    marginRight: 10
+  },
+  SettingsSearchBar: {
+    borderRadius: 10,
+    borderColor: '#0000000',
+    marginBottom: 10
+  },
+  SettingsSearchBarInput: {
+
   },
   cookieTermsConditions: {
 	fontSize: 25,
@@ -164,16 +177,4 @@ const styles = StyleSheet.create({
 	fontSize: 16,
 	marginBottom: 20,
   },
-  SettingsIcon: {
-    marginRight: 10
-  },
-  SettingsSearchBar: {
-    borderRadius: 10,
-    borderColor: '#0000000',
-    marginBottom: 10
-  },
-  SettingsSearchBarInput: {
-
-  },
-  
 });

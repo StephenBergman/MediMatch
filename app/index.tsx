@@ -282,13 +282,17 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'flex-start',
     paddingTop: 0,
+	borderColor:'#0000000',
+	borderWidth: 3,
   },
   policyContainer: {
 	flex: 1,
 	backgroundColor: '#ffffffff',
-	borderRadius: 10,
+	borderRadius: 15,
 	width: '100%',
 	marginTop: -10,
+	borderColor:'#0000000',
+	borderWidth: 3,
   },
   cookieImage: {
 	width: 200,
@@ -337,6 +341,9 @@ const styles = StyleSheet.create({
   ButtonGroup: {
 	flexDirection: 'row',
 	justifyContent: 'space-around',
+	borderRadius:'',
+	borderColor:'#00000000',
+	borderWidth: 2,
   },
   cookieTermsConditionsPolicyText: {
 	fontSize: 16,
