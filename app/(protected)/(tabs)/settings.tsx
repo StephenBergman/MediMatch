@@ -11,9 +11,14 @@ import { useRouter } from 'expo-router'
 //icons logic
 import { MaterialCommunityIcons } from '@expo/vector-icons'
 
+
+
 const settings = () => {
 	
 	const router = useRouter();
+
+  //stores for search bar
+  const [query, setQuery] = React.useState("");
 
   return (
 	 <View style={styles.mainContainer}>
@@ -36,6 +41,14 @@ const settings = () => {
 
 			<ScrollView style={{margin: 10}}>
 				<Text style={styles.cookieTermsConditionsPolicyText}>
+
+          <Searchbar
+          placeholder="Search"
+          value={query}
+          onChangeText={setQuery}
+          style={styles.SettingsSearchBar}
+          inputStyle={styles.SettingsSearchBarInput}
+        />
 					Medimatch terms and conditions apply
 					{"\n"}{"\n"}
 					Medimatch terms and conditions apply
@@ -153,6 +166,14 @@ const styles = StyleSheet.create({
   },
   SettingsIcon: {
     marginRight: 10
+  },
+  SettingsSearchBar: {
+    borderRadius: 10,
+    borderColor: '#0000000',
+    marginBottom: 10
+  },
+  SettingsSearchBarInput: {
+
   },
   
 });
