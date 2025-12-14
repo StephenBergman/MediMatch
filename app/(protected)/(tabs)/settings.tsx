@@ -1,15 +1,99 @@
-//This is the settings page that has multiple setting options for the user.
+//this is the settings page, there will be sub settings included and logout option.
 
-import { StyleSheet, Text, View, Image,  } from 'react-native'
+import { StyleSheet, View, Image, Text, BackHandler} from 'react-native'
 import React from 'react'
+import { Button, Searchbar } from 'react-native-paper'
+import { ScrollView } from 'react-native-gesture-handler'
 
+//this page will route to the login page after user accepts the terms and coniditions policy
+import { useRouter } from 'expo-router'
+
+//icons logic
+import { MaterialCommunityIcons } from '@expo/vector-icons'
 
 const settings = () => {
-  return (
-    <View style={styles.mainContainer}>
+	
+	const router = useRouter();
 
-      
-    
+  return (
+	 <View style={styles.mainContainer}>
+
+    <MaterialCommunityIcons style={styles.SettingsIcon}
+      name='cog-outline'
+      size={60}
+      color='#000000'>
+
+        <Text style={styles.settingsTitle}>
+			    Settings	
+		    </Text>
+
+    </MaterialCommunityIcons>
+		
+		
+		<View style={styles.subSettingsContainer}>
+
+			
+
+			<ScrollView style={{margin: 10}}>
+				<Text style={styles.cookieTermsConditionsPolicyText}>
+					Medimatch terms and conditions apply
+					{"\n"}{"\n"}
+					Medimatch terms and conditions apply
+					{"\n"}{"\n"}
+					Medimatch terms and conditions apply
+					{"\n"}{"\n"}
+					Medimatch terms and conditions apply
+					{"\n"}{"\n"}
+					Medimatch terms and conditions apply
+					{"\n"}{"\n"}
+					Medimatch terms and conditions apply
+					{"\n"}{"\n"}
+					Medimatch terms and conditions apply
+					{"\n"}{"\n"}
+					Medimatch terms and conditions apply
+					{"\n"}{"\n"}
+					Medimatch terms and conditions apply
+					{"\n"}{"\n"}
+					Medimatch terms and conditions apply
+					{"\n"}{"\n"}
+					Medimatch terms and conditions apply
+					{"\n"}{"\n"}
+					Medimatch terms and conditions apply
+					{"\n"}{"\n"}
+					Medimatch terms and conditions apply
+					{"\n"}{"\n"}
+					Medimatch terms and conditions apply
+					{"\n"}{"\n"}
+					Medimatch terms and conditions apply
+					{"\n"}{"\n"}
+					Medimatch terms and conditions apply
+					{"\n"}{"\n"}
+					Medimatch terms and conditions apply
+					{"\n"}{"\n"}
+					Medimatch terms and conditions apply
+					{"\n"}{"\n"}
+					Medimatch terms and conditions apply
+					{"\n"}{"\n"}
+					Medimatch terms and conditions apply
+					
+				</Text>
+			</ScrollView>
+
+				<View style={styles.ButtonGroup}>
+
+					<Button style={styles.logoutButton} mode="contained" 
+					onPress={() => 
+					{
+						console.log('User has been logged out, re-directed to login screen');
+						//if user accepts terms, they will be routed to the login page
+						router.push('/login');
+					}}>
+						
+						Logout
+
+					</Button>
+				</View>
+		</View>
     </View>
   )
 }
@@ -24,11 +108,51 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
     paddingTop: 0,
   },
-  SettingsContainer: {
+  subSettingsContainer: {
 	flex: 1,
 	backgroundColor: '#ffffffff',
 	borderRadius: 10,
 	width: '100%',
 	marginTop: -10,
+  marginBottom: -5,
   },
-})
+
+  settingsTitle: {
+	fontSize: 40,
+	textAlign: 'center',
+	alignContent: 'center',
+	marginTop: 80,
+	marginBottom: 20,
+	marginHorizontal: 20,
+	fontWeight: 'bold',
+  marginLeft: -80,
+  },
+  cookieTermsConditions: {
+	fontSize: 25,
+	fontWeight: 'bold',
+	textAlign: 'center',
+	marginTop: 10,
+  },
+  logoutButton: {
+	marginTop: 0,
+	margin: 8,
+	padding: 5,
+	backgroundColor: '#000000ff',
+	flexWrap: 'wrap',
+	alignContent: 'center',
+	borderRadius: 10,
+	borderWidth: 3,
+  },
+  ButtonGroup: {
+	flexDirection: 'row',
+	justifyContent: 'space-around',
+  },
+  cookieTermsConditionsPolicyText: {
+	fontSize: 16,
+	marginBottom: 20,
+  },
+  SettingsIcon: {
+    marginRight: 10
+  },
+  
+});
