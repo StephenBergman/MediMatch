@@ -45,29 +45,35 @@ const forgotpassword = () => {
       </Button>
       
       
+    
+      <View style={styles.bottomButtonGroup}>
 
-      <Button
-        mode="contained"
-        textColor='#ffffff'
-        style={styles.signUpButton}
-          onPress={() => {
-            console.log("User sent to sign up page")
-            router.replace('../signup');
-            }}
-        >
-        Sign Up
-      </Button>
+        <Text style={styles.haveAnAccountText}>Do you have an Account? </Text>
 
-      <Button
-        mode="outlined"
-        textColor='#ffffff'
-        style={ styles.googleButton }
+        <Button
+          mode="contained"
+          textColor='#ffffff'
+          style={styles.signUpButton}
             onPress={() => {
-            console.log('Google Sign-Up pressed');
-          }}
-        >
-        Sign Up with Google
-      </Button>
+              console.log("User sent to sign up page")
+              router.replace('../signup');
+              }}
+          >
+          Sign Up
+        </Button>
+              <Text style={styles.orText}>OR </Text>
+        <Button
+          mode="outlined"
+          textColor='#ffffff'
+          style={ styles.googleButton }
+              onPress={() => {
+              console.log('Google Sign-Up pressed');
+            }}
+          >
+          Sign Up with Google
+        </Button>
+      </View>
+
 
     </View>
   )
@@ -103,7 +109,7 @@ const styles = StyleSheet.create({
     },
     backToSignInText:{
         fontSize: 14,
-        color:"#003cffff" ,
+        color:"#000000ff" ,
         fontWeight:'bold',
         textAlign: 'center',
         marginTop: -5, 
@@ -113,20 +119,43 @@ const styles = StyleSheet.create({
         alignSelf: 'center',
         backgroundColor: '#000000',
         marginTop: 20, 
-        padding: 5
+        padding: 5,
+        borderRadius: 5,
+    },
+    haveAnAccountText:{
+        fontSize: 20,
+        color:"#000000ff" ,
+        fontWeight:'bold',
+        textAlign: 'center',
+        marginTop: -5, 
     },
     signUpButton: {
         width: '50%', 
         alignSelf: 'center',
         backgroundColor: '#000000',
         marginTop: 20, 
-        padding: 5
+        padding: 5,
+        borderRadius: 5,
     },
     googleButton: {
         width: '50%',
         alignSelf: 'center',
         backgroundColor: '#000000',
         marginTop: 20, 
-        padding: 5
+        padding: 5,
+        borderRadius: 5,
     },
+    bottomButtonGroup:{
+        marginTop: 300,
+        alignItems: 'center',
+        paddingBottom: 20,
+    },
+    orText:{
+        fontSize: 20,
+        color:"#000000ff" ,
+        fontWeight:'bold',
+        textAlign: 'center',
+        marginTop: 20, 
+        marginBottom: 3,
+    }
 })
