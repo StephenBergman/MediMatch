@@ -104,7 +104,8 @@ const signup = () => {
 					<Button style={styles.createAccountButton} mode="contained" 
 					onPress={() => 
 					{
-						console.log("User signed up and is re-directed to login")
+						console.log("User account is created")
+            console.log("User is be directed to login....")
             router.replace('/login');
 					}}>
 						
@@ -124,9 +125,17 @@ const signup = () => {
           }}
           >
           Sign Up with Google
-        </Button> 
+        </Button>
+
+        <MaterialCommunityIcons
+          name="arrow-left"
+          size={15}
+          color="#ffffff"
+          style={styles.backButton}
+          onPress={() => router.back()}
+        />
 		</View>
-    </View>
+  </View>
   )
 }
 
@@ -231,5 +240,13 @@ const styles = StyleSheet.create({
     marginLeft: 20,
     marginBottom:-14,
   },
+  backButton:{
+    position: 'absolute',
+    bottom: 40,
+    left: 16,
+    backgroundColor: '#000000',
+    padding: 12,
+    borderRadius: 20,
+  }
  
 });
