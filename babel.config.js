@@ -6,10 +6,10 @@ module.exports = function (api) {
       [
         "babel-preset-expo",
         {
-          jsxImportSource: "nativewind",
+          //jsxImportSource: "nativewind",
         },
       ],
-      "nativewind/babel",
+      //"nativewind/babel",
     ],
 
     plugins: [

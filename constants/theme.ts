@@ -9,6 +9,16 @@ const tintColorLight = '#0a7ea4';
 const tintColorDark = '#fff';
 
 export const Colors = {
+  palette: {
+    teal: '#14b8a6',
+    sky: '#0ea5e9',
+    white: '#ffffff',
+    midnight: '#0f1724',
+    violet: '#7c3aed',
+    sage: '#94a3b8',
+    crimson: '#dc2626',
+    blush: '#fee2e2',
+  },
   light: {
     text: '#11181C',
     background: '#fff',

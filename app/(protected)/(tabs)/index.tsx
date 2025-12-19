@@ -1,4 +1,5 @@
 import { Image } from 'expo-image'
+import React from 'react'
 import { StyleSheet } from 'react-native'
 
 import { HelloWave } from '@/components/hello-wave'
@@ -8,7 +9,7 @@ import { ThemedText } from '@/components/themed-text'
 import { ThemedView } from '@/components/themed-view'
 import { useAuthContext } from '@/hooks/use-Auth-context'
 
-export default function HomeScreen() {
+export default function HomeScreen() { 
   const { profile } = useAuthContext()
 
   return (
