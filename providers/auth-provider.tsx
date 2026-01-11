@@ -13,17 +13,23 @@ export default function AuthProvider({ children }: PropsWithChildren) {
     const fetchSession = async () => {
       setIsLoading(true)
 
-      const {
-        data: { session },
-        error,
-      } = await supabase.auth.getSession()
+      try {
+        const {
+          data: { session },
+          error,
+        } = await supabase.auth.getSession()
 
-      if (error) {
-        console.error('Error fetching session:', error)
+        if (error) {
+          console.error('Error fetching session:', error)
+        }
+
+        setSession(session)
+      } catch (error) {
+        console.error('Failed to fetch session:', error)
+        setSession(null)
+      } finally {
+        setIsLoading(false)
       }
-
-      setSession(session)
-      setIsLoading(false)
     }
 
     fetchSession()
@@ -46,19 +52,28 @@ export default function AuthProvider({ children }: PropsWithChildren) {
     const fetchProfile = async () => {
       setIsLoading(true)
 
-      if (session) {
-        const { data } = await supabase
-          .from('profiles')
-          .select('*')
-          .eq('id', session.user.id)
-          .single()
+      try {
+        if (session) {
+          const { data, error } = await supabase
+            .from('profiles')
+            .select('*')
+            .eq('id', session.user.id)
+            .single()
 
-        setProfile(data)
-      } else {
+          if (error) {
+            console.error('Error fetching profile:', error)
+          }
+
+          setProfile(data)
+        } else {
+          setProfile(null)
+        }
+      } catch (error) {
+        console.error('Failed to fetch profile:', error)
         setProfile(null)
+      } finally {
+        setIsLoading(false)
       }
-
-      setIsLoading(false)
     }
 
     fetchProfile()

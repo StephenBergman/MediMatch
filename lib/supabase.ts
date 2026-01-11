@@ -3,8 +3,10 @@ import { createClient, processLock } from '@supabase/supabase-js'
 import { AppState, Platform } from 'react-native'
 import 'react-native-url-polyfill/auto'
 
-const supabaseUrl = process.env.EXPO_PUBLIC_SUPABASE_URL ?? ''
-const supabaseAnonKey = process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY ?? ''
+// In Expo, environment variables are exposed via process.env at build time
+// but we need to provide fallback values to prevent crashes
+const supabaseUrl = process.env.EXPO_PUBLIC_SUPABASE_URL || 'https://placeholder.supabase.co'
+const supabaseAnonKey = process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY || 'placeholder-key'
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
   auth: {

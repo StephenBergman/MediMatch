@@ -861,3 +861,12 @@ export function reportLogging(
 ) {
   return LoggingService.submit(payload);
 }
+
+/**
+ * Submits user feedback/bug reports.
+ */
+export function reportFeedback(data: { email?: string; message: string }) {
+  console.log('[reportFeedback]', data);
+  // TODO: Implement actual feedback submission to your backend
+  return Promise.resolve();
+}

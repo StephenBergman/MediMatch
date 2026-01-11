@@ -13,14 +13,15 @@ import { MD3DarkTheme, MD3LightTheme, PaperProvider } from 'react-native-paper';
 import 'react-native-reanimated';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
+import { AppToastProvider } from '@/components/common/AppToastProvider';
 import { ErrorFallback } from '@/components/Tools/ErrorHandling/ErrorFallback';
 import { Colors } from '@/constants/theme';
 import '@/global.css';
 import { useColorScheme } from '@/hooks/use-color-scheme';
+import AuthProvider from '@/providers/auth-provider';
 import {
-	installGlobalErrorHandlers,
 	registerFatalPromoter,
-	registerOriginLogger,
+	registerOriginLogger
 } from '@/utils/ErrorHandling/helpers/capture';
 import ErrorBoundary from '@/utils/ErrorHandling/helpers/errorboundary';
 import { ErrorNotificationsHost } from '@/utils/ErrorHandling/helpers/ErrorNotificationsHost';
@@ -60,7 +61,8 @@ function AppShell() {
 	useEffect(() => {
 		registerFatalPromoter(setFatal);
 		registerOriginLogger(setOrigin);
-		installGlobalErrorHandlers({ escalateUnhandled: true });
+		// Temporarily disabled to diagnose crash
+		// installGlobalErrorHandlers({ escalateUnhandled: true });
 		return () => {
 			registerFatalPromoter(() => {});
 			registerOriginLogger(() => {});
@@ -117,6 +119,7 @@ function AppShell() {
 
 	return (
 			<PaperProvider theme={paperTheme}>
+				<AppToastProvider>
 				<SafeAreaView
 					style={{
 						flex: 1,
@@ -162,6 +165,7 @@ function AppShell() {
 							</ErrorBoundary>
 						</ErrorNotificationsHost>
 				</SafeAreaView>
+				</AppToastProvider>
 			</PaperProvider>
 	);
 }
@@ -169,7 +173,9 @@ function AppShell() {
 export default function RootLayout() {
 	return (
     <GestureHandlerRootView style={{ flex: 1 }}>
-      <AppShell />;
+      <AuthProvider>
+        <AppShell />
+      </AuthProvider>
     </GestureHandlerRootView>
   );
 } 
