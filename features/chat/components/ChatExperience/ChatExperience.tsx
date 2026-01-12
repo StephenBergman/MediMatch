@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
+import { useRouter } from 'expo-router';
 import { FlatList, StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -16,6 +17,7 @@ import { useColorScheme } from '@/hooks/use-color-scheme';
 
 /** Top-level chat layout rendered inside `ChatExperience`. Handles scrolling, header, list, and composer. */
 function ChatExperienceInner() {
+	const router = useRouter();
 	const colorScheme = useColorScheme() ?? 'light';
 	const colors = Colors[colorScheme];
 	const palette = Colors.palette;
@@ -40,10 +42,22 @@ function ChatExperienceInner() {
 	};
 
 	const handleFollowUpClick = (actionId: string) => {
+		const lastAssistantMessage = [...messages]
+			.reverse()
+			.find((message) => message.role === 'assistant')?.content;
+		const normalized = lastAssistantMessage?.toLowerCase() ?? '';
+		const prefersEmergency =
+			normalized.includes('emergency room') ||
+			/\ber\b/.test(normalized) ||
+			normalized.includes('call 911') ||
+			normalized.includes('emergency services');
+		const carePreference = prefersEmergency ? 'emergency' : 'urgent';
+
 		const result = handleFollowUpAction(actionId, () => {
-			// TODO: Implement navigation to facility search
-			// Example: navigation.navigate('MapTab') or similar
-			console.log('Navigate to facility search');
+			router.push({
+				pathname: '/(protected)/(tabs)/map',
+				params: { route: 'nearest', care: carePreference },
+			});
 		});
 
 		// If it's a message response, optionally add to chat

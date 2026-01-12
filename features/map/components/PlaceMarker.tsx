@@ -8,6 +8,8 @@ import type { PlaceResult } from '../api/places';
 
 type Props = {
 	place: PlaceResult;
+	onRoute?: (place: PlaceResult) => void;
+	onSelect?: (place: PlaceResult) => void;
 };
 
 type IconName = keyof typeof MaterialCommunityIcons.glyphMap;
@@ -41,10 +43,14 @@ function getIconConfig(types: string[]) {
 	return { icon: 'map-marker', label: 'Medical' };
 }
 
-export function PlaceMarker({ place }: Props) {
+const LONG_PRESS_MS = 520;
+
+export function PlaceMarker({ place, onRoute, onSelect }: Props) {
 	const scheme = useColorScheme() ?? 'light';
 	const colors = Colors[scheme];
 	const markerRef = useRef<InstanceType<typeof Marker>>(null);
+	const longPressTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+	const didLongPress = useRef(false);
 	const { title, address, iconName } = useMemo(() => {
 		const config = getIconConfig(place.types);
 		const computedTitle =
@@ -60,7 +66,29 @@ export function PlaceMarker({ place }: Props) {
 	}, [place.address, place.name, place.types]);
 
 	const handlePress = () => {
+		if (didLongPress.current) {
+			didLongPress.current = false;
+			return;
+		}
+		onSelect?.(place);
 		markerRef.current?.showCallout();
+	};
+
+	const handlePressIn = () => {
+		if (!onRoute) return;
+		longPressTimer.current = setTimeout(() => {
+			didLongPress.current = true;
+			onSelect?.(place);
+			onRoute(place);
+			markerRef.current?.hideCallout();
+		}, LONG_PRESS_MS);
+	};
+
+	const handlePressOut = () => {
+		if (longPressTimer.current) {
+			clearTimeout(longPressTimer.current);
+			longPressTimer.current = null;
+		}
 	};
 
 	return (
@@ -68,9 +96,10 @@ export function PlaceMarker({ place }: Props) {
 			ref={markerRef}
 			coordinate={{ latitude: place.latitude, longitude: place.longitude }}
 			anchor={{ x: 0.5, y: 1 }}
-			calloutAnchor={{ x: 0.5, y: 0 }}
 			tracksViewChanges={false}
 			onPress={handlePress}
+			onPressIn={handlePressIn}
+			onPressOut={handlePressOut}
 			title={title}
 			description={address}
 		>
