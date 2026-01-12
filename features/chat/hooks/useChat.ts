@@ -28,15 +28,7 @@ const createId = () =>
 const useMockAssistant =
 	(process.env.EXPO_PUBLIC_USE_MOCK_ASSISTANT ?? '').toLowerCase() === 'true';
 
-/** Error surfaced to the UI with mapped UX intent and user-facing copy. */
-export type ChatUxError = {
-	appError: AppError;
-	ux: UxDecision;
-	message: string;
-};
-
-/** Maps common Gemini errors into user-friendly copy shown in the UI. */
-const formatGeminiError = (message: string) => {
+const formatOpenAiError = (message: string) => {
 	const lower = message.toLowerCase();
 
 	if (lower.includes('quota')) {
@@ -64,24 +56,8 @@ const formatGeminiError = (message: string) => {
 export function useChat() {
 	const [messages, setMessages] = useState<ChatMessage[]>([]);
 	const [isSending, setIsSending] = useState(false);
-	const [isAssistantTyping, setIsAssistantTyping] = useState(false);
-	const [error, setError] = useState<ChatUxError | null>(null);
-	const messagesRef = useRef<ChatMessage[]>([]);
-	const typingTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-	const apiKey = getGeminiApiKey();
-
-	useEffect(() => {
-		messagesRef.current = messages;
-	}, [messages]);
-
-	useEffect(
-		() => () => {
-			if (typingTimerRef.current) {
-				clearTimeout(typingTimerRef.current);
-			}
-		},
-		[]
-	);
+	const [error, setError] = useState<string | null>(null);
+	const apiKey = getOpenAiApiKey();
 
 	const clearError = useCallback(() => setError(null), []);
 
@@ -139,14 +115,8 @@ export function useChat() {
 			}
 
 			if (!useMockAssistant && !apiKey) {
-				handleFailure(
-					invariantError(
-						'Gemini API key is not configured. Add EXPO_PUBLIC_GEMINI_API_KEY to your app env.',
-						{
-							code: 'INVARIANT_CONFIG_MISSING',
-							severity: 'error',
-						}
-					)
+				setError(
+					'OpenAI API key is not configured. Add EXPO_PUBLIC_OPENAI_API_KEY to your app env.'
 				);
 				return false;
 			}
@@ -197,12 +167,11 @@ export function useChat() {
 				setMessages((prev) => [...prev, assistantMessage]);
 				wasSuccessful = true;
 			} catch (err) {
-				setMessages((prev) =>
-					prev.map((msg) =>
-						msg.id === userMessage.id ? { ...msg, status: 'failed' } : msg
-					)
-				);
-				handleFailure(err);
+				const message = err instanceof Error ? err.message : '';
+				const friendly =
+					message.trim() ||
+					'Unable to reach the assistant right now. Please try again.';
+				setError(formatOpenAiError(friendly));
 			} finally {
 				setIsSending(false);
 				stopTypingSoon();

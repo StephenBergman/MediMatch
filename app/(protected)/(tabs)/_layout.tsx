@@ -11,43 +11,20 @@ export default function TabLayout() {
 
 	return (
 		<Tabs
+		initialRouteName='home'
 			screenOptions={{
 				tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
 				headerShown: false,
 				tabBarButton: HapticTab,
 			}}
 		>
-			{showDevTab ? (
-				<Tabs.Screen
-					name="index"
-					options={{
-						title: 'Dev',
-						tabBarIcon: ({ color, size }) => (
-							<MaterialCommunityIcons
-								name="wrench"
-								size={size ?? 28}
-								color={color}
-							/>
-						),
-					}}
-				/>
-			) : null}
 			<Tabs.Screen
-				name="dev/kitchensink/index"
+				name="index"
 				options={{
-					tabBarButton: () => null,
-				}}
-			/>
-			<Tabs.Screen
-				name="dev/kitchensink/kitchensink"
-				options={{
-					tabBarButton: () => null,
-				}}
-			/>
-			<Tabs.Screen
-				name="dev/errortesting/index"
-				options={{
-					tabBarButton: () => null,
+					title: 'Home',
+					tabBarIcon: ({ color, size }) => (
+						<MaterialCommunityIcons name="home" size={size ?? 28} color={color} />
+					),
 				}}
 			/>
 			<Tabs.Screen
@@ -57,7 +34,33 @@ export default function TabLayout() {
 					tabBarIcon: ({ color, size }) => (
 						<MaterialCommunityIcons
 							name="robot-outline"
-							size={size ?? 28}
+							size={size ?? 30}
+							color={color}
+						/>
+					),
+				}}
+			/>
+			<Tabs.Screen
+				name="home"
+				options={{
+					title: 'Home',
+					tabBarIcon: ({ color, size }) => (
+						<MaterialCommunityIcons
+							name="home-outline"
+							size={size ?? 30}
+							color={color}
+						/>
+					),
+				}}
+			/>
+			<Tabs.Screen
+				name="profile"
+				options={{
+					title: 'Profile',
+					tabBarIcon: ({ color, size }) => (
+						<MaterialCommunityIcons
+							name="account-outline"
+							size={size ?? 30}
 							color={color}
 						/>
 					),
@@ -76,6 +79,20 @@ export default function TabLayout() {
 					),
 				}}
 			/>
+			<Tabs.Screen
+				name="settings"
+				options={{
+					title: 'Settings',
+					tabBarIcon: ({ color, size }) => (
+						<MaterialCommunityIcons
+							name="cog-outline"
+							size={size ?? 30}
+							color={color}
+						/>
+					),
+				}}
+			/>
+
 		</Tabs>
 	);
 }

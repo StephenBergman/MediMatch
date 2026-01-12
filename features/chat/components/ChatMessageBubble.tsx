@@ -8,17 +8,6 @@ type Props = {
 	message: ChatMessage;
 };
 
-const formatTime = (value?: number) => {
-	if (!value) return '';
-	const date = new Date(value);
-	const hours = date.getHours();
-	const minutes = date.getMinutes().toString().padStart(2, '0');
-	const suffix = hours >= 12 ? 'PM' : 'AM';
-	const normalized = hours % 12 || 12;
-	return `${normalized}:${minutes} ${suffix}`;
-};
-
-/** Displays a single chat message with styling that varies by sender role. */
 export function ChatMessageBubble({ message }: Props) {
 	const theme = useTheme();
 	const isUser = message.role === 'user';
