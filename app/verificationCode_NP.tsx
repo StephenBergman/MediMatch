@@ -79,7 +79,7 @@ const styles = StyleSheet.create({
         paddingLeft: 10, 
         borderRadius: 5,
         alignSelf: 'center',
-        width: '75%',
+        width: '80%',
     },
     backToSignInText:{
         fontSize: 14,
@@ -135,7 +135,7 @@ const styles = StyleSheet.create({
     inputLabels:{
     fontSize:14,
     color:'#000000ff',
-    marginLeft: 55,
+    marginLeft: 45,
     marginBottom:-14,
   },
 })
