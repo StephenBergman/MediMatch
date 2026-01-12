@@ -1,46 +1,119 @@
 # Chat Feature
 
-End-to-end chat experience for MediMatch, covering UI, state, and Gemini integration. Use `ChatExperience` as the ready-made screen.
+Medical triage chatbot that helps users understand their symptoms and recommends appropriate care settings (ER, Urgent Care, Primary Care, or Self-care).
 
 ## Structure
-- `components/ChatExperience/ChatExperience.tsx` — screen wrapper; renders header, message list, composer; wires `ChatProvider`.
-- `components/ChatMessageList/ChatMessageList.tsx` — list with quick-start prompts and footer (typing + errors).
-- `components/ChatComposer/ChatComposer.tsx` — message input, send action, helper copy.
-- `components/ChatMessageBubble.tsx` — message bubble styling and status (sent/sending/failed).
-- `components/ChatHeader/ChatHeader.tsx` — top bar with reset + metadata.
-- `components/ChatErrorNotice/ChatErrorNotice.tsx` — friendly error card with retry/dismiss.
-- `components/TypingIndicator/TypingIndicator.tsx` — assistant “typing” chip.
-- `contexts/ChatContext.tsx` — React context exposing chat state/actions.
-- `hooks/useChat.ts` — client-side orchestrator: validates input, manages messages, calls Gemini or mock, handles UX errors.
-- `api/gemini.ts` — Gemini REST client + payload shaping.
-- `data/mock-guidance.ts` — canned triage responses for demo/testing when mock mode is enabled.
-- `data/quick-prompts.ts` — predefined chips shown above the list.
-- `types.ts` — shared chat message/role types.
+
+```
+chat/
+├── api/
+│   └── gemini.ts              # Gemini API integration for chat completions
+├── components/
+│   ├── ChatComposer/          # Message input field with send button
+│   ├── ChatErrorNotice/        # Error display component
+│   ├── ChatExperience/         # Main chat screen layout
+│   ├── ChatFollowUpPrompt/     # Follow-up prompt after triage (NEW)
+│   ├── ChatHeader/             # Chat header with reset button
+│   ├── ChatMessageBubble.tsx   # Individual message display
+│   └── ChatMessageList/        # List of messages with typing indicator
+├── contexts/
+│   └── ChatContext.tsx         # React context for chat state
+├── data/
+│   ├── mock-guidance.ts        # Mock assistant responses for testing
+│   └── quick-prompts.ts        # Quick-start prompt suggestions
+├── hooks/
+│   └── useChat.ts              # Chat logic hook (messages, sending, errors)
+├── types.ts                    # TypeScript type definitions
+└── utils/
+    └── followUpPrompt.ts       # Follow-up prompt generation logic (NEW)
+```
+
+## Key Features
+
+- **Gemini Integration**: Uses Google's Gemini API for triage recommendations
+- **Mock Mode**: Can run with mock responses for testing via `EXPO_PUBLIC_USE_MOCK_ASSISTANT`
+- **Error Handling**: Comprehensive error handling with user-friendly messages
+- **Follow-Up Prompts**: After providing a recommendation, users see a follow-up asking if they:
+  - Had their question answered
+  - Have more questions
+  - Want to find a nearby facility
 
 ## Usage
+
+### ChatExperience Component
+
+Main entry point for the chat feature:
+
 ```tsx
-// Any screen component
 import { ChatExperience } from '@/features/chat/components/ChatExperience/ChatExperience';
 
-export default function ChatScreen() {
-  return <ChatExperience />;
+export function ChatScreen() {
+	return <ChatExperience />;
 }
 ```
-`ChatExperience` wraps children in `ChatProvider`, so no extra providers are required at the call site.
 
-## Environment & configuration
-- Gemini API key: set `EXPO_PUBLIC_GEMINI_API_KEY` (preferred) or `GEMINI_API_KEY`. Without a key, the hook surfaces a user-friendly error.
-- Model: defaults to `gemini-3-pro-preview`. Override by passing `model` to `createChatCompletion` (if calling directly).
-- Mock assistant: set `EXPO_PUBLIC_USE_MOCK_ASSISTANT=true` to bypass the API and return canned guidance from `data/mock-guidance.ts`.
+### useChat Hook
 
-## Behavior notes
-- A system prompt enforces “triage-only” guidance—no diagnoses or treatment.
-- Messages persist only in component state (no storage); `onReset` clears the conversation.
-- Errors are normalized (`utils/ErrorHandling/...`), mapped to UX intents, and shown via `ChatErrorNotice` with retry support.
-- The list auto-scrolls to the latest message and shows a typing indicator during requests.
+Direct access to chat logic:
 
-## Extending
-- Add/edit quick prompts: update `data/quick-prompts.ts`.
-- Adjust mock responses: edit `data/mock-guidance.ts`.
-- Customize assistant/system prompt: change `SYSTEM_PROMPT` in `hooks/useChat.ts`.
-- Reuse state without the UI: consume `useChat` from `contexts/ChatContext` and render your own components.***
+```tsx
+const {
+	messages,
+	sendMessage,
+	isSending,
+	isAssistantTyping,
+	error,
+	clearError,
+	resetChat,
+	handleFollowUpAction,
+} = useChat();
+
+// Send a message
+await sendMessage({ content: 'I have chest pain' });
+
+// Handle follow-up button clicks
+handleFollowUpAction('find_facility', () => {
+	router.push('/(protected)/(tabs)/map');
+});
+```
+
+## API Integration
+
+Requires `EXPO_PUBLIC_GEMINI_API_KEY` (or `GEMINI_API_KEY` locally) environment variable.
+
+System prompt configures the assistant as a concise triage assistant that:
+
+- Recommends appropriate care settings
+- Does NOT provide medical advice or diagnoses
+- Keeps responses brief and actionable
+
+## Follow-Up Prompt System
+
+After the assistant responds, a follow-up prompt automatically appears (configurable via `shouldShowFollowUp()` in `utils/followUpPrompt.ts`).
+
+Users can select:
+
+- **"Yes, that helps"** - Confirms the recommendation was useful
+- **"I have more questions"** - Ready to ask follow-ups
+- **"Find a facility"** - Navigate to facility search
+
+Messages rotate through 4 variations to feel natural across multiple exchanges.
+
+## Adding New Components
+
+When adding new chat components:
+
+1. Create folder under `components/` with component name
+2. Add TypeScript file(s) with the component
+3. Export from `components/index.ts` (if using barrel export)
+4. Update this README with component description
+5. Add types to `types.ts` if needed
+
+Example structure:
+
+```
+components/NewFeature/
+├── NewFeature.tsx
+├── NewFeature.styles.ts (if complex styling)
+└── index.ts (optional)
+```

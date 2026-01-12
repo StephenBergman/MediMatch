@@ -11,6 +11,7 @@ type Props = {
 	messages: ChatMessage[];
 	isTyping: boolean;
 	onSelectPrompt: (text: string) => void;
+	onFollowUpAction?: (actionId: string) => void;
 	listRef: RefObject<FlatList<ChatMessage> | null>;
 	ListFooterComponent?: React.ReactNode;
 };
@@ -20,6 +21,7 @@ export function ChatMessageList({
 	messages,
 	isTyping,
 	onSelectPrompt,
+	onFollowUpAction,
 	listRef,
 	ListFooterComponent,
 }: Props) {
@@ -30,7 +32,9 @@ export function ChatMessageList({
 			ref={listRef}
 			data={messages}
 			keyExtractor={(item) => item.id}
-			renderItem={({ item }) => <ChatMessageBubble message={item} />}
+			renderItem={({ item }) => (
+				<ChatMessageBubble message={item} onFollowUpAction={onFollowUpAction} />
+			)}
 			contentContainerStyle={[
 				styles.listContent,
 				{
