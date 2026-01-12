@@ -1,4 +1,10 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, {
+	useCallback,
+	useEffect,
+	useMemo,
+	useRef,
+	useState,
+} from 'react';
 import { Platform, StyleSheet, View } from 'react-native';
 import MapView, {
 	Marker,
@@ -28,6 +34,7 @@ import {
 	type TurnByTurnStep,
 } from '@/features/map/components/TurnByTurnDrawer/TurnByTurnDrawer';
 import { useAppToast } from '@/components/contexts/AppToastProvider';
+import { guard } from '@/utils/ErrorHandling/helpers/capture';
 
 const initialRegion: Region = {
 	latitude: 37.7749,
@@ -297,20 +304,24 @@ export function MapExperience({
 		hasCenteredOnUser.current = true;
 	}, [cachedUserRegion]);
 
-	const handleCenterOnUser = useCallback(async () => {
-		const existingRegion = cachedUserRegion;
-		if (existingRegion) {
-			setUserRegion(existingRegion);
-			mapRef.current?.animateToRegion(existingRegion, 300);
-			return;
-		}
+	const handleCenterOnUser = useMemo(
+		() =>
+			guard(async () => {
+				const existingRegion = cachedUserRegion;
+				if (existingRegion) {
+					setUserRegion(existingRegion);
+					mapRef.current?.animateToRegion(existingRegion, 300);
+					return;
+				}
 
-		const result = await refresh();
-		if (result.region) {
-			setUserRegion(result.region);
-			mapRef.current?.animateToRegion(result.region, 300);
-		}
-	}, [cachedUserRegion, refresh]);
+				const result = await refresh();
+				if (result.region) {
+					setUserRegion(result.region);
+					mapRef.current?.animateToRegion(result.region, 300);
+				}
+			}),
+		[cachedUserRegion, refresh]
+	);
 
 	const handleRegionChange = useCallback((region: Region) => {
 		setMapRegion(region);
@@ -325,38 +336,46 @@ export function MapExperience({
 		setSelectedPlace(place);
 	}, []);
 
-	const handleRouteToPlace = useCallback((place: PlaceResult) => {
-		const originRegion = userRegion ?? cachedUserRegion ?? mapRegion;
-		setRouteDestination(place);
-		setRouteOrigin(toLatLng(originRegion));
-		setRoutePath(null);
-		setRouteStatus('loading');
-		setRouteSource('manual');
-		setSelectedPlace(null);
-		setRouteSteps([]);
-		setIsDrawerOpen(false);
-		setCurrentStepIndex(0);
-		setIsRouteActive(false);
-	}, [cachedUserRegion, mapRegion, userRegion]);
+	const handleRouteToPlace = useMemo(
+		() =>
+			guard((place: PlaceResult) => {
+				const originRegion = userRegion ?? cachedUserRegion ?? mapRegion;
+				setRouteDestination(place);
+				setRouteOrigin(toLatLng(originRegion));
+				setRoutePath(null);
+				setRouteStatus('loading');
+				setRouteSource('manual');
+				setSelectedPlace(null);
+				setRouteSteps([]);
+				setIsDrawerOpen(false);
+				setCurrentStepIndex(0);
+				setIsRouteActive(false);
+			}),
+		[cachedUserRegion, mapRegion, userRegion]
+	);
 
-	const resetMapState = useCallback(() => {
-		const fallbackRegion = cachedUserRegion ?? initialRegion;
-		setRouteDestination(null);
-		setRouteOrigin(null);
-		setRoutePath(null);
-		setRouteSteps([]);
-		setRouteStatus('idle');
-		setRouteSource(null);
-		setSelectedPlace(null);
-		setActiveRouteMode(routeMode);
-		setIsDrawerOpen(false);
-		setCurrentStepIndex(0);
-		setIsRouteActive(false);
-		setAutoRouteEnabled(false);
-		setUserRegion(cachedUserRegion ?? null);
-		setMapRegion(fallbackRegion);
-		mapRef.current?.animateToRegion(fallbackRegion, 280);
-	}, [cachedUserRegion, routeMode]);
+	const resetMapState = useMemo(
+		() =>
+			guard(() => {
+				const fallbackRegion = cachedUserRegion ?? initialRegion;
+				setRouteDestination(null);
+				setRouteOrigin(null);
+				setRoutePath(null);
+				setRouteSteps([]);
+				setRouteStatus('idle');
+				setRouteSource(null);
+				setSelectedPlace(null);
+				setActiveRouteMode(routeMode);
+				setIsDrawerOpen(false);
+				setCurrentStepIndex(0);
+				setIsRouteActive(false);
+				setAutoRouteEnabled(false);
+				setUserRegion(cachedUserRegion ?? null);
+				setMapRegion(fallbackRegion);
+				mapRef.current?.animateToRegion(fallbackRegion, 280);
+			}),
+		[cachedUserRegion, routeMode]
+	);
 
 	useEffect(() => {
 		if (!isRouteActive) return;
@@ -397,45 +416,53 @@ export function MapExperience({
 		};
 	}, [currentStepIndex, isRouteActive, refresh, routeSteps]);
 
-	const handleStartRoute = useCallback(async () => {
-		if (!routeDestination || routeStatus === 'idle') return;
-		setIsRouteActive(true);
-		const focusRegion = userRegion ?? cachedUserRegion;
-		if (focusRegion) {
-			const zoomed: Region = {
-				latitude: focusRegion.latitude,
-				longitude: focusRegion.longitude,
-				latitudeDelta: 0.02,
-				longitudeDelta: 0.02,
-			};
-			setMapRegion(zoomed);
-			mapRef.current?.animateToRegion(zoomed, 320);
-			return;
-		}
-		const result = await refresh();
-		if (result.region) {
-			const zoomed: Region = {
-				latitude: result.region.latitude,
-				longitude: result.region.longitude,
-				latitudeDelta: 0.02,
-				longitudeDelta: 0.02,
-			};
-			setUserRegion(result.region);
-			setMapRegion(zoomed);
-			mapRef.current?.animateToRegion(zoomed, 320);
-		}
-	}, [cachedUserRegion, refresh, routeDestination, routeStatus, userRegion]);
+	const handleStartRoute = useMemo(
+		() =>
+			guard(async () => {
+				if (!routeDestination || routeStatus === 'idle') return;
+				setIsRouteActive(true);
+				const focusRegion = userRegion ?? cachedUserRegion;
+				if (focusRegion) {
+					const zoomed: Region = {
+						latitude: focusRegion.latitude,
+						longitude: focusRegion.longitude,
+						latitudeDelta: 0.02,
+						longitudeDelta: 0.02,
+					};
+					setMapRegion(zoomed);
+					mapRef.current?.animateToRegion(zoomed, 320);
+					return;
+				}
+				const result = await refresh();
+				if (result.region) {
+					const zoomed: Region = {
+						latitude: result.region.latitude,
+						longitude: result.region.longitude,
+						latitudeDelta: 0.02,
+						longitudeDelta: 0.02,
+					};
+					setUserRegion(result.region);
+					setMapRegion(zoomed);
+					mapRef.current?.animateToRegion(zoomed, 320);
+				}
+			}),
+		[cachedUserRegion, refresh, routeDestination, routeStatus, userRegion]
+	);
 
-	const handleClearMap = useCallback(() => {
-		if (routeDestination) {
-			showToast('Clear the current route and reset the map?', {
-				actionLabel: 'Okay',
-				onAction: resetMapState,
-			});
-			return;
-		}
-		resetMapState();
-	}, [resetMapState, routeDestination, showToast]);
+	const handleClearMap = useMemo(
+		() =>
+			guard(() => {
+				if (routeDestination) {
+					showToast('Clear the current route and reset the map?', {
+						actionLabel: 'Okay',
+						onAction: resetMapState,
+					});
+					return;
+				}
+				resetMapState();
+			}),
+		[resetMapState, routeDestination, showToast]
+	);
 
 	const fallbackCoordinates =
 		routeDestination && routeOrigin

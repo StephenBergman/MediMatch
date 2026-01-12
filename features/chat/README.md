@@ -6,26 +6,25 @@ Medical triage chatbot that helps users understand their symptoms and recommends
 
 ```
 chat/
-├── api/
-│   └── gemini.ts              # Gemini API integration for chat completions
-├── components/
-│   ├── ChatComposer/          # Message input field with send button
-│   ├── ChatErrorNotice/        # Error display component
-│   ├── ChatExperience/         # Main chat screen layout
-│   ├── ChatFollowUpPrompt/     # Follow-up prompt after triage (NEW)
-│   ├── ChatHeader/             # Chat header with reset button
-│   ├── ChatMessageBubble.tsx   # Individual message display
-│   └── ChatMessageList/        # List of messages with typing indicator
-├── contexts/
-│   └── ChatContext.tsx         # React context for chat state
-├── data/
-│   ├── mock-guidance.ts        # Mock assistant responses for testing
-│   └── quick-prompts.ts        # Quick-start prompt suggestions
-├── hooks/
-│   └── useChat.ts              # Chat logic hook (messages, sending, errors)
-├── types.ts                    # TypeScript type definitions
-└── utils/
-    └── followUpPrompt.ts       # Follow-up prompt generation logic (NEW)
+  api/
+    gemini.ts              # Gemini API integration for chat completions
+  components/
+    ChatComposer/          # Message input field with send button
+    ChatErrorNotice/       # Error display component
+    ChatExperience/        # Main chat screen layout
+    ChatFollowUpPrompt/    # Follow-up prompt after triage
+    ChatHeader/            # Chat header with reset button
+    ChatMessageBubble.tsx  # Individual message display
+    ChatMessageList/       # List of messages with typing indicator
+  contexts/
+    ChatContext.tsx        # React context for chat state
+  data/
+    mock-guidance.ts       # Mock assistant responses for testing
+  hooks/
+    useChat.ts             # Chat logic hook (messages, sending, errors)
+  types.ts                 # TypeScript type definitions
+  utils/
+    followUpPrompt.ts      # Follow-up prompt generation logic
 ```
 
 ## Key Features
@@ -33,10 +32,7 @@ chat/
 - **Gemini Integration**: Uses Google's Gemini API for triage recommendations
 - **Mock Mode**: Can run with mock responses for testing via `EXPO_PUBLIC_USE_MOCK_ASSISTANT`
 - **Error Handling**: Comprehensive error handling with user-friendly messages
-- **Follow-Up Prompts**: After providing a recommendation, users see a follow-up asking if they:
-  - Had their question answered
-  - Have more questions
-  - Want to find a nearby facility
+- **Follow-Up Prompts**: Quick actions after recommendations to continue the conversation or route to care
 
 ## Usage
 
@@ -93,11 +89,11 @@ After the assistant responds, a follow-up prompt automatically appears (configur
 
 Users can select:
 
-- **"Yes, that helps"** - Confirms the recommendation was useful
-- **"I have more questions"** - Ready to ask follow-ups
-- **"Find a facility"** - Navigate to facility search
+- **"No, thank you"** - Ends the thread politely and surfaces an end-chat prompt
+- **"I have more questions"** - Continue the conversation
+- **"Yes, route me"** - Navigate to facility search
 
-Messages rotate through 4 variations to feel natural across multiple exchanges.
+When the user selects **"No, thank you"**, the assistant follows up with an end-chat prompt (Yes/No). Selecting **Yes** clears the chat after a brief fade-out animation.
 
 ## Adding New Components
 
@@ -113,7 +109,7 @@ Example structure:
 
 ```
 components/NewFeature/
-├── NewFeature.tsx
-├── NewFeature.styles.ts (if complex styling)
-└── index.ts (optional)
+  NewFeature.tsx
+  NewFeature.styles.ts (if complex styling)
+  index.ts (optional)
 ```

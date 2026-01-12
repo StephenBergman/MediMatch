@@ -1,4 +1,10 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, {
+	useCallback,
+	useEffect,
+	useMemo,
+	useRef,
+	useState,
+} from 'react';
 import { useRouter } from 'expo-router';
 import { Animated, FlatList, StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -14,6 +20,7 @@ import {
 } from '@/features/chat/contexts/ChatContext';
 import { type ChatMessage } from '@/features/chat/types';
 import { useColorScheme } from '@/hooks/use-color-scheme';
+import { guard } from '@/utils/ErrorHandling/helpers/capture';
 
 /** Top-level chat layout rendered inside `ChatExperience`. Handles scrolling, header, list, and composer. */
 function ChatExperienceInner() {
@@ -57,42 +64,61 @@ function ChatExperienceInner() {
 	}, [fadeAnim, isClearing, resetChat]);
 
 
-	const handleSend = async () => {
-		const wasSent = await sendMessage({ content: input });
-		if (wasSent) {
-			setInput('');
-		}
-	};
+	const guardedSend = useMemo(
+		() =>
+			guard(async (value: string) => {
+				const wasSent = await sendMessage({ content: value });
+				if (wasSent) {
+					setInput('');
+				}
+			}),
+		[sendMessage]
+	);
 
-	const handleFollowUpClick = (actionId: string) => {
-		const lastAssistantMessage = [...messages]
-			.reverse()
-			.find((message) => message.role === 'assistant')?.content;
-		const normalized = lastAssistantMessage?.toLowerCase() ?? '';
-		const prefersEmergency =
-			normalized.includes('emergency room') ||
-			/\ber\b/.test(normalized) ||
-			normalized.includes('call 911') ||
-			normalized.includes('emergency services');
-		const carePreference = prefersEmergency ? 'emergency' : 'urgent';
+	const handleSend = useCallback(() => {
+		guardedSend(input);
+	}, [guardedSend, input]);
 
-		const result = handleFollowUpAction(
-			actionId,
-			() => {
-				router.push({
-					pathname: '/(protected)/(tabs)/map',
-					params: { route: 'nearest', care: carePreference },
-				});
-			},
-			runClearAnimation
-		);
+	const guardedFollowUp = useMemo(
+		() =>
+			guard((actionId: string) => {
+				const lastAssistantMessage = [...messages]
+					.reverse()
+					.find((message) => message.role === 'assistant')?.content;
+				const normalized = lastAssistantMessage?.toLowerCase() ?? '';
+				const prefersEmergency =
+					normalized.includes('emergency room') ||
+					/\ber\b/.test(normalized) ||
+					normalized.includes('call 911') ||
+					normalized.includes('emergency services');
+				const carePreference = prefersEmergency ? 'emergency' : 'urgent';
 
-		// If it's a message response, optionally add to chat
-		if (result.type === 'message' && result.message) {
-			// Auto-add a contextual message showing the user's action
-			console.log('User action:', actionId, result.message);
-		}
-	};
+				const result = handleFollowUpAction(
+					actionId,
+					() => {
+						router.push({
+							pathname: '/(protected)/(tabs)/map',
+							params: { route: 'nearest', care: carePreference },
+						});
+					},
+					runClearAnimation
+				);
+
+				// If it's a message response, optionally add to chat
+				if (result.type === 'message' && result.message) {
+					// Auto-add a contextual message showing the user's action
+					console.log('User action:', actionId, result.message);
+				}
+			}),
+		[handleFollowUpAction, messages, router, runClearAnimation]
+	);
+
+	const handleFollowUpClick = useCallback(
+		(actionId: string) => {
+			guardedFollowUp(actionId);
+		},
+		[guardedFollowUp]
+	);
 
 	useEffect(() => {
 		if (!messages.length) return;

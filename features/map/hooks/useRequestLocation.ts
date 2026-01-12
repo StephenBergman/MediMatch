@@ -1,5 +1,7 @@
-import { useCallback, useState } from 'react';
+import { useMemo, useState } from 'react';
 import * as Location from 'expo-location';
+
+import { guard } from '@/utils/ErrorHandling/helpers/capture';
 
 type RequestStatus = 'idle' | 'requesting' | 'granted' | 'denied' | 'unavailable';
 
@@ -19,40 +21,47 @@ export function useRequestLocation() {
 	const [status, setStatus] = useState<RequestStatus>('idle');
 	const [errorMessage, setErrorMessage] = useState<string | undefined>();
 
-	const requestLocation = useCallback(async (): Promise<RequestResult> => {
-		try {
-			setStatus('requesting');
-			setErrorMessage(undefined);
+	const requestLocation = useMemo(
+		() =>
+			guard(
+				async (): Promise<RequestResult> => {
+					setStatus('requesting');
+					setErrorMessage(undefined);
 
-			const permission = await Location.requestForegroundPermissionsAsync();
-			if (permission.status !== Location.PermissionStatus.GRANTED) {
-				setStatus('denied');
-				return { granted: false };
-			}
+					const permission =
+						await Location.requestForegroundPermissionsAsync();
+					if (permission.status !== Location.PermissionStatus.GRANTED) {
+						setStatus('denied');
+						return { granted: false };
+					}
 
-			const position = await Location.getCurrentPositionAsync({
-				accuracy: Location.Accuracy.Balanced,
-			});
+					const position = await Location.getCurrentPositionAsync({
+						accuracy: Location.Accuracy.Balanced,
+					});
 
-			setStatus('granted');
-			const { latitude, longitude } = position.coords;
-			return {
-				granted: true,
-				region: {
-					latitude,
-					longitude,
-					latitudeDelta: 0.08,
-					longitudeDelta: 0.08,
+					setStatus('granted');
+					const { latitude, longitude } = position.coords;
+					return {
+						granted: true,
+						region: {
+							latitude,
+							longitude,
+							latitudeDelta: 0.08,
+							longitudeDelta: 0.08,
+						},
+					};
 				},
-			};
-		} catch (error) {
-			const message =
-				error instanceof Error ? error.message : 'Unknown location error';
-			setStatus('unavailable');
-			setErrorMessage(message);
-			return { granted: false, errorMessage: message };
-		}
-	}, []);
+				{
+					asyncFallback: (appErr) => {
+						const message = appErr.message || 'Unknown location error';
+						setStatus('unavailable');
+						setErrorMessage(message);
+						return { granted: false, errorMessage: message };
+					},
+				},
+			),
+		[],
+	);
 
 	return {
 		status,
