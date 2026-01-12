@@ -15,14 +15,14 @@ export type PlaceResult = {
 };
 
 type NearbySearchResponse = {
-	results: Array<{
+	results: {
 		place_id: string;
 		name: string;
 		geometry?: { location?: { lat: number; lng: number } };
 		types?: string[];
 		vicinity?: string;
 		formatted_address?: string;
-	}>;
+	}[];
 	status: string;
 	error_message?: string;
 };
@@ -42,7 +42,9 @@ export async function fetchPlaces({
 	type,
 }: FetchPlacesParams): Promise<PlaceResult[]> {
 	const radiusMeters = clampRadius(
-		Math.max(region.latitudeDelta, region.longitudeDelta) * METERS_PER_DEGREE * 0.5,
+		Math.max(region.latitudeDelta, region.longitudeDelta) *
+			METERS_PER_DEGREE *
+			0.5
 	);
 	const query = new URLSearchParams({
 		location: `${region.latitude},${region.longitude}`,
@@ -63,7 +65,9 @@ export async function fetchPlaces({
 	}
 	const json = (await response.json()) as NearbySearchResponse;
 	if (json.status !== 'OK' && json.status !== 'ZERO_RESULTS') {
-		throw new Error(json.error_message || `Places request error: ${json.status}`);
+		throw new Error(
+			json.error_message || `Places request error: ${json.status}`
+		);
 	}
 
 	return (json.results ?? [])

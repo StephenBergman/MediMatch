@@ -6,12 +6,12 @@ const GOOGLE_DIRECTIONS_BASE_URL =
 type DirectionsLeg = {
 	distance?: { value: number };
 	duration?: { value: number };
-	steps?: Array<{
+	steps?: {
 		html_instructions?: string;
 		distance?: { value: number };
 		duration?: { value: number };
 		end_location?: { lat: number; lng: number };
-	}>;
+	}[];
 };
 
 type DirectionsRoute = {
@@ -31,12 +31,12 @@ export type DirectionsResult = {
 	polyline: string;
 	distanceMeters: number;
 	durationSeconds: number;
-	steps: Array<{
+	steps: {
 		instruction: string;
 		distanceMeters: number;
 		durationSeconds: number;
 		endLocation?: LatLng;
-	}>;
+	}[];
 };
 
 export type FetchDirectionsParams = {
@@ -65,7 +65,9 @@ export async function fetchDirections({
 		query.set('traffic_model', 'best_guess');
 	}
 
-	const response = await fetch(`${GOOGLE_DIRECTIONS_BASE_URL}?${query.toString()}`);
+	const response = await fetch(
+		`${GOOGLE_DIRECTIONS_BASE_URL}?${query.toString()}`
+	);
 	if (!response.ok) {
 		throw new Error(`Directions request failed (${response.status})`);
 	}
