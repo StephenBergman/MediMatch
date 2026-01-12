@@ -1,15 +1,23 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import MapView, { Marker, PROVIDER_GOOGLE, type Region } from 'react-native-maps';
-import { Pressable, StyleSheet, View, Text } from 'react-native';
+import { Platform, StyleSheet, View } from 'react-native';
+import MapView, {
+	Marker,
+	PROVIDER_GOOGLE,
+	type Region,
+} from 'react-native-maps';
+import {
+	Icon,
+	IconButton,
+	Surface,
+	Text,
+	TouchableRipple,
+	useTheme,
+} from 'react-native-paper';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
 
-import { ThemedView } from '@/components/themed-view';
-import { Colors } from '@/constants/theme';
-import { useColorScheme } from '@/hooks/use-color-scheme';
+import { PlaceMarker } from '@/features/map/components/PlaceMarker';
 import { useCachedUserLocation } from '@/features/map/hooks/useCachedUserLocation';
 import { usePlacesSearch } from '@/features/map/hooks/usePlacesSearch';
-import { PlaceMarker } from '@/features/map/components/PlaceMarker';
 
 const initialRegion: Region = {
 	latitude: 37.7749,
@@ -18,18 +26,24 @@ const initialRegion: Region = {
 	longitudeDelta: 0.08,
 };
 
+const mapProvider = Platform.OS === 'android' ? PROVIDER_GOOGLE : undefined;
+
 /** Fullscreen map experience with a starter marker. */
 export function MapExperience() {
-	const scheme = useColorScheme() ?? 'light';
-	const colors = Colors[scheme];
+	const theme = useTheme();
+	const colors = theme.colors;
 	const insets = useSafeAreaInsets();
 	const mapRef = useRef<MapView | null>(null);
 	const { region: cachedUserRegion, refresh } = useCachedUserLocation();
 	const hasCenteredOnUser = useRef(false);
 	const [mapRegion, setMapRegion] = useState<Region>(initialRegion);
 	const [userRegion, setUserRegion] = useState<Region | null>(null);
-	const { places, status: placesStatus, error: placesError, refetch } =
-		usePlacesSearch(mapRegion);
+	const {
+		places,
+		status: placesStatus,
+		error: placesError,
+		refetch,
+	} = usePlacesSearch(mapRegion);
 
 	useEffect(() => {
 		if (!cachedUserRegion || hasCenteredOnUser.current) {
@@ -61,10 +75,13 @@ export function MapExperience() {
 	}, []);
 
 	return (
-		<ThemedView style={styles.container}>
+		<Surface
+			style={[styles.container, { backgroundColor: colors.background }]}
+			elevation={0}
+		>
 			<MapView
 				ref={mapRef}
-				provider={PROVIDER_GOOGLE}
+				provider={mapProvider}
 				style={StyleSheet.absoluteFillObject}
 				initialRegion={initialRegion}
 				showsMyLocationButton={false}
@@ -79,80 +96,78 @@ export function MapExperience() {
 					description="Current position"
 					pinColor={colors.primary}
 				/>
-				</MapView>
-				<View style={styles.controls} pointerEvents="box-none">
-					{placesStatus === 'error' ? (
-						<View
-							style={[
-								styles.banner,
-								{
-									backgroundColor: colors.card,
-									borderColor: colors.border,
-								},
-							]}
-						>
-							<View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
-								<MaterialCommunityIcons
-									name="alert-circle-outline"
-									size={18}
-									color={colors.danger}
-								/>
-								<View style={{ flex: 1 }}>
-									<Text style={{ color: colors.text }}>
-										{placesError || 'Places lookup failed.'}
-									</Text>
-								</View>
-								<Pressable onPress={refetch} hitSlop={8}>
-									<MaterialCommunityIcons
-										name="refresh"
-										size={18}
-										color={colors.icon}
-									/>
-								</Pressable>
-							</View>
-						</View>
-					) : null}
-					<View
+			</MapView>
+			<View style={styles.controls} pointerEvents="box-none">
+				{placesStatus === 'error' ? (
+					<Surface
 						style={[
-							styles.fabContainer,
+							styles.banner,
 							{
-								bottom: 20 + insets.bottom,
-							right: 20,
-							backgroundColor: colors.surface,
-							borderColor: colors.border,
-						},
-					]}
-					pointerEvents="box-none"
-				>
-					<Pressable
-						onPress={handleCenterOnUser}
-						style={({ pressed }) => [
-							styles.fab,
-							{
-								backgroundColor: pressed ? colors.muted : colors.card,
-								borderColor: colors.border,
+								backgroundColor: colors.surface,
+								borderColor: colors.outline,
 							},
 						]}
+						elevation={1}
+					>
+						<View style={styles.bannerRow}>
+							<Icon
+								source="alert-circle-outline"
+								size={18}
+								color={colors.error}
+							/>
+							<View style={{ flex: 1 }}>
+								<Text style={{ color: colors.onSurface }}>
+									{placesError || 'Places lookup failed.'}
+								</Text>
+							</View>
+							<IconButton
+								icon="refresh"
+								size={18}
+								onPress={refetch}
+								iconColor={colors.onSurface}
+								style={styles.bannerAction}
+								accessibilityLabel="Retry places search"
+							/>
+						</View>
+					</Surface>
+				) : null}
+				<Surface
+					style={[
+						styles.fabContainer,
+						{
+							bottom: 20 + insets.bottom,
+							right: 20,
+							backgroundColor: colors.surface,
+							borderColor: colors.outline,
+						},
+					]}
+					elevation={2}
+					pointerEvents="box-none"
+				>
+					<TouchableRipple
+						onPress={handleCenterOnUser}
+						style={[
+							styles.centerButton,
+							{
+								backgroundColor: colors.surface,
+								borderColor: colors.outline,
+							},
+						]}
+						rippleColor={colors.backdrop}
 						accessibilityRole="button"
 						accessibilityLabel="Center on my location"
-						hitSlop={10}
 					>
-						<MaterialCommunityIcons
-							name="crosshairs-gps"
-							size={26}
-							color={colors.icon}
-						/>
-					</Pressable>
-				</View>
+						<Icon source="crosshairs-gps" size={26} color={colors.onSurface} />
+					</TouchableRipple>
+				</Surface>
 			</View>
-		</ThemedView>
+		</Surface>
 	);
 }
 
 const styles = StyleSheet.create({
 	container: {
 		flex: 1,
-		overflow: 'hidden',
 	},
 	controls: {
 		position: 'absolute',
@@ -170,22 +185,6 @@ const styles = StyleSheet.create({
 		borderWidth: 1,
 		padding: 6,
 	},
-	fab: {
-		position: 'absolute',
-		borderRadius: 30,
-		borderWidth: 1,
-		minWidth: 60,
-		minHeight: 60,
-		paddingHorizontal: 14,
-		paddingVertical: 14,
-		alignItems: 'center',
-		justifyContent: 'center',
-		elevation: 3,
-		shadowColor: '#000',
-		shadowOpacity: 0.12,
-		shadowOffset: { width: 0, height: 2 },
-		shadowRadius: 4,
-	},
 	banner: {
 		position: 'absolute',
 		left: 16,
@@ -195,6 +194,21 @@ const styles = StyleSheet.create({
 		borderWidth: 1,
 		paddingVertical: 10,
 		paddingHorizontal: 12,
-		elevation: 2,
+	},
+	bannerRow: {
+		flexDirection: 'row',
+		alignItems: 'center',
+		gap: 6,
+	},
+	bannerAction: {
+		margin: 0,
+	},
+	centerButton: {
+		borderRadius: 30,
+		borderWidth: 1,
+		minWidth: 60,
+		minHeight: 60,
+		alignItems: 'center',
+		justifyContent: 'center',
 	},
 });

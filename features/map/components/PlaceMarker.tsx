@@ -1,7 +1,6 @@
-import React from 'react';
-import { Marker, Callout } from 'react-native-maps';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { StyleSheet, View, Text } from 'react-native';
+import React, { useMemo, useRef } from 'react';
+import { Marker } from 'react-native-maps';
 
 import { Colors } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
@@ -13,18 +12,19 @@ type Props = {
 
 type IconName = keyof typeof MaterialCommunityIcons.glyphMap;
 
-const typeIconMap: Record<string, { icon: IconName | string; label: string }> = {
-	hospital: { icon: 'hospital-building', label: 'Hospital' },
-	pharmacy: { icon: 'pharmacy', label: 'Pharmacy' },
-	urgent_care: { icon: 'medical-bag', label: 'Urgent Care' },
-	health: { icon: 'medical-bag', label: 'Clinic' },
-	doctor: { icon: 'stethoscope', label: 'Clinic' },
-	dentist: { icon: 'tooth-outline', label: 'Dentist' },
-	optometrist: { icon: 'glasses', label: 'Optical' },
-	optician: { icon: 'glasses', label: 'Optical' },
-	vision: { icon: 'eye-outline', label: 'Optical' },
-	veterinary_care: { icon: 'paw', label: 'Vet' },
-};
+const typeIconMap: Record<string, { icon: IconName | string; label: string }> =
+	{
+		hospital: { icon: 'hospital-building', label: 'Hospital' },
+		pharmacy: { icon: 'pharmacy', label: 'Pharmacy' },
+		urgent_care: { icon: 'medical-bag', label: 'Urgent Care' },
+		health: { icon: 'medical-bag', label: 'Clinic' },
+		doctor: { icon: 'stethoscope', label: 'Clinic' },
+		dentist: { icon: 'tooth-outline', label: 'Dentist' },
+		optometrist: { icon: 'glasses', label: 'Optical' },
+		optician: { icon: 'glasses', label: 'Optical' },
+		vision: { icon: 'eye-outline', label: 'Optical' },
+		veterinary_care: { icon: 'paw', label: 'Vet' },
+	};
 
 function getIconConfig(types: string[]) {
 	for (const type of types) {
@@ -44,80 +44,40 @@ function getIconConfig(types: string[]) {
 export function PlaceMarker({ place }: Props) {
 	const scheme = useColorScheme() ?? 'light';
 	const colors = Colors[scheme];
-	const iconConfig = getIconConfig(place.types);
-	const title = place.name?.trim() || iconConfig.label || 'Medical location';
-	const address =
-		place.address?.trim() ||
-		(place.types.length ? place.types.join(', ') : 'Nearby care location');
-	const iconName = (iconConfig.icon as IconName) ?? 'map-marker';
+	const markerRef = useRef<Marker | null>(null);
+	const { iconConfig, title, address, iconName } = useMemo(() => {
+		const config = getIconConfig(place.types);
+		const computedTitle =
+			place.name?.trim() || config.label || 'Medical location';
+		const computedAddress =
+			place.address?.trim() ||
+			(place.types.length ? place.types.join(', ') : 'Nearby care location');
+		return {
+			iconConfig: config,
+			title: computedTitle,
+			address: computedAddress,
+			iconName: (config.icon as IconName) ?? 'map-marker',
+		};
+	}, [place.address, place.name, place.types]);
+
+	const handlePress = () => {
+		markerRef.current?.showCallout();
+	};
 
 	return (
 		<Marker
+			ref={markerRef}
 			coordinate={{ latitude: place.latitude, longitude: place.longitude }}
 			anchor={{ x: 0.5, y: 1 }}
 			calloutAnchor={{ x: 0.5, y: 0 }}
 			tracksViewChanges={false}
+			onPress={handlePress}
+			title={title}
+			description={address}
 		>
-			<View
-				style={[
-					styles.marker,
-					{
-						backgroundColor: colors.card,
-						borderColor: colors.border,
-					},
-				]}
-			>
-				<MaterialCommunityIcons
-					name={iconName}
-					size={22}
-					color={colors.accent}
-				/>
-			</View>
-			<Callout>
-				<View
-					style={[
-						styles.callout,
-						{
-							backgroundColor: colors.card,
-							borderColor: colors.border,
-						},
-					]}
-				>
-					<Text style={[styles.calloutTitle, { color: colors.text }]}>
-						{title}
-					</Text>
-					<Text style={{ color: colors.secondary }}>{iconConfig.label}</Text>
-					<Text style={[styles.calloutAddress, { color: colors.text }]}>
-						{address}
-					</Text>
-				</View>
-			</Callout>
+			<MaterialCommunityIcons name={iconName} size={32} color={colors.accent} />
 		</Marker>
 	);
 }
 
-const styles = StyleSheet.create({
-	marker: {
-		borderRadius: 16,
-		borderWidth: 1,
-		padding: 8,
-		shadowColor: '#000',
-		shadowOpacity: 0.2,
-		shadowOffset: { width: 0, height: 2 },
-		shadowRadius: 3,
-		elevation: 2,
-	},
-	callout: {
-		borderRadius: 12,
-		borderWidth: 1,
-		padding: 10,
-		maxWidth: 220,
-	},
-	calloutTitle: {
-		fontWeight: '600',
-		marginBottom: 4,
-	},
-	calloutAddress: {
-		marginTop: 4,
-	},
-});
+const styles = StyleSheet.create({});

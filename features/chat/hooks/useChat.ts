@@ -10,11 +10,16 @@ import {
 	type ChatMessagePayload,
 } from '@/features/chat/types';
 import { AppError } from 'utils/ErrorHandling/errors';
-import { decideUx, type UxDecision } from 'utils/ErrorHandling/errors/policy';
-import { captureException } from 'utils/ErrorHandling/helpers/capture';
 import { normalizeUnknown } from 'utils/ErrorHandling/errors/normalize';
-import { invariantError } from 'utils/ErrorHandling/errors/types/invarient';
+import { decideUx, type UxDecision } from 'utils/ErrorHandling/errors/policy';
 import { validationError } from 'utils/ErrorHandling/errors/types/validation';
+import { captureException } from 'utils/ErrorHandling/helpers/capture';
+
+export type ChatUxError = {
+	message: string;
+	ux: UxDecision;
+	appError?: AppError;
+};
 
 const SYSTEM_PROMPT: ChatMessagePayload = {
 	role: 'system',
@@ -25,10 +30,21 @@ const SYSTEM_PROMPT: ChatMessagePayload = {
 const createId = () =>
 	`${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
 
+type MessageStatus = NonNullable<ChatMessage['status']>;
+
+const updateMessageStatus = (
+	messages: ChatMessage[],
+	messageId: string,
+	nextStatus: MessageStatus
+): ChatMessage[] =>
+	messages.map((msg) =>
+		msg.id === messageId ? { ...msg, status: nextStatus } : msg
+	);
+
 const useMockAssistant =
 	(process.env.EXPO_PUBLIC_USE_MOCK_ASSISTANT ?? '').toLowerCase() === 'true';
 
-const formatOpenAiError = (message: string) => {
+const formatGeminiError = (message: string) => {
 	const lower = message.toLowerCase();
 
 	if (lower.includes('quota')) {
@@ -56,8 +72,25 @@ const formatOpenAiError = (message: string) => {
 export function useChat() {
 	const [messages, setMessages] = useState<ChatMessage[]>([]);
 	const [isSending, setIsSending] = useState(false);
-	const [error, setError] = useState<string | null>(null);
-	const apiKey = getOpenAiApiKey();
+	const [isAssistantTyping, setIsAssistantTyping] = useState(false);
+	const [error, setError] = useState<ChatUxError | null>(null);
+	const apiKey = getGeminiApiKey();
+
+	const messagesRef = useRef<ChatMessage[]>([]);
+	const typingTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+	useEffect(() => {
+		messagesRef.current = messages;
+	}, [messages]);
+
+	useEffect(
+		() => () => {
+			if (typingTimerRef.current) {
+				clearTimeout(typingTimerRef.current);
+			}
+		},
+		[]
+	);
 
 	const clearError = useCallback(() => setError(null), []);
 
@@ -77,24 +110,22 @@ export function useChat() {
 		setIsAssistantTyping(true);
 	}, []);
 
-	const handleFailure = useCallback(
-		(raw: unknown) => {
-			const normalized = raw instanceof AppError ? raw : normalizeUnknown(raw);
-			const appError = captureException(normalized, {
-				where: 'useChat.sendMessage',
-				context: { feature: 'chat' },
-			});
-			const ux = decideUx(appError);
-			const baseMessage =
-				ux.userMessage ||
-				appError.message ||
-				'Unable to reach the assistant right now. Please try again.';
-			const friendly = formatGeminiError(baseMessage);
-			setError({ appError, ux, message: friendly });
-			return friendly;
-		},
-		[]
-	);
+	const handleFailure = useCallback((raw: unknown) => {
+		const normalized = raw instanceof AppError ? raw : normalizeUnknown(raw);
+		const appError = captureException(normalized, {
+			where: 'useChat.sendMessage',
+			context: { feature: 'chat' },
+		});
+		const ux = decideUx(appError);
+		const baseMessage =
+			ux.userMessage ||
+			appError.message ||
+			'Unable to reach the assistant right now. Please try again.';
+		const friendly = formatGeminiError(baseMessage);
+		const chatError: ChatUxError = { message: friendly, ux, appError };
+		setError(chatError);
+		return chatError;
+	}, []);
 
 	const resetChat = useCallback(() => {
 		setMessages([]);
@@ -115,8 +146,11 @@ export function useChat() {
 			}
 
 			if (!useMockAssistant && !apiKey) {
-				setError(
-					'OpenAI API key is not configured. Add EXPO_PUBLIC_OPENAI_API_KEY to your app env.'
+				handleFailure(
+					validationError(
+						'Gemini API key is missing. Set EXPO_PUBLIC_GEMINI_API_KEY (or GEMINI_API_KEY).',
+						{ code: 'VALIDATION_REQUIRED' }
+					)
 				);
 				return false;
 			}
@@ -137,24 +171,22 @@ export function useChat() {
 			let wasSuccessful = false;
 
 			try {
+				const history = messagesRef.current.filter(
+					(msg) => msg.status !== 'failed'
+				);
 				const reply = useMockAssistant
 					? buildMockMessage(trimmed)
 					: await createChatCompletion({
+							apiKey,
 							messages: [
 								SYSTEM_PROMPT,
-								...messagesRef.current.map(({ role, content }) => ({
+								...history.map(({ role, content: text }) => ({
 									role,
-									content,
+									content: text,
 								})),
 								{ role: 'user', content: trimmed },
 							],
 						});
-
-				setMessages((prev) =>
-					prev.map((msg) =>
-						msg.id === userMessage.id ? { ...msg, status: 'sent' } : msg
-					)
-				);
 
 				const assistantMessage: ChatMessage = {
 					id: createId(),
@@ -164,14 +196,16 @@ export function useChat() {
 					status: 'sent',
 				};
 
-				setMessages((prev) => [...prev, assistantMessage]);
+				setMessages((prev) => {
+					const updated = updateMessageStatus(prev, userMessage.id, 'sent');
+					return [...updated, assistantMessage];
+				});
 				wasSuccessful = true;
 			} catch (err) {
-				const message = err instanceof Error ? err.message : '';
-				const friendly =
-					message.trim() ||
-					'Unable to reach the assistant right now. Please try again.';
-				setError(formatOpenAiError(friendly));
+				handleFailure(err);
+				setMessages((prev) =>
+					updateMessageStatus(prev, userMessage.id, 'failed')
+				);
 			} finally {
 				setIsSending(false);
 				stopTypingSoon();
