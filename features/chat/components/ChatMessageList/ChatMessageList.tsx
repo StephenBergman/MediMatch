@@ -4,7 +4,6 @@ import { Chip, Text, useTheme } from 'react-native-paper';
 
 import { ChatMessageBubble } from '@/features/chat/components/ChatMessageBubble';
 import { TypingIndicator } from '@/features/chat/components/TypingIndicator/TypingIndicator';
-import { chatPrompts } from '@/features/chat/data/quick-prompts';
 import { type ChatMessage } from '@/features/chat/types';
 
 type Props = {
@@ -41,26 +40,6 @@ export function ChatMessageList({
 					backgroundColor: theme.colors.background,
 				},
 			]}
-			ListHeaderComponent={
-				<View style={styles.promptRow}>
-					<Text variant="titleSmall" style={{ color: theme.colors.onSurface }}>
-						Quick starters
-					</Text>
-					<View style={styles.promptChips}>
-						{chatPrompts.map((prompt) => (
-							<Chip
-								key={prompt.id}
-								mode="outlined"
-								compact
-								onPress={() => onSelectPrompt(prompt.label)}
-								icon="message-text-outline"
-							>
-								{prompt.label}
-							</Chip>
-						))}
-					</View>
-				</View>
-			}
 			ListEmptyComponent={
 				<View style={styles.emptyState}>
 					<Text variant="titleMedium" style={{ color: theme.colors.onSurface }}>
@@ -93,16 +72,6 @@ const styles = StyleSheet.create({
 	listContent: {
 		flexGrow: 1,
 		paddingVertical: 12,
-	},
-	promptRow: {
-		gap: 8,
-		paddingHorizontal: 4,
-		paddingBottom: 8,
-	},
-	promptChips: {
-		flexDirection: 'row',
-		flexWrap: 'wrap',
-		gap: 8,
 	},
 	emptyState: {
 		alignItems: 'center',

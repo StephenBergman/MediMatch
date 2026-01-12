@@ -1,6 +1,6 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useRouter } from 'expo-router';
-import { FlatList, StyleSheet, View } from 'react-native';
+import { Animated, FlatList, StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { Colors } from '@/constants/theme';
@@ -33,6 +33,29 @@ function ChatExperienceInner() {
 		handleFollowUpAction,
 	} = useChatContext();
 	const listRef = useRef<FlatList<ChatMessage> | null>(null);
+	const fadeAnim = useRef(new Animated.Value(1)).current;
+	const [isClearing, setIsClearing] = useState(false);
+
+	const runClearAnimation = useCallback(() => {
+		if (isClearing) return;
+		setIsClearing(true);
+		Animated.timing(fadeAnim, {
+			toValue: 0,
+			duration: 200,
+			useNativeDriver: true,
+		}).start(() => {
+			setInput('');
+			resetChat();
+			Animated.timing(fadeAnim, {
+				toValue: 1,
+				duration: 200,
+				useNativeDriver: true,
+			}).start(() => {
+				setIsClearing(false);
+			});
+		});
+	}, [fadeAnim, isClearing, resetChat]);
+
 
 	const handleSend = async () => {
 		const wasSent = await sendMessage({ content: input });
@@ -53,12 +76,16 @@ function ChatExperienceInner() {
 			normalized.includes('emergency services');
 		const carePreference = prefersEmergency ? 'emergency' : 'urgent';
 
-		const result = handleFollowUpAction(actionId, () => {
-			router.push({
-				pathname: '/(protected)/(tabs)/map',
-				params: { route: 'nearest', care: carePreference },
-			});
-		});
+		const result = handleFollowUpAction(
+			actionId,
+			() => {
+				router.push({
+					pathname: '/(protected)/(tabs)/map',
+					params: { route: 'nearest', care: carePreference },
+				});
+			},
+			runClearAnimation
+		);
 
 		// If it's a message response, optionally add to chat
 		if (result.type === 'message' && result.message) {
@@ -86,52 +113,57 @@ function ChatExperienceInner() {
 				isTyping={isAssistantTyping}
 			/>
 
-			<View
-				style={[
-					styles.container,
-					{
-						backgroundColor: colors.background,
-					},
-				]}
-			>
-				<View style={[styles.backdrop, { backgroundColor: palette.sky }]} />
-				<ChatMessageList
-					messages={messages}
-					isTyping={isAssistantTyping}
-					onSelectPrompt={setInput}
-					onFollowUpAction={handleFollowUpClick}
-					listRef={listRef}
-					ListFooterComponent={
-						<ChatErrorNotice
-							error={error}
-							onDismiss={clearError}
-							onRetry={handleSend}
-						/>
-					}
-				/>
-			</View>
+			<Animated.View style={[styles.contentWrap, { opacity: fadeAnim }]}>
+				<View
+					style={[
+						styles.container,
+						{
+							backgroundColor: colors.background,
+						},
+					]}
+				>
+					<View style={[styles.backdrop, { backgroundColor: palette.sky }]} />
+					<ChatMessageList
+						messages={messages}
+						isTyping={isAssistantTyping}
+						onSelectPrompt={setInput}
+						onFollowUpAction={handleFollowUpClick}
+						listRef={listRef}
+						ListFooterComponent={
+							<ChatErrorNotice
+								error={error}
+								onDismiss={clearError}
+								onRetry={handleSend}
+							/>
+						}
+					/>
+				</View>
 
-			<View
-				style={[
-					styles.composerWrap,
-					{
-						borderColor: colors.border,
-						backgroundColor: colors.surface,
-					},
-				]}
-			>
-				<ChatComposer
-					value={input}
-					onChange={(text) => {
-						if (error) clearError();
-						setInput(text);
-					}}
-					onSend={handleSend}
-					isSending={isSending}
-					disabled={false}
-					placeholder="Describe what you’re feeling. Example: “sharp pain near my left ribs”"
-				/>
-			</View>
+				<View
+					style={[
+						styles.composerWrap,
+						{
+							borderColor: colors.border,
+							backgroundColor: colors.surface,
+						},
+					]}
+				>
+					<ChatComposer
+						value={input}
+						onChange={(text) => {
+							if (error) clearError();
+							setInput(text);
+						}}
+						onSend={handleSend}
+						isSending={isSending}
+						disabled={isClearing}
+						placeholder={
+							'Describe what you\'re feeling. Example: "sharp pain near my left ribs"'
+						}
+					/>
+				</View>
+			</Animated.View>
+
 		</SafeAreaView>
 	);
 }
@@ -147,6 +179,9 @@ export function ChatExperience() {
 
 const styles = StyleSheet.create({
 	safeArea: {
+		flex: 1,
+	},
+	contentWrap: {
 		flex: 1,
 	},
 	container: {

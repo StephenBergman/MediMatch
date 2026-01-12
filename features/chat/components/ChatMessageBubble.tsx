@@ -100,7 +100,7 @@ export function ChatMessageBubble({ message, onFollowUpAction }: Props) {
 		>
 			{!isUser && (
 				<Avatar.Text
-					size={36}
+					size={32}
 					label="AI"
 					style={{ backgroundColor: theme.colors.surfaceVariant }}
 					color={theme.colors.primary}
@@ -120,24 +120,10 @@ export function ChatMessageBubble({ message, onFollowUpAction }: Props) {
 							backgroundColor: isUser
 								? theme.colors.primaryContainer
 								: theme.colors.surfaceVariant,
-							borderColor: isUser
-								? theme.colors.primary
-								: theme.colors.outlineVariant,
+							borderColor: theme.colors.outlineVariant,
 						},
 					]}
 				>
-					<Text
-						style={[
-							styles.sender,
-							{
-								color: isUser
-									? theme.colors.onPrimaryContainer
-									: theme.colors.onSurfaceVariant,
-							},
-						]}
-					>
-						{isUser ? 'You' : 'MediMatch'}
-					</Text>
 					{isUser ? (
 						<Text style={[styles.content, { color: textColor }]}>
 							{message.content}
@@ -186,6 +172,7 @@ export function ChatMessageBubble({ message, onFollowUpAction }: Props) {
 const styles = StyleSheet.create({
 	row: {
 		marginBottom: 12,
+		gap: 8,
 	},
 	bubble: {
 		gap: 8,
@@ -193,13 +180,8 @@ const styles = StyleSheet.create({
 	bubbleContent: {
 		padding: 12,
 		borderRadius: 16,
-		borderWidth: 1,
+		borderWidth: 0,
 		gap: 4,
-	},
-	sender: {
-		fontWeight: '600',
-		fontSize: 12,
-		letterSpacing: 0.2,
 	},
 	content: {
 		fontSize: 16,
