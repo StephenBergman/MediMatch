@@ -42,19 +42,19 @@ export function generateFollowUpMessage(
 	const variations = [
 		{
 			message:
-				"I've provided a recommendation above. Did I answer your question? Let me know if you'd like to explore further options or find a nearby facility.",
+				"I've provided a recommendation above. Would you like to be routed to the nearest suggested care facility?",
 		},
 		{
 			message:
-				"Based on your symptoms, I've outlined a care setting recommendation. Is this helpful? Feel free to ask follow-up questions or I can help you locate a facility.",
+				"Based on your symptoms, I've outlined a care setting recommendation. Want directions to the nearest suggested care facility or do you have more questions?",
 		},
 		{
 			message:
-				'That covers the triage guidance for your situation. Is this helpful? You can ask more questions or request help finding a nearby care facility.',
+				'That covers the triage guidance for your situation. Should I route you to the nearest suggested care facility?',
 		},
 		{
 			message:
-				"I've shared my recommendation. Does this address your concern? You can ask more questions or request help finding a facility nearby.",
+				"I've shared my recommendation. Would you like directions to the nearest suggested care facility?",
 		},
 	];
 
@@ -76,8 +76,8 @@ export function generateFollowUpMessage(
 			},
 			{
 				id: 'find_facility',
-				label: 'Find a facility',
-				description: 'Help me locate nearby care options',
+				label: 'Yes, route me',
+				description: 'Open the map with directions to the nearest care option',
 			},
 		],
 		context: {

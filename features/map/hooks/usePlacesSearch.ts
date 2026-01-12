@@ -6,7 +6,7 @@ import { fetchPlaces, type PlaceResult } from '../api/places';
 type Status = 'idle' | 'loading' | 'success' | 'error';
 
 const MEDICAL_KEYWORDS =
-	'hospital pharmacy urgent care clinic optometrist optical veterinarian vet doctor health';
+	'hospital pharmacy urgent care clinic walk-in clinic after hours clinic express care immediate care optometrist optical veterinarian vet doctor health';
 
 export function usePlacesSearch(region: Region | null) {
 	const apiKey = process.env.EXPO_PUBLIC_GOOGLE_MAPS_API_KEY;
@@ -38,8 +38,8 @@ export function usePlacesSearch(region: Region | null) {
 				'optometrist',
 			];
 
-			const responses = await Promise.all(
-				types.map((type) =>
+			const responses = await Promise.all([
+				...types.map((type) =>
 					fetchPlaces({
 						region,
 						apiKey,
@@ -47,7 +47,12 @@ export function usePlacesSearch(region: Region | null) {
 						type,
 					}),
 				),
-			);
+				fetchPlaces({
+					region,
+					apiKey,
+					keyword: 'urgent care walk-in clinic after hours clinic express care immediate care',
+				}),
+			]);
 			const merged = new Map<string, PlaceResult>();
 			responses.flat().forEach((place) => {
 				if (!merged.has(place.id)) {

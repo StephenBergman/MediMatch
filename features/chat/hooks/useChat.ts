@@ -131,6 +131,10 @@ export function useChat() {
 		return chatError;
 	}, []);
 
+	const appendMessages = useCallback((next: ChatMessage[]) => {
+		setMessages((prev) => [...prev, ...next]);
+	}, []);
+
 	const resetChat = useCallback(() => {
 		setMessages([]);
 		setError(null);
@@ -146,35 +150,59 @@ export function useChat() {
 			actionId: string,
 			onNavigateToFacility?: () => void
 		): { type: string; message?: string } => {
-			if (actionId === 'find_facility') {
-				// Trigger facility search navigation
-				onNavigateToFacility?.();
-				return {
-					type: 'navigation',
-					message: 'Navigating to facility search...',
-				};
-			}
-
-			if (actionId === 'answered') {
-				return {
+			const now = Date.now();
+			const actionMap: Record<
+				'answered' | 'more_questions' | 'find_facility',
+				{ type: 'message' | 'navigation'; user: string; assistant: string }
+			> = {
+				answered: {
 					type: 'message',
-					message:
+					user: 'Yes, that helps',
+					assistant:
 						"Great! I'm glad that was helpful. Feel free to ask if you have new concerns.",
-				};
-			}
-
-			if (actionId === 'more_questions') {
-				return {
+				},
+				more_questions: {
 					type: 'message',
-					message: "I'm here to help—go ahead with your follow-up question!",
-				};
+					user: 'I have more questions',
+					assistant:
+						"I'm here to help - go ahead with your follow-up question!",
+				},
+				find_facility: {
+					type: 'navigation',
+					user: 'Yes, route me',
+					assistant: 'Opening the map and routing you to the nearest option.',
+				},
+			};
+
+			const selection =
+				actionMap[actionId as keyof typeof actionMap] ?? null;
+			if (!selection) return { type: 'unknown' };
+
+			appendMessages([
+				{
+					id: createId(),
+					role: 'user',
+					content: selection.user,
+					createdAt: now,
+					status: 'sent',
+				},
+				{
+					id: createId(),
+					role: 'assistant',
+					content: selection.assistant,
+					createdAt: now + 1,
+					status: 'sent',
+				},
+			]);
+
+			if (selection.type === 'navigation') {
+				onNavigateToFacility?.();
 			}
 
-			return { type: 'unknown' };
+			return { type: selection.type, message: selection.assistant };
 		},
-		[]
+		[appendMessages]
 	);
-
 	const sendMessage = useCallback(
 		async ({ content }: { content: string }): Promise<boolean> => {
 			const trimmed = content.trim();
