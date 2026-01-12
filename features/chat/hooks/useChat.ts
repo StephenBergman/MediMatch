@@ -148,18 +148,41 @@ export function useChat() {
 	const handleFollowUpAction = useCallback(
 		(
 			actionId: string,
-			onNavigateToFacility?: () => void
+			onNavigateToFacility?: () => void,
+			onEndChat?: () => void
 		): { type: string; message?: string } => {
 			const now = Date.now();
+			const endChatPrompt = {
+				message: 'Would you like to end this chat?',
+				actions: [
+					{
+						id: 'end_chat_yes',
+						label: 'Yes, end chat',
+						description: 'End this conversation',
+					},
+					{
+						id: 'end_chat_no',
+						label: 'No, keep chatting',
+						description: 'Continue the conversation',
+					},
+				],
+			};
+
 			const actionMap: Record<
-				'answered' | 'more_questions' | 'find_facility',
-				{ type: 'message' | 'navigation'; user: string; assistant: string }
+				'answered' | 'more_questions' | 'find_facility' | 'end_chat_yes' | 'end_chat_no',
+				{
+					type: 'message' | 'navigation' | 'end';
+					user: string;
+					assistant: string;
+					followUp?: { message: string; actions: { id: string; label: string; description?: string }[] };
+				}
 			> = {
 				answered: {
 					type: 'message',
-					user: 'Yes, that helps',
+					user: 'No, thank you',
 					assistant:
-						"Great! I'm glad that was helpful. Feel free to ask if you have new concerns.",
+						"Got it. If anything changes or you have more questions later, I'm here to help.",
+					followUp: endChatPrompt,
 				},
 				more_questions: {
 					type: 'message',
@@ -171,6 +194,16 @@ export function useChat() {
 					type: 'navigation',
 					user: 'Yes, route me',
 					assistant: 'Opening the map and routing you to the nearest option.',
+				},
+				end_chat_yes: {
+					type: 'end',
+					user: 'Yes, end chat',
+					assistant: 'Thanks for chatting. Take care!',
+				},
+				end_chat_no: {
+					type: 'message',
+					user: 'No, keep chatting',
+					assistant: 'No problem - what else can I help you with?',
 				},
 			};
 
@@ -192,11 +225,18 @@ export function useChat() {
 					content: selection.assistant,
 					createdAt: now + 1,
 					status: 'sent',
+					followUp: selection.followUp,
 				},
 			]);
 
 			if (selection.type === 'navigation') {
 				onNavigateToFacility?.();
+			}
+
+			if (selection.type === 'end') {
+				setTimeout(() => {
+					onEndChat?.();
+				}, 700);
 			}
 
 			return { type: selection.type, message: selection.assistant };

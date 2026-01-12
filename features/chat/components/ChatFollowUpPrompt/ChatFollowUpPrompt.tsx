@@ -1,6 +1,6 @@
 import React from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
-import { Button, Surface, Text, useTheme } from 'react-native-paper';
+import { Button, Text, useTheme } from 'react-native-paper';
 
 import { type ChatMessageAction } from '@/features/chat/types';
 
@@ -24,87 +24,69 @@ export function ChatFollowUpPrompt({
 	const theme = useTheme();
 
 	return (
-		<Surface
-			style={[
-				styles.container,
-				{ backgroundColor: theme.colors.surfaceVariant },
-			]}
-			elevation={0}
-		>
-			<View style={styles.content}>
-				<Text
-					variant="bodyMedium"
-					style={[styles.message, { color: theme.colors.onSurfaceVariant }]}
-				>
-					{followUpMessage}
-				</Text>
+		<View style={styles.container}>
+			<Text
+				variant="bodySmall"
+				style={[styles.message, { color: theme.colors.onSurfaceVariant }]}
+			>
+				{followUpMessage}
+			</Text>
 
-				<ScrollView
-					horizontal
-					showsHorizontalScrollIndicator={false}
-					contentContainerStyle={styles.actionsList}
-					scrollEnabled={actions.length > 2}
-				>
-					{actions.map((action) => (
-						<Button
-							key={action.id}
-							mode="contained"
-							onPress={() => onActionPress(action.id)}
-							disabled={disabled}
-							style={styles.actionButton}
-							labelStyle={styles.actionButtonLabel}
-							contentStyle={styles.actionButtonContent}
-						>
-							{action.label}
-						</Button>
-					))}
-				</ScrollView>
-
-				{actions.some((a) => a.description) && (
-					<Text
-						variant="labelSmall"
-						style={[styles.hint, { color: theme.colors.onSurfaceVariant }]}
+			<ScrollView
+				horizontal
+				showsHorizontalScrollIndicator={false}
+				style={styles.actionsScroll}
+				contentContainerStyle={styles.actionsList}
+				scrollEnabled={actions.length > 2}
+			>
+				{actions.map((action) => (
+					<Button
+						key={action.id}
+						mode="outlined"
+						onPress={() => onActionPress(action.id)}
+						disabled={disabled}
+						style={styles.actionButton}
+						labelStyle={styles.actionButtonLabel}
+						contentStyle={styles.actionButtonContent}
 					>
-						Tap an option above to continue
-					</Text>
-				)}
-			</View>
-		</Surface>
+						{action.label}
+					</Button>
+				))}
+			</ScrollView>
+		</View>
 	);
 }
 
 const styles = StyleSheet.create({
 	container: {
-		borderRadius: 12,
-		marginVertical: 8,
-		marginHorizontal: 0,
-		paddingHorizontal: 12,
-		paddingVertical: 12,
-	},
-	content: {
-		gap: 12,
+		marginTop: 6,
+		marginBottom: 2,
 	},
 	message: {
-		lineHeight: 20,
+		lineHeight: 18,
+		marginBottom: 8,
 	},
 	actionsList: {
 		flexDirection: 'row',
 		gap: 8,
 		paddingHorizontal: 0,
+		alignItems: 'center',
+	},
+	actionsScroll: {
+		flexGrow: 0,
+		alignSelf: 'flex-start',
 	},
 	actionButton: {
 		flex: 0,
-		minWidth: 100,
-		maxWidth: 160,
+		minWidth: 88,
+		alignSelf: 'flex-start',
 	},
 	actionButtonLabel: {
 		fontSize: 12,
+		lineHeight: 16,
 	},
 	actionButtonContent: {
-		height: 36,
-	},
-	hint: {
-		marginTop: 4,
-		opacity: 0.7,
+		minHeight: 36,
+		paddingVertical: 0,
 	},
 });

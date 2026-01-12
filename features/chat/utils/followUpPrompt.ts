@@ -66,8 +66,8 @@ export function generateFollowUpMessage(
 		actions: [
 			{
 				id: 'answered',
-				label: 'Yes, that helps',
-				description: 'The recommendation answered my question',
+				label: 'No, thank you',
+				description: 'I do not need anything else right now',
 			},
 			{
 				id: 'more_questions',
