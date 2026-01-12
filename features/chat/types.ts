@@ -6,6 +6,8 @@ export type ChatMessage = {
 	id: string;
 	role: ChatRole;
 	content: string;
+	createdAt?: number;
+	status?: 'sending' | 'sent' | 'failed';
 };
 
 /** Minimal payload sent to the model (IDs are client-only). */

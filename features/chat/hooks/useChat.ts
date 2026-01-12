@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 import {
 	createChatCompletion,
@@ -9,11 +9,17 @@ import {
 	type ChatMessage,
 	type ChatMessagePayload,
 } from '@/features/chat/types';
+import { AppError } from 'utils/ErrorHandling/errors';
+import { decideUx, type UxDecision } from 'utils/ErrorHandling/errors/policy';
+import { captureException } from 'utils/ErrorHandling/helpers/capture';
+import { normalizeUnknown } from 'utils/ErrorHandling/errors/normalize';
+import { invariantError } from 'utils/ErrorHandling/errors/types/invarient';
+import { validationError } from 'utils/ErrorHandling/errors/types/validation';
 
 const SYSTEM_PROMPT: ChatMessagePayload = {
 	role: 'system',
 	content:
-		'You are a concise, helpful medical assistant for the MediMatch app. Provide clear, actionable answers and keep responses short.',
+		'You are a concise triage assistant for the MediMatch app. Do NOT provide medical advice, diagnoses, or treatment steps. Your only job is to recommend the appropriate care setting (e.g., call emergency services/ER, Urgent Care, Primary Care, or Self-care) with a brief rationale. If symptoms sound severe or life-threatening, instruct the user to call emergency services immediately. Keep replies short.',
 };
 
 const createId = () =>
@@ -22,8 +28,7 @@ const createId = () =>
 const useMockAssistant =
 	(process.env.EXPO_PUBLIC_USE_MOCK_ASSISTANT ?? '').toLowerCase() === 'true';
 
-/** Maps common Gemini errors into user-friendly copy shown in the UI. */
-const formatGeminiError = (message: string) => {
+const formatOpenAiError = (message: string) => {
 	const lower = message.toLowerCase();
 
 	if (lower.includes('quota')) {
@@ -52,26 +57,66 @@ export function useChat() {
 	const [messages, setMessages] = useState<ChatMessage[]>([]);
 	const [isSending, setIsSending] = useState(false);
 	const [error, setError] = useState<string | null>(null);
-	const apiKey = getGeminiApiKey();
+	const apiKey = getOpenAiApiKey();
 
 	const clearError = useCallback(() => setError(null), []);
+
+	const stopTypingSoon = useCallback(() => {
+		if (typingTimerRef.current) {
+			clearTimeout(typingTimerRef.current);
+		}
+		typingTimerRef.current = setTimeout(() => {
+			setIsAssistantTyping(false);
+		}, 320);
+	}, []);
+
+	const startTyping = useCallback(() => {
+		if (typingTimerRef.current) {
+			clearTimeout(typingTimerRef.current);
+		}
+		setIsAssistantTyping(true);
+	}, []);
+
+	const handleFailure = useCallback(
+		(raw: unknown) => {
+			const normalized = raw instanceof AppError ? raw : normalizeUnknown(raw);
+			const appError = captureException(normalized, {
+				where: 'useChat.sendMessage',
+				context: { feature: 'chat' },
+			});
+			const ux = decideUx(appError);
+			const baseMessage =
+				ux.userMessage ||
+				appError.message ||
+				'Unable to reach the assistant right now. Please try again.';
+			const friendly = formatGeminiError(baseMessage);
+			setError({ appError, ux, message: friendly });
+			return friendly;
+		},
+		[]
+	);
 
 	const resetChat = useCallback(() => {
 		setMessages([]);
 		setError(null);
+		setIsAssistantTyping(false);
 	}, []);
 
 	const sendMessage = useCallback(
 		async ({ content }: { content: string }): Promise<boolean> => {
 			const trimmed = content.trim();
 			if (!trimmed) {
-				setError('Please enter a message before sending.');
+				handleFailure(
+					validationError('Please enter a message before sending.', {
+						code: 'VALIDATION_REQUIRED',
+					})
+				);
 				return false;
 			}
 
 			if (!useMockAssistant && !apiKey) {
 				setError(
-					'Gemini API key is not configured. Add EXPO_PUBLIC_GEMINI_API_KEY to your app env.'
+					'OpenAI API key is not configured. Add EXPO_PUBLIC_OPENAI_API_KEY to your app env.'
 				);
 				return false;
 			}
@@ -80,11 +125,13 @@ export function useChat() {
 				id: createId(),
 				role: 'user',
 				content: trimmed,
+				createdAt: Date.now(),
+				status: 'sending',
 			};
 
-			const conversation = [...messages, userMessage];
-			setMessages(conversation);
+			setMessages((prev) => [...prev, userMessage]);
 			setIsSending(true);
+			startTyping();
 			setError(null);
 
 			let wasSuccessful = false;
@@ -95,17 +142,26 @@ export function useChat() {
 					: await createChatCompletion({
 							messages: [
 								SYSTEM_PROMPT,
-								...conversation.map(({ role, content }) => ({
+								...messagesRef.current.map(({ role, content }) => ({
 									role,
 									content,
 								})),
+								{ role: 'user', content: trimmed },
 							],
 						});
+
+				setMessages((prev) =>
+					prev.map((msg) =>
+						msg.id === userMessage.id ? { ...msg, status: 'sent' } : msg
+					)
+				);
 
 				const assistantMessage: ChatMessage = {
 					id: createId(),
 					role: 'assistant',
 					content: reply,
+					createdAt: Date.now(),
+					status: 'sent',
 				};
 
 				setMessages((prev) => [...prev, assistantMessage]);
@@ -115,21 +171,22 @@ export function useChat() {
 				const friendly =
 					message.trim() ||
 					'Unable to reach the assistant right now. Please try again.';
-				setError(formatGeminiError(friendly));
+				setError(formatOpenAiError(friendly));
 			} finally {
 				setIsSending(false);
+				stopTypingSoon();
 			}
 
 			return wasSuccessful;
 		},
-		//eslint-disable-next-line react-hooks/exhaustive-deps
-		[messages]
+		[apiKey, handleFailure, startTyping, stopTypingSoon]
 	);
 
 	return {
 		messages,
 		sendMessage,
 		isSending,
+		isAssistantTyping,
 		error,
 		clearError,
 		resetChat,
