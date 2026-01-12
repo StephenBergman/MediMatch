@@ -18,12 +18,31 @@ export default function TabLayout() {
 				tabBarButton: HapticTab,
 			}}
 		>
+			{showDevTab ? (
+				<Tabs.Screen
+					name="ReactDevTestComponents"
+					options={{
+						title: 'Dev',
+						tabBarIcon: ({ color, size }) => (
+							<MaterialCommunityIcons
+								name="wrench"
+								size={size ?? 30}
+								color={color}
+							/>
+						),
+					}}
+				/>
+			) : null}
 			<Tabs.Screen
-				name="index"
+				name="maps"
 				options={{
-					title: 'Home',
+					title: 'Maps',
 					tabBarIcon: ({ color, size }) => (
-						<MaterialCommunityIcons name="home" size={size ?? 28} color={color} />
+						<MaterialCommunityIcons
+							name="map-outline"
+							size={size ?? 30}
+							color={color}
+						/>
 					),
 				}}
 			/>

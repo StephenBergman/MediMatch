@@ -1,6 +1,19 @@
-import React from 'react';
+import React, { useEffect, useRef, useState } from 'react';
+import {
+	FlatList,
+	KeyboardAvoidingView,
+	Platform,
+	StyleSheet,
+	View,
+} from 'react-native';
+import { Appbar, Button, Text, TextInput } from 'react-native-paper';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { ChatExperience } from '@/features/chat/components/ChatExperience/ChatExperience';
+import { Colors } from '@/constants/theme';
+import { ChatMessageBubble } from '@/features/chat/components/ChatMessageBubble';
+import { useChat } from '@/features/chat/hooks/useChat';
+import { type ChatMessage } from '@/features/chat/types';
+import { useColorScheme } from '@/hooks/use-color-scheme';
 
 /**
  * Chat tab that wires the message list, composer, and header actions to the
@@ -44,7 +57,7 @@ export default function ChatScreen() {
 						Assistant
 					</Text>
 					<Text variant="labelSmall" style={{ color: palette.sky }}>
-						OpenAI-powered chat
+						Gemini-powered chat
 					</Text>
 				</View>
 				{messages.length > 0 ? (

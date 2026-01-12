@@ -1,6 +1,6 @@
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
-import { Avatar, Icon, Surface, Text, useTheme } from 'react-native-paper';
+import { Surface, Text, useTheme } from 'react-native-paper';
 
 import { type ChatMessage } from '@/features/chat/types';
 
@@ -8,26 +8,10 @@ type Props = {
 	message: ChatMessage;
 };
 
+/** Displays a single chat message with styling that varies by sender role. */
 export function ChatMessageBubble({ message }: Props) {
 	const theme = useTheme();
 	const isUser = message.role === 'user';
-	const timeLabel = formatTime(message.createdAt);
-	const statusLabel = isUser
-		? message.status === 'failed'
-			? 'Not sent'
-			: message.status === 'sending'
-				? 'Sending…'
-				: 'Sent'
-		: timeLabel;
-	const statusColor =
-		message.status === 'failed'
-			? theme.colors.error
-			: isUser
-				? theme.colors.onPrimaryContainer
-				: theme.colors.onSurfaceVariant;
-	const textColor = isUser
-		? theme.colors.onPrimaryContainer
-		: theme.colors.onSurface;
 
 	return (
 		<View
@@ -36,14 +20,6 @@ export function ChatMessageBubble({ message }: Props) {
 				{ justifyContent: isUser ? 'flex-end' : 'flex-start' },
 			]}
 		>
-			{!isUser && (
-				<Avatar.Text
-					size={36}
-					label="AI"
-					style={{ backgroundColor: theme.colors.surfaceVariant }}
-					color={theme.colors.primary}
-				/>
-			)}
 			<Surface
 				elevation={1}
 				style={[
@@ -69,31 +45,21 @@ export function ChatMessageBubble({ message }: Props) {
 						},
 					]}
 				>
-					{isUser ? 'You' : 'MediMatch'}
+					{isUser ? 'You' : 'Assistant'}
 				</Text>
-				<Text style={[styles.content, { color: textColor }]}>
+				<Text
+					style={[
+						styles.content,
+						{
+							color: isUser
+								? theme.colors.onPrimaryContainer
+								: theme.colors.onSurface,
+						},
+					]}
+				>
 					{message.content}
 				</Text>
-				<View style={styles.metaRow}>
-					<Text style={[styles.timestamp, { color: statusColor }]}>
-						{statusLabel || timeLabel}
-					</Text>
-					{isUser && message.status === 'sent' ? (
-						<Icon source="check" color={statusColor} size={14} />
-					) : null}
-					{isUser && message.status === 'failed' ? (
-						<Icon source="alert-circle" color={theme.colors.error} size={16} />
-					) : null}
-				</View>
 			</Surface>
-			{isUser && (
-				<Avatar.Text
-					size={36}
-					label="You"
-					style={{ backgroundColor: theme.colors.primaryContainer }}
-					color={theme.colors.onPrimaryContainer}
-				/>
-			)}
 		</View>
 	);
 }
@@ -117,14 +83,5 @@ const styles = StyleSheet.create({
 	content: {
 		fontSize: 16,
 		lineHeight: 22,
-	},
-	metaRow: {
-		marginTop: 6,
-		flexDirection: 'row',
-		alignItems: 'center',
-		gap: 6,
-	},
-	timestamp: {
-		fontSize: 12,
 	},
 });
