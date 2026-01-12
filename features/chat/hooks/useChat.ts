@@ -9,6 +9,10 @@ import {
 	type ChatMessage,
 	type ChatMessagePayload,
 } from '@/features/chat/types';
+import {
+	generateFollowUpMessage,
+	shouldShowFollowUp,
+} from '@/features/chat/utils/followUpPrompt';
 import { AppError } from 'utils/ErrorHandling/errors';
 import { normalizeUnknown } from 'utils/ErrorHandling/errors/normalize';
 import { decideUx, type UxDecision } from 'utils/ErrorHandling/errors/policy';
@@ -133,6 +137,44 @@ export function useChat() {
 		setIsAssistantTyping(false);
 	}, []);
 
+	/**
+	 * Handler for follow-up action clicks (e.g., "yes answered", "find facility").
+	 * Returns action result and optionally triggers navigation.
+	 */
+	const handleFollowUpAction = useCallback(
+		(
+			actionId: string,
+			onNavigateToFacility?: () => void
+		): { type: string; message?: string } => {
+			if (actionId === 'find_facility') {
+				// Trigger facility search navigation
+				onNavigateToFacility?.();
+				return {
+					type: 'navigation',
+					message: 'Navigating to facility search...',
+				};
+			}
+
+			if (actionId === 'answered') {
+				return {
+					type: 'message',
+					message:
+						"Great! I'm glad that was helpful. Feel free to ask if you have new concerns.",
+				};
+			}
+
+			if (actionId === 'more_questions') {
+				return {
+					type: 'message',
+					message: "I'm here to help—go ahead with your follow-up question!",
+				};
+			}
+
+			return { type: 'unknown' };
+		},
+		[]
+	);
+
 	const sendMessage = useCallback(
 		async ({ content }: { content: string }): Promise<boolean> => {
 			const trimmed = content.trim();
@@ -188,6 +230,11 @@ export function useChat() {
 							],
 						});
 
+				// Count assistant messages to determine if follow-up should be shown
+				const assistantMessageCount = messagesRef.current.filter(
+					(msg) => msg.role === 'assistant' && msg.status !== 'failed'
+				).length;
+
 				const assistantMessage: ChatMessage = {
 					id: createId(),
 					role: 'assistant',
@@ -195,6 +242,18 @@ export function useChat() {
 					createdAt: Date.now(),
 					status: 'sent',
 				};
+
+				// Add follow-up prompt if conditions are met
+				if (shouldShowFollowUp(assistantMessageCount)) {
+					const followUpData = generateFollowUpMessage(
+						assistantMessageCount,
+						reply
+					);
+					assistantMessage.followUp = {
+						message: followUpData.message,
+						actions: followUpData.actions,
+					};
+				}
 
 				setMessages((prev) => {
 					const updated = updateMessageStatus(prev, userMessage.id, 'sent');
@@ -224,5 +283,6 @@ export function useChat() {
 		error,
 		clearError,
 		resetChat,
+		handleFollowUpAction,
 	};
 }

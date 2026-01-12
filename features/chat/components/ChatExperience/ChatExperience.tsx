@@ -2,13 +2,16 @@ import React, { useEffect, useRef, useState } from 'react';
 import { FlatList, StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
+import { Colors } from '@/constants/theme';
 import { ChatComposer } from '@/features/chat/components/ChatComposer/ChatComposer';
 import { ChatErrorNotice } from '@/features/chat/components/ChatErrorNotice/ChatErrorNotice';
 import { ChatHeader } from '@/features/chat/components/ChatHeader/ChatHeader';
 import { ChatMessageList } from '@/features/chat/components/ChatMessageList/ChatMessageList';
-import { ChatProvider, useChatContext } from '@/features/chat/contexts/ChatContext';
+import {
+	ChatProvider,
+	useChatContext,
+} from '@/features/chat/contexts/ChatContext';
 import { type ChatMessage } from '@/features/chat/types';
-import { Colors } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 
 /** Top-level chat layout rendered inside `ChatExperience`. Handles scrolling, header, list, and composer. */
@@ -25,6 +28,7 @@ function ChatExperienceInner() {
 		error,
 		clearError,
 		resetChat,
+		handleFollowUpAction,
 	} = useChatContext();
 	const listRef = useRef<FlatList<ChatMessage> | null>(null);
 
@@ -32,6 +36,20 @@ function ChatExperienceInner() {
 		const wasSent = await sendMessage({ content: input });
 		if (wasSent) {
 			setInput('');
+		}
+	};
+
+	const handleFollowUpClick = (actionId: string) => {
+		const result = handleFollowUpAction(actionId, () => {
+			// TODO: Implement navigation to facility search
+			// Example: navigation.navigate('MapTab') or similar
+			console.log('Navigate to facility search');
+		});
+
+		// If it's a message response, optionally add to chat
+		if (result.type === 'message' && result.message) {
+			// Auto-add a contextual message showing the user's action
+			console.log('User action:', actionId, result.message);
 		}
 	};
 
@@ -67,6 +85,7 @@ function ChatExperienceInner() {
 					messages={messages}
 					isTyping={isAssistantTyping}
 					onSelectPrompt={setInput}
+					onFollowUpAction={handleFollowUpClick}
 					listRef={listRef}
 					ListFooterComponent={
 						<ChatErrorNotice

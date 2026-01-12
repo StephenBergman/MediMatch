@@ -44,8 +44,8 @@ function getIconConfig(types: string[]) {
 export function PlaceMarker({ place }: Props) {
 	const scheme = useColorScheme() ?? 'light';
 	const colors = Colors[scheme];
-	const markerRef = useRef<Marker | null>(null);
-	const { iconConfig, title, address, iconName } = useMemo(() => {
+	const markerRef = useRef<InstanceType<typeof Marker>>(null);
+	const { title, address, iconName } = useMemo(() => {
 		const config = getIconConfig(place.types);
 		const computedTitle =
 			place.name?.trim() || config.label || 'Medical location';
@@ -53,7 +53,6 @@ export function PlaceMarker({ place }: Props) {
 			place.address?.trim() ||
 			(place.types.length ? place.types.join(', ') : 'Nearby care location');
 		return {
-			iconConfig: config,
 			title: computedTitle,
 			address: computedAddress,
 			iconName: (config.icon as IconName) ?? 'map-marker',
@@ -79,5 +78,3 @@ export function PlaceMarker({ place }: Props) {
 		</Marker>
 	);
 }
-
-const styles = StyleSheet.create({});
