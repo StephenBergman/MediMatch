@@ -40,7 +40,7 @@ const verificationCode_NP = () => {
         textColor='#ffffff'
         style={styles.verificationCode_NP_Button}
           onPress={() => {
-            console.log("User sent to back to login screen")
+            console.log("User confirmed new passwor and is being sent to back to login screen")
             router.replace('../login');
             }}
         >
