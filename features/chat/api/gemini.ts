@@ -1,119 +1,124 @@
-import { ChatMessagePayload } from '@/features/chat/types';
+import type { ChatMessagePayload } from '@/features/chat/types';
 
-const GEMINI_CHAT_URL =
-	'https://generativelanguage.googleapis.com/v1beta/models';
-const DEFAULT_MODEL = 'gemini-3-pro-preview';
-const DEFAULT_APP_API_KEY = 'AIzaSyDobH2E28LXYwaurbdu4RpIcgo3Q39nhtY';
-
-const appGeminiKey =
-	process.env.EXPO_PUBLIC_GEMINI_API_KEY ??
-	process.env.GEMINI_API_KEY ??
-	DEFAULT_APP_API_KEY ??
-	undefined;
-
-/** Returns whichever Gemini API key is available to the client. */
-export function getGeminiApiKey() {
-	return appGeminiKey?.trim() ?? '';
-}
-
-type CreateChatCompletionParams = {
-	messages: ChatMessagePayload[];
-	model?: string;
-	apiKeyOverride?: string;
+type GeminiPart = {
+	text: string;
 };
 
-type GeminiContent = { role: 'user' | 'model'; parts: { text: string }[] };
+type GeminiContent = {
+	role: 'user' | 'model';
+	parts: GeminiPart[];
+};
 
-/**
- * Shapes our internal chat messages into the Gemini payload format, hoisting
- * any system messages into `system_instruction`.
- */
-function buildGeminiPayload(messages: ChatMessagePayload[]) {
-	const systemInstructions: string[] = [];
-	const contents: GeminiContent[] = [];
-
-	for (const message of messages) {
-		if (message.role === 'system') {
-			const text = message.content?.trim();
-			if (text) {
-				systemInstructions.push(text);
-			}
-			continue;
-		}
-
-		const role: GeminiContent['role'] =
-			message.role === 'assistant' ? 'model' : 'user';
-
-		contents.push({
-			role,
-			parts: [{ text: message.content }],
-		});
-	}
-
-	const payload: Record<string, unknown> = {
-		contents,
+type GeminiErrorResponse = {
+	error?: {
+		message?: string;
+		status?: string;
+		code?: number;
 	};
+};
 
-	if (systemInstructions.length) {
-		payload.system_instruction = {
-			parts: [{ text: systemInstructions.join('\n\n') }],
+type GeminiResponse = GeminiErrorResponse & {
+	candidates?: Array<{
+		content?: {
+			parts?: GeminiPart[];
 		};
-	}
+	}>;
+};
 
-	return payload;
+export type CreateChatCompletionParams = {
+	messages: ChatMessagePayload[];
+	apiKey?: string;
+	model?: string;
+	temperature?: number;
+};
+
+const DEFAULT_MODEL = 'gemini-3-pro-preview';
+const GEMINI_ENDPOINT =
+	'https://generativelanguage.googleapis.com/v1beta/models';
+
+export function getGeminiApiKey() {
+	const key =
+		process.env.EXPO_PUBLIC_GEMINI_API_KEY ?? process.env.GEMINI_API_KEY;
+	return key && key.trim().length > 0 ? key.trim() : undefined;
 }
 
-/**
- * Calls the Gemini `generateContent` endpoint and returns the combined text of
- * the first candidate. Throws with a friendly error if the request fails.
- */
+const buildSystemInstruction = (messages: ChatMessagePayload[]) => {
+	const systemMessages = messages.filter((message) => message.role === 'system');
+	if (!systemMessages.length) return undefined;
+	return {
+		parts: [
+			{
+				text: systemMessages.map((message) => message.content).join('\n'),
+			},
+		],
+	};
+};
+
+const toGeminiContents = (messages: ChatMessagePayload[]): GeminiContent[] =>
+	messages
+		.filter((message) => message.role !== 'system')
+		.map((message) => ({
+			role: message.role === 'assistant' ? 'model' : 'user',
+			parts: [{ text: message.content }],
+		}));
+
+/** Call Gemini to generate a single response string. */
 export async function createChatCompletion({
 	messages,
+	apiKey,
 	model = DEFAULT_MODEL,
-	apiKeyOverride,
+	temperature,
 }: CreateChatCompletionParams): Promise<string> {
-	const apiKey = (apiKeyOverride ?? getGeminiApiKey()).trim();
-
-	if (!apiKey) {
-		throw new Error('Gemini API key is not configured for this app.');
+	const resolvedKey = apiKey ?? getGeminiApiKey();
+	if (!resolvedKey) {
+		throw new Error('Gemini API key is not configured.');
 	}
 
-	const url = `${GEMINI_CHAT_URL}/${model}:generateContent?key=${encodeURIComponent(
-		apiKey
-	)}`;
+	const systemInstruction = buildSystemInstruction(messages);
+	const contents = toGeminiContents(messages);
+	if (!contents.length) {
+		throw new Error('No chat messages provided.');
+	}
 
-	const payload = buildGeminiPayload(messages);
+	const body: Record<string, unknown> = {
+		contents,
+	};
+	if (systemInstruction) {
+		body.systemInstruction = systemInstruction;
+	}
+	if (typeof temperature === 'number') {
+		body.generationConfig = { temperature };
+	}
 
-	const response = await fetch(url, {
-		method: 'POST',
-		headers: {
-			'Content-Type': 'application/json',
+	const response = await fetch(
+		`${GEMINI_ENDPOINT}/${model}:generateContent?key=${resolvedKey}`,
+		{
+			method: 'POST',
+			headers: { 'Content-Type': 'application/json' },
+			body: JSON.stringify(body),
 		},
-		body: JSON.stringify(payload),
-	});
+	);
 
-	const json = await response.json().catch(() => null);
+	const payload = (await response
+		.json()
+		.catch(() => null)) as GeminiResponse | null;
 
 	if (!response.ok) {
 		const message =
-			(json as { error?: { message?: string } })?.error?.message ??
-			'Gemini request failed.';
-		throw new Error(message);
+			payload?.error?.message ||
+			`Gemini request failed (${response.status})`;
+		const error = new Error(message);
+		(error as { status?: number }).status = response.status;
+		throw error;
 	}
 
-	const text = (
-		(
-			json as {
-				candidates?: { content?: { parts?: { text?: string }[] } }[];
-			}
-		)?.candidates?.[0]?.content?.parts ?? []
-	)
-		.map((part) => part?.text ?? '')
+	const text = payload?.candidates?.[0]?.content?.parts
+		?.map((part) => part.text ?? '')
 		.join('')
 		.trim();
 
 	if (!text) {
-		throw new Error('Gemini did not return a response.');
+		throw new Error('Gemini returned an empty response.');
 	}
 
 	return text;

@@ -4,39 +4,39 @@ This directory contains the core app-level routing, layouts, and entry points fo
 
 ### Structure
 
-- **\_layout.tsx**: Root layout for all screens. Handles navigation containers, providers, and global wrappers.
+- **_layout.tsx**: Root layout for all screens. Handles navigation containers, providers, and global wrappers.
 - **+not-found.tsx**: Fallback screen for unmatched routes.
 - **login.tsx**: Public login screen.
 - **(protected)/**: Contains routes/components that require authentication.
-  - **\_layout.tsx**: Layout for protected routes.
+  - **_layout.tsx**: Layout for protected routes.
   - **(tabs)/**: Tab navigation for authenticated users.
 
 ### Key Considerations
 
 - **Navigation**: Uses Expo Router for file-based navigation.
 - **Redirects**: Use `router.push()` to navigate between screens.
-- **Authentication**: Place protected screens inside the `(protected)` folder. Use hooks like `useAuth` to manage access.
+- **Authentication**: Place protected screens inside the `(protected)` folder.
 - **Platform Support**: Use `.native.tsx` for native-only logic, `.tsx` for web/native shared, and `.web.tsx` for web-only.
-- **UI Library**: All shared UI components now rely on [React Native Paper](https://callstack.github.io/react-native-paper/) to stay cross-platform and consistent.
+- **UI Library**: All shared UI components now rely on React Native Paper to stay cross-platform and consistent.
 - **Error Handling**: Use the `utils/ErrorHandling` helpers for consistent error boundaries and reporting.
-- **Our Tools**: A document for our in-house solutions can be found in `src/components/README.md`
 
 ### Adding Navigational Tabs/Screens
 
-1. Create a subfolder in `(protected)/(tabs)/`.
-2. Add the details in `utils/Navigation/ScreenCommonProps`, using the populated object for visible tabs, and the `display: 'none'` object for non-tab screens.
+1. Create a screen file inside `app/(protected)/(tabs)/` (e.g., `profile.tsx`).
+2. Register the tab in `app/(protected)/(tabs)/_layout.tsx` via a new `Tabs.Screen`.
+3. For non-tab screens in this group, place the file in the same folder but set `options={{ href: null }}` on the `Tabs.Screen` or use a separate nested layout.
 
 ### Best Practices
 
 - Keep navigation logic in layout files.
 - Prefer functional components and TypeScript.
 - Follow Expo and React Native Web compatibility guidelines.
-- Refer to the dev tools `React Native Paper Kitchen Sink` for UI component usage.
+- Refer to the dev tools React Native Paper Kitchen Sink for UI component usage.
 
 ### Known Issues
 
 - `Text strings must be rendered within a <Text> component`
-  - This error can falsely(?) occur when a JSX element is on the same _line_ as a `<Text/>` component.
+  - This error can falsely occur when a JSX element is on the same line as a `<Text/>` component.
   - To avoid this, break lines between components as follows:
 
 ```tsx
@@ -50,4 +50,4 @@ This directory contains the core app-level routing, layouts, and entry points fo
 
 ---
 
-For more details, see the main project README and the [Expo Router documentation](https://docs.expo.dev/router/introduction/).
+For more details, see the main project README and the Expo Router documentation.

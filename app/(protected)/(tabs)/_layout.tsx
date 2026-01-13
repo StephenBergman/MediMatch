@@ -7,11 +7,10 @@ import React from 'react';
 
 export default function TabLayout() {
 	const colorScheme = useColorScheme();
-	const showDevTab = __DEV__;
 
 	return (
 		<Tabs
-		initialRouteName='home'
+			initialRouteName="chat"
 			screenOptions={{
 				tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
 				headerShown: false,
@@ -52,6 +51,19 @@ export default function TabLayout() {
 					title: 'Assistant',
 					tabBarIcon: ({ color, size }) => (
 						<MaterialCommunityIcons
+							name="home-outline"
+							size={size ?? 28}
+							color={color}
+						/>
+					),
+				}}
+			/>
+			<Tabs.Screen
+				name="chat"
+				options={{
+					title: 'Assistant',
+					tabBarIcon: ({ color, size }) => (
+						<MaterialCommunityIcons
 							name="robot-outline"
 							size={size ?? 30}
 							color={color}
@@ -60,26 +72,13 @@ export default function TabLayout() {
 				}}
 			/>
 			<Tabs.Screen
-				name="home"
+				name="map"
 				options={{
-					title: 'Home',
+					title: 'Map',
 					tabBarIcon: ({ color, size }) => (
 						<MaterialCommunityIcons
-							name="home-outline"
-							size={size ?? 30}
-							color={color}
-						/>
-					),
-				}}
-			/>
-			<Tabs.Screen
-				name="profile"
-				options={{
-					title: 'Profile',
-					tabBarIcon: ({ color, size }) => (
-						<MaterialCommunityIcons
-							name="account-outline"
-							size={size ?? 30}
+							name="map-marker-outline"
+							size={size ?? 28}
 							color={color}
 						/>
 					),
@@ -98,7 +97,6 @@ export default function TabLayout() {
 					),
 				}}
 			/>
-
 		</Tabs>
 	);
 }
