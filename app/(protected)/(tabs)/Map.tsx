@@ -12,7 +12,13 @@ export default function MapScreen() {
 	const autoRouteToNearest = route === 'nearest';
 	const routeMode = mode === 'walking' ? 'walking' : 'driving';
 	const routePreference =
-		care === 'emergency' ? 'emergency' : care === 'urgent' ? 'urgent' : 'any';
+		care === 'emergency'
+			? 'emergency'
+			: care === 'routine'
+				? 'routine'
+				: care === 'urgent'
+					? 'urgent'
+					: 'any';
 
 	return (
 		<MapExperience

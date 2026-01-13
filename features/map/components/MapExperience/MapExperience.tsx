@@ -49,7 +49,7 @@ const mapProvider = Platform.OS === 'android' ? PROVIDER_GOOGLE : undefined;
 type MapExperienceProps = {
 	autoRouteToNearest?: boolean;
 	routeMode?: TravelMode;
-	routePreference?: 'urgent' | 'emergency' | 'any';
+	routePreference?: 'urgent' | 'emergency' | 'routine' | 'any';
 };
 
 const toLatLng = (region: Region): LatLng => ({
@@ -101,6 +101,7 @@ const urgentKeywords = [
 ];
 
 const emergencyKeywords = ['emergency', 'er', 'emergency room', 'hospital'];
+const routineKeywords = ['primary care', 'family', 'internal medicine', 'clinic'];
 
 const isEmergencyPlace = (place: PlaceResult) => {
 	const normalized = `${place.name} ${place.address} ${place.types.join(' ')}`.toLowerCase();
@@ -113,6 +114,13 @@ const isUrgentPlace = (place: PlaceResult) => {
 	if (place.types.includes('hospital')) return false;
 	if (place.types.includes('doctor') || place.types.includes('health')) return true;
 	return urgentKeywords.some((keyword) => normalized.includes(keyword));
+};
+
+const isRoutinePlace = (place: PlaceResult) => {
+	const normalized = `${place.name} ${place.address} ${place.types.join(' ')}`.toLowerCase();
+	if (place.types.includes('hospital')) return false;
+	if (place.types.includes('doctor') || place.types.includes('health')) return true;
+	return routineKeywords.some((keyword) => normalized.includes(keyword));
 };
 
 export function MapExperience({
@@ -179,6 +187,9 @@ export function MapExperience({
 			setAutoRouteEnabled(true);
 			return;
 		}
+		if (autoRouteToNearest) {
+			setAutoRouteEnabled(true);
+		}
 		if (
 			!autoRouteToNearest ||
 			!autoRouteEnabled ||
@@ -187,24 +198,40 @@ export function MapExperience({
 		) {
 			return;
 		}
-		const originRegion = userRegion ?? cachedUserRegion ?? mapRegion;
-		const origin = toLatLng(originRegion);
-		let candidatePlaces = places;
-		if (routePreference === 'emergency') {
-			candidatePlaces = places.filter(isEmergencyPlace);
-		} else if (routePreference === 'urgent') {
-			candidatePlaces = places.filter(isUrgentPlace);
+		const resolveAndRoute = async (originRegion: Region) => {
+			const origin = toLatLng(originRegion);
+			let candidatePlaces = places;
+			if (routePreference === 'emergency') {
+				candidatePlaces = places.filter(isEmergencyPlace);
+			} else if (routePreference === 'urgent') {
+				candidatePlaces = places.filter(isUrgentPlace);
+			} else if (routePreference === 'routine') {
+				candidatePlaces = places.filter(isRoutinePlace);
+			}
+			if (candidatePlaces.length === 0) {
+				candidatePlaces = places;
+			}
+			const nearest = getNearestPlace(candidatePlaces, origin);
+			if (nearest) {
+				setRouteDestination(nearest);
+				setRouteOrigin(origin);
+				setRouteStatus('loading');
+				setRouteSource('auto');
+			}
+		};
+
+		const originRegion = userRegion ?? cachedUserRegion;
+		if (originRegion) {
+			void resolveAndRoute(originRegion);
+			return;
 		}
-		if (candidatePlaces.length === 0) {
-			candidatePlaces = places;
-		}
-		const nearest = getNearestPlace(candidatePlaces, origin);
-		if (nearest) {
-			setRouteDestination(nearest);
-			setRouteOrigin(origin);
-			setRouteStatus('loading');
-			setRouteSource('auto');
-		}
+
+		void (async () => {
+			const result = await refresh();
+			if (result.region) {
+				await resolveAndRoute(result.region);
+			}
+		})();
 	}, [
 		autoRouteEnabled,
 		autoRouteToNearest,
@@ -215,6 +242,7 @@ export function MapExperience({
 		routePreference,
 		routeSource,
 		userRegion,
+		refresh,
 	]);
 
 	useEffect(() => {

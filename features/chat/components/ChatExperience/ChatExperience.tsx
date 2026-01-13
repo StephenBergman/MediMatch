@@ -68,15 +68,17 @@ function ChatExperienceInner() {
 		() =>
 			guard(async (value: string) => {
 				const wasSent = await sendMessage({ content: value });
-				if (wasSent) {
-					setInput('');
+				if (!wasSent) {
+					setInput(value);
 				}
 			}),
 		[sendMessage]
 	);
 
 	const handleSend = useCallback(() => {
-		guardedSend(input);
+		const outgoing = input;
+		setInput('');
+		guardedSend(outgoing);
 	}, [guardedSend, input]);
 
 	const guardedFollowUp = useMemo(
@@ -86,12 +88,27 @@ function ChatExperienceInner() {
 					.reverse()
 					.find((message) => message.role === 'assistant')?.content;
 				const normalized = lastAssistantMessage?.toLowerCase() ?? '';
-				const prefersEmergency =
-					normalized.includes('emergency room') ||
-					/\ber\b/.test(normalized) ||
-					normalized.includes('call 911') ||
-					normalized.includes('emergency services');
-				const carePreference = prefersEmergency ? 'emergency' : 'urgent';
+		const prefersEmergency =
+			normalized.includes('emergency room') ||
+			/\ber\b/.test(normalized) ||
+			normalized.includes('call 911') ||
+			normalized.includes('emergency services');
+		const prefersRoutine =
+			normalized.includes('primary care') ||
+			normalized.includes('primary doctor') ||
+			normalized.includes('family doctor');
+		const prefersUrgent =
+			normalized.includes('urgent care') ||
+			normalized.includes('express care') ||
+			normalized.includes('walk-in') ||
+			normalized.includes('walk in');
+		const carePreference = prefersEmergency
+			? 'emergency'
+			: prefersRoutine
+				? 'routine'
+				: prefersUrgent
+					? 'urgent'
+					: 'urgent';
 
 				const result = handleFollowUpAction(
 					actionId,
