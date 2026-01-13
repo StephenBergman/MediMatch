@@ -10,54 +10,14 @@ export default function TabLayout() {
 
 	return (
 		<Tabs
-			initialRouteName="chat"
+			initialRouteName="home"
 			screenOptions={{
 				tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
 				headerShown: false,
 				tabBarButton: HapticTab,
 			}}
 		>
-			{showDevTab ? (
-				<Tabs.Screen
-					name="ReactDevTestComponents"
-					options={{
-						title: 'Dev',
-						tabBarIcon: ({ color, size }) => (
-							<MaterialCommunityIcons
-								name="wrench"
-								size={size ?? 30}
-								color={color}
-							/>
-						),
-					}}
-				/>
-			) : null}
-			<Tabs.Screen
-				name="maps"
-				options={{
-					title: 'Maps',
-					tabBarIcon: ({ color, size }) => (
-						<MaterialCommunityIcons
-							name="map-outline"
-							size={size ?? 30}
-							color={color}
-						/>
-					),
-				}}
-			/>
-			<Tabs.Screen
-				name="ChatWithRobot"
-				options={{
-					title: 'Assistant',
-					tabBarIcon: ({ color, size }) => (
-						<MaterialCommunityIcons
-							name="home-outline"
-							size={size ?? 28}
-							color={color}
-						/>
-					),
-				}}
-			/>
+
 			<Tabs.Screen
 				name="chat"
 				options={{
@@ -72,7 +32,7 @@ export default function TabLayout() {
 				}}
 			/>
 			<Tabs.Screen
-				name="map"
+				name="Map"
 				options={{
 					title: 'Map',
 					tabBarIcon: ({ color, size }) => (
