@@ -22,6 +22,9 @@ const settingsEditProfile = () => {
 	 <View style={styles.mainContainer}>
 
     <View style={styles.mainSettingsHeader}>
+
+      <Text style={styles.settingsTitle}>Edit Profile</Text>
+
       <Avatar.Icon
         size={80}
         icon="account-edit"
@@ -66,14 +69,14 @@ const styles = StyleSheet.create({
   marginBottom: -15,
   },
   settingsTitle: {
-	fontSize: 40,
+	fontSize: 20,
 	textAlign: 'center',
 	alignContent: 'center',
-	marginTop: 80,
-	marginBottom: 20,
+	marginTop: -15,
+	marginBottom: 5,
 	marginHorizontal: 20,
 	fontWeight: 'bold',
-  marginLeft: -80,
+  marginLeft: -145,
   },
   SettingsIcon: {
     marginTop: 6,
