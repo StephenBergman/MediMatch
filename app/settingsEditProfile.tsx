@@ -11,4 +11,6 @@ const settingsEditProfile = () => {
 
 export default settingsEditProfile
 
-const styles = StyleSheet.create({})
+const styles = StyleSheet.create({
+  
+})
