@@ -15,9 +15,9 @@ export default function TabLayout() {
 				tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
 				headerShown: false,
 				tabBarButton: HapticTab,
+				
 			}}
 		>
-
 			<Tabs.Screen
 				name="chat"
 				options={{
@@ -51,6 +51,19 @@ export default function TabLayout() {
 					tabBarIcon: ({ color, size }) => (
 						<MaterialCommunityIcons
 							name="cog-outline"
+							size={size ?? 30}
+							color={color}
+						/>
+					),
+				}}
+			/>
+			<Tabs.Screen
+				name="home"
+				options={{
+					title: 'Home',
+					tabBarIcon: ({ color, size }) => (
+						<MaterialCommunityIcons
+							name="home-outline"
 							size={size ?? 30}
 							color={color}
 						/>
