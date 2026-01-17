@@ -45,12 +45,12 @@ export default function TabLayout() {
 				}}
 			/>
 			<Tabs.Screen
-				name="settings"
+				name="home"
 				options={{
-					title: 'Settings',
+					title: 'Home',
 					tabBarIcon: ({ color, size }) => (
 						<MaterialCommunityIcons
-							name="cog-outline"
+							name="home-outline"
 							size={size ?? 30}
 							color={color}
 						/>
@@ -58,12 +58,25 @@ export default function TabLayout() {
 				}}
 			/>
 			<Tabs.Screen
-				name="home"
+				name="profile"
 				options={{
-					title: 'Home',
+					title: 'Profile',
 					tabBarIcon: ({ color, size }) => (
 						<MaterialCommunityIcons
-							name="home-outline"
+							name="account-outline"
+							size={size ?? 30}
+							color={color}
+						/>
+					),
+				}}
+			/>
+			<Tabs.Screen
+				name="settings"
+				options={{
+					title: 'Settings',
+					tabBarIcon: ({ color, size }) => (
+						<MaterialCommunityIcons
+							name="cog-outline"
 							size={size ?? 30}
 							color={color}
 						/>
