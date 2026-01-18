@@ -61,8 +61,21 @@ const settingsEditProfile = () => {
 				
 			
       </ScrollView>
-		</View>
+
+        <Button
+              mode="contained"
+              textColor='#ffffff'
+              style={styles.saveChangesButton}
+              onPress={() => {
+                  console.log("Home screen pressed")
+                  router.replace('/(protected)/(tabs)/home');
+              }}
+          >
+            Save Changes
+      </Button>
+		
     </View>
+  </View>
   )
 }
 
@@ -143,4 +156,12 @@ const styles = StyleSheet.create({
     width: '90%',
     alignSelf: 'center',
   },
+  saveChangesButton: {
+        width: '40%', 
+        alignSelf: 'center',
+        backgroundColor: '#000000',
+        marginTop: 20, 
+        padding: 5,
+        marginBottom: 30,
+    },
 });
