@@ -1,6 +1,6 @@
 //this is the settings page, there will be sub settings included and logout option.
 
-import { StyleSheet, View, Image, Text, BackHandler} from 'react-native'
+import { StyleSheet, View, Image, Text, BackHandler, TextInput} from 'react-native'
 import React from 'react'
 import { Button, List, Searchbar, Divider, Avatar } from 'react-native-paper'
 import { ScrollView } from 'react-native-gesture-handler'
@@ -17,6 +17,12 @@ const settingsEditProfile = () => {
 
   //stores for search bar
   const [query, setQuery] = React.useState("");
+
+  //stores for profile information
+  const[firstName, setFirstName] = React.useState('');
+  const[lastName, setLastName] = React.useState('');
+  const[email, setEmail] = React.useState('');
+  const[phoneNumber, setPhoneNumber] = React.useState('');
 
   return (
 	 <View style={styles.mainContainer}>
@@ -36,7 +42,22 @@ const settingsEditProfile = () => {
 
 			<ScrollView style={{margin: 10}}>
 
-
+      <Text style={styles.inputLabels}>First Name</Text>
+              <TextInput
+                style={styles.changeFirstNameInputBox}
+                placeholder="Set Firstname"
+                onChangeText={text => setFirstName(text)}
+                value={firstName}
+                autoCapitalize="none"
+              />
+      <Text style={styles.inputLabels}>Last Name</Text>
+              <TextInput
+                style={styles.changeFirstNameInputBox}
+                placeholder="Set Lastname"
+                onChangeText={text => setLastName(text)}
+                value={lastName}
+                autoCapitalize="none"
+              />
 				
 			
       </ScrollView>
@@ -105,5 +126,21 @@ const styles = StyleSheet.create({
     height: 4,
     width: '100%',
     marginLeft: 0,
+  },
+  inputLabels:{
+    fontSize:14,
+    color:'#000000ff',
+    marginLeft: 20,
+    marginBottom:-14,
+  },
+  changeFirstNameInputBox:{
+    height: 50, 
+    borderColor: '#000', 
+    borderWidth: 3, 
+    margin: 20, 
+    paddingLeft: 10, 
+    borderRadius: 5,
+    width: '90%',
+    alignSelf: 'center',
   },
 });
