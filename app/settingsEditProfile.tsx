@@ -2,7 +2,7 @@
 
 import { StyleSheet, View, Image, Text, BackHandler, TextInput} from 'react-native'
 import React from 'react'
-import { Button, List, Searchbar, Divider, Avatar } from 'react-native-paper'
+import { Button, List, Searchbar, Divider, Avatar, IconButton, Icon } from 'react-native-paper'
 import { ScrollView } from 'react-native-gesture-handler'
 
 //this page will route to the login page after user accepts the terms and coniditions policy
@@ -22,6 +22,7 @@ const settingsEditProfile = () => {
   const[firstName, setFirstName] = React.useState('');
   const[lastName, setLastName] = React.useState('');
   const[email, setEmail] = React.useState('');
+  const[secondaryEmail, setSecondaryEmail] = React.useState('');
   const[phoneNumber, setPhoneNumber] = React.useState('');
 
   return (
@@ -58,22 +59,54 @@ const settingsEditProfile = () => {
                 value={lastName}
                 autoCapitalize="none"
               />
-				
-			
-      </ScrollView>
+      <Text style={styles.inputLabels}>Email</Text>
+              <TextInput
+                style={styles.changeFirstNameInputBox}
+                placeholder="Set Email"
+                onChangeText={text => setEmail(text)}
+                value={email}
+                autoCapitalize="none"
+              />
+      <Text style={styles.inputLabels}>Secondary Email</Text>
+              <TextInput
+                style={styles.changeFirstNameInputBox}
+                placeholder="Set Secondary Email"
+                onChangeText={text => setSecondaryEmail(text)}
+                value={secondaryEmail}
+                autoCapitalize="none"
+              /> 
+      <Text style={styles.inputLabels}>Phone Number</Text>
+              <TextInput
+                style={styles.changeFirstNameInputBox}
+                placeholder="Set Phone Number"
+                onChangeText={text => setPhoneNumber(text)}
+                value={phoneNumber}
+                autoCapitalize="none"
+              /> 
 
+      </ScrollView>
+        <Button
+              mode="contained"
+              textColor='#ffffff'
+              style={styles.changePasswordButton}
+              onPress={() => {
+                  console.log("user directed to change password")
+                  router.replace('/verificationCode_NP');
+              }}
+          >
+            Change Password
+        </Button>
+        
         <Button
               mode="contained"
               textColor='#ffffff'
               style={styles.saveChangesButton}
               onPress={() => {
-                  console.log("Home screen pressed")
-                  router.replace('/(protected)/(tabs)/home');
+                  console.log("Profile changes have been made")
               }}
           >
             Save Changes
-      </Button>
-		
+        </Button>
     </View>
   </View>
   )
@@ -156,8 +189,16 @@ const styles = StyleSheet.create({
     width: '90%',
     alignSelf: 'center',
   },
+  changePasswordButton: {
+        width: '50%',
+        alignSelf: 'center',
+        backgroundColor: '#000000',
+        marginTop: 20, 
+        padding: 5,
+        marginBottom: 10,
+    },
   saveChangesButton: {
-        width: '40%', 
+        width: '50%',
         alignSelf: 'center',
         backgroundColor: '#000000',
         marginTop: 20, 
