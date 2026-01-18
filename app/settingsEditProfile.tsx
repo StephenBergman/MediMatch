@@ -33,7 +33,7 @@ const settingsEditProfile = () => {
       <Text style={styles.settingsTitle}>Edit Profile</Text>
 
       <Avatar.Icon
-        size={80}
+        size={100}
         icon="account-edit"
         style={styles.SettingsIcon}
       />
@@ -148,7 +148,7 @@ const styles = StyleSheet.create({
   SettingsIcon: {
     marginTop: 6,
     marginBottom: 6,
-    marginLeft  : -124,
+    marginLeft  : -133,
   },
    mainSettingsHeader: {
     marginTop: 20,
