@@ -30,6 +30,16 @@ const profile = () => {
 		<View style={styles.subProfileContainer}>
 		 <ScrollView style={{margin: 10}}>
 
+        <Text style={styles.subheaderTitle}>User Location</Text>
+        <View style={styles.dividerLine} />
+
+        <Text style={styles.subheaderTitle}>Health Preferences</Text>
+        <View style={styles.dividerLine} />
+
+        <Text style={styles.subheaderTitle}>Recent Activity</Text>
+        <View style={styles.dividerLine} />
+       
+
      </ScrollView>
     </View>
     
