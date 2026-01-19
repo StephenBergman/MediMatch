@@ -10,26 +10,14 @@ export default function TabLayout() {
 
 	return (
 		<Tabs
-			initialRouteName="chat"
+			initialRouteName="home"
 			screenOptions={{
 				tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
 				headerShown: false,
 				tabBarButton: HapticTab,
+				
 			}}
 		>
-			<Tabs.Screen
-				name="home"
-				options={{
-					title: 'Home',
-					tabBarIcon: ({ color, size }) => (
-						<MaterialCommunityIcons
-							name="home-outline"
-							size={size ?? 28}
-							color={color}
-						/>
-					),
-				}}
-			/>
 			<Tabs.Screen
 				name="chat"
 				options={{
@@ -44,13 +32,39 @@ export default function TabLayout() {
 				}}
 			/>
 			<Tabs.Screen
-				name="map"
+				name="Map"
 				options={{
 					title: 'Map',
 					tabBarIcon: ({ color, size }) => (
 						<MaterialCommunityIcons
 							name="map-marker-outline"
 							size={size ?? 28}
+							color={color}
+						/>
+					),
+				}}
+			/>
+			<Tabs.Screen
+				name="home"
+				options={{
+					title: 'Home',
+					tabBarIcon: ({ color, size }) => (
+						<MaterialCommunityIcons
+							name="home-outline"
+							size={size ?? 30}
+							color={color}
+						/>
+					),
+				}}
+			/>
+			<Tabs.Screen
+				name="profile"
+				options={{
+					title: 'Profile',
+					tabBarIcon: ({ color, size }) => (
+						<MaterialCommunityIcons
+							name="account-outline"
+							size={size ?? 30}
 							color={color}
 						/>
 					),

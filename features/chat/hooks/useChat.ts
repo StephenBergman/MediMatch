@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useState } from 'react';
 
 import {
 	createChatCompletion,
@@ -28,7 +28,7 @@ export type ChatUxError = {
 const SYSTEM_PROMPT: ChatMessagePayload = {
 	role: 'system',
 	content:
-		'You are a concise triage assistant for the MediMatch app. Do NOT provide medical advice, diagnoses, or treatment steps. Your only job is to recommend the appropriate care setting (e.g., call emergency services/ER, Urgent Care, Primary Care, or Self-care) with a brief rationale. If symptoms sound severe or life-threatening, instruct the user to call emergency services immediately. Keep replies short.',
+		'You are a concise, helpful medical assistant for the MediMatch app. Provide clear, actionable answers and keep responses short.',
 };
 
 const createId = () =>
@@ -138,7 +138,6 @@ export function useChat() {
 	const resetChat = useCallback(() => {
 		setMessages([]);
 		setError(null);
-		setIsAssistantTyping(false);
 	}, []);
 
 	/**
@@ -247,11 +246,7 @@ export function useChat() {
 		async ({ content }: { content: string }): Promise<boolean> => {
 			const trimmed = content.trim();
 			if (!trimmed) {
-				handleFailure(
-					validationError('Please enter a message before sending.', {
-						code: 'VALIDATION_REQUIRED',
-					})
-				);
+				setError('Please enter a message before sending.');
 				return false;
 			}
 
@@ -269,13 +264,11 @@ export function useChat() {
 				id: createId(),
 				role: 'user',
 				content: trimmed,
-				createdAt: Date.now(),
-				status: 'sending',
 			};
 
-			setMessages((prev) => [...prev, userMessage]);
+			const conversation = [...messages, userMessage];
+			setMessages(conversation);
 			setIsSending(true);
-			startTyping();
 			setError(null);
 
 			let wasSuccessful = false;
@@ -294,7 +287,6 @@ export function useChat() {
 									role,
 									content: text,
 								})),
-								{ role: 'user', content: trimmed },
 							],
 						});
 
@@ -307,8 +299,6 @@ export function useChat() {
 					id: createId(),
 					role: 'assistant',
 					content: reply,
-					createdAt: Date.now(),
-					status: 'sent',
 				};
 
 				// Add follow-up prompt if conditions are met
@@ -335,19 +325,18 @@ export function useChat() {
 				);
 			} finally {
 				setIsSending(false);
-				stopTypingSoon();
 			}
 
 			return wasSuccessful;
 		},
-		[apiKey, handleFailure, startTyping, stopTypingSoon]
+		//eslint-disable-next-line react-hooks/exhaustive-deps
+		[messages]
 	);
 
 	return {
 		messages,
 		sendMessage,
 		isSending,
-		isAssistantTyping,
 		error,
 		clearError,
 		resetChat,

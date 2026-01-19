@@ -12,7 +12,7 @@ export type ConditionResponse = {
 	selfCareTips?: string[];
 };
 
-/** Common mock responses for student/demo use; not medical advice. */
+// Common mock responses for student/demo use; not medical advice.
 export const conditionResponses: ConditionResponse[] = [
 	{
 		title: 'Chest pain or pressure',

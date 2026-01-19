@@ -140,20 +140,22 @@ function AppShell() {
 										/>
 									) : (
 										<ThemeProvider value={navigationTheme}>
-											<Stack
-												screenOptions={{
-													headerShown: false,
-													animation: 'none',
-													contentStyle: {
-														backgroundColor: navigationTheme.colors.background,
-													},
-												}}
-											>
-												<Stack.Screen
-													name="(protected)/(tabs)"
-													options={{ headerShown: false }}
-												/>
-											</Stack>
+						<Stack
+							initialRouteName="index"
+							screenOptions={{
+								headerShown: false,
+								animation: 'none',
+								contentStyle: {
+									backgroundColor: navigationTheme.colors.background,
+								},
+							}}
+						>
+							<Stack.Screen
+								name="(protected)/(tabs)"
+								options={{ headerShown: false }}
+							/>
+							<Stack.Screen name="dev" options={{ headerShown: false }} />
+						</Stack>
 											<StatusBar
 												style={scheme === 'dark' ? 'light' : 'dark'}
 												translucent

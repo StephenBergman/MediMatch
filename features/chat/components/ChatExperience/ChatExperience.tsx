@@ -1,11 +1,11 @@
-import React, {
-	useCallback,
-	useEffect,
-	useMemo,
-	useRef,
-	useState,
-} from 'react';
 import { useRouter } from 'expo-router';
+import React, {
+    useCallback,
+    useEffect,
+    useMemo,
+    useRef,
+    useState,
+} from 'react';
 import { Animated, FlatList, StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -15,8 +15,8 @@ import { ChatErrorNotice } from '@/features/chat/components/ChatErrorNotice/Chat
 import { ChatHeader } from '@/features/chat/components/ChatHeader/ChatHeader';
 import { ChatMessageList } from '@/features/chat/components/ChatMessageList/ChatMessageList';
 import {
-	ChatProvider,
-	useChatContext,
+    ChatProvider,
+    useChatContext,
 } from '@/features/chat/contexts/ChatContext';
 import { type ChatMessage } from '@/features/chat/types';
 import { useColorScheme } from '@/hooks/use-color-scheme';
@@ -33,12 +33,12 @@ function ChatExperienceInner() {
 		messages,
 		sendMessage,
 		isSending,
-		isAssistantTyping,
 		error,
 		clearError,
 		resetChat,
 		handleFollowUpAction,
 	} = useChatContext();
+	const [isAssistantTyping, setIsAssistantTyping] = useState(false);
 	const listRef = useRef<FlatList<ChatMessage> | null>(null);
 	const fadeAnim = useRef(new Animated.Value(1)).current;
 	const [isClearing, setIsClearing] = useState(false);
@@ -114,7 +114,7 @@ function ChatExperienceInner() {
 					actionId,
 					() => {
 						router.push({
-							pathname: '/(protected)/(tabs)/map',
+							pathname: '/(protected)/(tabs)/Map',
 							params: { route: 'nearest', care: carePreference },
 						});
 					},
@@ -143,7 +143,7 @@ function ChatExperienceInner() {
 			listRef.current?.scrollToEnd({ animated: true });
 		}, 60);
 		return () => clearTimeout(timeout);
-	}, [messages, isAssistantTyping]);
+	}, [messages]);
 
 	return (
 		<SafeAreaView

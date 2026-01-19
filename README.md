@@ -1,79 +1,50 @@
-# MediMatch
+# Welcome to your Expo app 👋
 
-![Expo](https://img.shields.io/badge/Expo-Latest-blue)
-![React Native](https://img.shields.io/badge/React%20Native-Mobile%20App-lightblue)
-![Supabase](https://img.shields.io/badge/Supabase-Backend-green)
-![Google Maps](https://img.shields.io/badge/Google%20Maps-API-red)
-![Gemini API](https://img.shields.io/badge/Gemini-API-orange)
+This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
 
-MediMatch is a mobile application built with React Native and Expo, designed to help users understand where to go to find professional answers for their symptoms, medications, and health information in a simple, intuitive way. This is done with the usage of the Google Maps API to help users locate nearby clinics, pharmacies, and other healthcare resources. The app connects to a Supabase backend for authentication, data storage, and real-time features. It also integrates the Gemini API to provide AI-powered suggestions and insights throughout the user experience.
+## Get started
 
----
+1. Install dependencies
 
-## How It Works
+   ```bash
+   npm install
+   ```
 
-MediMatch uses Supabase for authentication and storing user-generated data.
-When users enter symptoms or health questions, the app sends the prompt to the Gemini API, which returns AI-powered suggestions the app displays in real time.
-The Google Maps API is used to display location-based results, helping users identify relevant medical facilities based on their needs.
+2. Start the app
 
----
+   ```bash
+   npx expo start
+   ```
 
-## Features
+In the output, you'll find options to open the app in a
 
-- **AI-powered recommendations** using the Gemini API  
-- **Location-based results** powered by the Google Maps API  
-- **User authentication and profiles** backed by Supabase  
-- **Secure data storage** for medical logs, symptoms, and history  
-- **Clean and responsive UI** built with React Native + Expo  
-- **Real-time syncing** for user data across devices
+- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
+- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
+- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
+- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
 
----
+You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
 
-## Tech Stack
+## Get a fresh project
 
-- **React Native** — core framework for building the mobile app  
-- **Expo** — used to streamline development and deployment for both Android and iOS  
-- **Visual Studio Code** — primary development environment  
-- **Supabase** — database, auth, and backend services  
-- **Gemini API** — conversational and generative AI functionality  
-- **Google Maps API** — powering location search and map interactions  
-
----
-
-## Getting Started
-
-### Prerequisites
-- Node.js and npm or yarn  
-- Visual Studio Code  
-- Expo CLI installed globally  
-- A Supabase project with API keys  
-- Gemini API key  
-- Google Maps API key
-
----
-
-## Installation
+When you're ready, run:
 
 ```bash
-git clone https://github.com/yourusername/MediMatch.git
-cd MediMatch
-npm install
+npm run reset-project
 ```
 
----
+This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
 
-## Running the App
+## Learn more
 
-```bash
-expo start
-```
+To learn more about developing your project with Expo, look at the following resources:
 
----
+- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
+- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
 
-## Scripts
-```bash
-expo start     # Runs the development server
-expo build     # Builds the project for deployment
-npm install    # Installs dependencies
-npm run lint   # Runs linting (if configured)
-```
+## Join the community
+
+Join our community of developers creating universal apps.
+
+- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
+- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.

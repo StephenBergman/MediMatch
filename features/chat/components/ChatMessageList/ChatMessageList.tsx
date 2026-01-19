@@ -1,6 +1,6 @@
 import React, { type RefObject } from 'react';
 import { FlatList, StyleSheet, View } from 'react-native';
-import { Chip, Text, useTheme } from 'react-native-paper';
+import { Text, useTheme } from 'react-native-paper';
 
 import { ChatMessageBubble } from '@/features/chat/components/ChatMessageBubble';
 import { TypingIndicator } from '@/features/chat/components/TypingIndicator/TypingIndicator';

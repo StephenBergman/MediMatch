@@ -3,93 +3,67 @@ import React from 'react'
 import { Button } from 'react-native-paper'
 import { router } from 'expo-router'
 
-const verificationCode = () => {
+const verificationCode_NP = () => {
 
   //for users email entry
-    const[email, setEmail] = React.useState('');
+    const[password, setPassword] = React.useState('');
+    const[confirmPassword, setConfirmPassword] = React.useState('');
 
   return (
     <View>
-      <Text style={styles.verificationCodeTitle}>Verification</Text>
+      <Text style={styles.verificationCode_NP_Title}>Verify New Password</Text>
 
-      <Text style={styles.verificationCode_EnterEmailText}>Enter Verification Code</Text>
+
+
+      <Text style={styles.inputLabels}>Create New Password</Text>
 
       <TextInput
-              style={styles.verificationCode_EmailInputBox}
-              placeholder="Enter Code Here"
-              onChangeText={text => setEmail(text)}
-              value={email}
-              keyboardType="email-address"
+              style={styles.verificationCode_NP_EmailInputBox}
+              onChangeText={text => setPassword(text)}
+              value={password}
+              secureTextEntry={false}
               autoCapitalize="none"
       />
 
-      <Text style={styles.backToSignInText}
-          onPress={() => {
-            console.log("User sent back to login")
-            router.replace('../login');
-          }}
-        >
-        If you didnt recieve a code. Resend
-      </Text>
+      <Text style={styles.inputLabels}>Confirm New Password</Text>
+
+      <TextInput
+              style={styles.verificationCode_NP_EmailInputBox}
+              onChangeText={text => setConfirmPassword(text)}
+              value={confirmPassword}
+              secureTextEntry={true}
+              autoCapitalize="none"
+      />
 
       <Button
         mode="contained"
         textColor='#ffffff'
-        style={styles.verificationButton}
+        style={styles.verificationCode_NP_Button}
           onPress={() => {
-            console.log("User sent to create new password")
-            router.replace('../verificationCode_NP');
+            console.log("User confirmed new passwor and is being sent to back to login screen")
+            router.replace('../login');
             }}
         >
-        Verify
+        Confirm New Password
       </Button>
       
-      
-    
-      <View style={styles.bottomButtonGroup}>
-
-        <Text style={styles.haveAnAccountText}>Do you have an Account? </Text>
-
-        <Button
-          mode="contained"
-          textColor='#ffffff'
-          style={styles.signUpButton}
-            onPress={() => {
-              console.log("User sent to sign up page")
-              router.replace('../signup');
-              }}
-          >
-          Sign Up
-        </Button>
-              <Text style={styles.orText}>OR </Text>
-        <Button
-          mode="outlined"
-          textColor='#ffffff'
-          style={ styles.googleButton }
-              onPress={() => {
-              console.log('Google Sign-Up pressed');
-            }}
-          >
-          Sign Up with Google
-        </Button>
-      </View>
-
 
     </View>
   )
 }
 
-export default verificationCode
+export default verificationCode_NP
 
 const styles = StyleSheet.create({
-    verificationCodeTitle:{
+    verificationCode_NP_Title:{
         fontSize: 16,
         color:"#000000ff" ,
         fontWeight:'bold',
         textAlign: 'center',
-        marginTop: 40,       
+        marginTop: 40,
+        marginBottom: 30,      
     },
-    verificationCode_EnterEmailText:{
+    verificationCode_NP_EnterEmailText:{
         fontSize: 18,
         color:"#000000ff" ,
         fontWeight:'bold',
@@ -97,7 +71,7 @@ const styles = StyleSheet.create({
         marginTop: 40,
         marginBottom: -12,
     },
-    verificationCode_EmailInputBox: {
+    verificationCode_NP_EmailInputBox: {
         height: 50, 
         borderColor: '#000', 
         borderWidth: 3, 
@@ -105,7 +79,7 @@ const styles = StyleSheet.create({
         paddingLeft: 10, 
         borderRadius: 5,
         alignSelf: 'center',
-        width: '75%',
+        width: '80%',
     },
     backToSignInText:{
         fontSize: 14,
@@ -114,7 +88,7 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         marginTop: -5, 
     },
-    verificationButton:{
+    verificationCode_NP_Button:{
         width: '50%', 
         alignSelf: 'center',
         backgroundColor: '#000000',
@@ -157,5 +131,11 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         marginTop: 20, 
         marginBottom: 3,
-    }
+    },
+    inputLabels:{
+    fontSize:14,
+    color:'#000000ff',
+    marginLeft: 45,
+    marginBottom:-14,
+  },
 })

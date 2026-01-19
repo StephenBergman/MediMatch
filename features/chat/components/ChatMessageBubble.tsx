@@ -36,23 +36,6 @@ type Props = {
 export function ChatMessageBubble({ message, onFollowUpAction }: Props) {
 	const theme = useTheme();
 	const isUser = message.role === 'user';
-	const timeLabel = formatTime(message.createdAt);
-	const statusLabel = isUser
-		? message.status === 'failed'
-			? 'Not sent'
-			: message.status === 'sending'
-				? 'Sending…'
-				: 'Sent'
-		: timeLabel;
-	const statusColor =
-		message.status === 'failed'
-			? theme.colors.error
-			: isUser
-				? theme.colors.onPrimaryContainer
-				: theme.colors.onSurfaceVariant;
-	const textColor = isUser
-		? theme.colors.onPrimaryContainer
-		: theme.colors.onSurface;
 
 	const markdownStyles = {
 		text: {
@@ -186,14 +169,5 @@ const styles = StyleSheet.create({
 	content: {
 		fontSize: 16,
 		lineHeight: 22,
-	},
-	metaRow: {
-		marginTop: 6,
-		flexDirection: 'row',
-		alignItems: 'center',
-		gap: 6,
-	},
-	timestamp: {
-		fontSize: 12,
 	},
 });

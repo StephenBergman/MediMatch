@@ -52,13 +52,15 @@ const settings = () => {
           <List.Item 
           title="Edit Profile"
           left={(props) => <List.Icon {...props} icon="account-circle" />} 
-          right={(props) => <List.Icon {...props} icon="chevron-right" />} 
+          right={(props) => <List.Icon {...props} icon="chevron-right" />}
+          onPress={() => router.push('/settingsEditProfile')}
           />
 
           <List.Item 
           title="Edit Password"
           left={(props) => <List.Icon {...props} icon="lock" />}
-          right={(props) => <List.Icon {...props} icon="chevron-right" />}  
+          right={(props) => <List.Icon {...props} icon="chevron-right" />}
+          onPress={() => router.push('/verificationCode_NP')}
           />
 
           <List.Item 
