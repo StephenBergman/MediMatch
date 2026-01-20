@@ -13,6 +13,11 @@ const profile = () => {
   //routes to other pages
 	const router = useRouter();
 
+  //user storage display
+  const [username, setUsername] = React.useState('');
+  const [age, setAge] = React.useState('');
+  const [gender, setGender] = React.useState('');
+
   //Location preferences storage
   const [zipCode, setZipCode] = React.useState('');
   const [area, setArea] = React.useState('');
@@ -33,16 +38,21 @@ const profile = () => {
 
     <Text style={styles.profileTitle}>Profile</Text>
 
-    <View style={styles.mainProfileHeader}>
-
-      
+    <View style={styles.avatarNameRow}>
 
       <Avatar.Icon
-        size={100}
+        size={80}
         icon="account-edit"
-        style={styles.profileIcon}
       />
+
+      <View>
+        <Text style={styles.username}>Username: {username}</Text>
+        <Text style={styles.username}>Age: {age}</Text>
+        <Text style={styles.username}>Gender: {gender}</Text>
+      </View>
+
 		</View>
+
 		
 		<View style={styles.subProfileContainer}>
 		 <ScrollView style={{margin: 10}}>
@@ -166,11 +176,10 @@ const styles = StyleSheet.create({
   },
   profileTitle: {
 	fontSize: 30,
+  marginTop: 5,
+  marginBottom: 10,
+  fontWeight: 'bold',
 	textAlign: 'center',
-	alignContent: 'center',
-	marginTop: 5,
-	fontWeight: 'bold',
-  marginLeft: 5,
   },
   profileIcon: {
     marginTop: -15,
@@ -178,10 +187,11 @@ const styles = StyleSheet.create({
     marginLeft  : -270,
     flexDirection: 'row',
   },
-   mainProfileHeader: {
-    marginTop: 20,
-    marginBottom: 25,
-    marginLeft: 170,
+   avatarNameRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 20,
   },
   ButtonGroup: {
 	flexDirection: 'row',
@@ -287,5 +297,10 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     width: '50%',
     marginLeft: 10,
+  },
+  username: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginLeft: 12,
   },
 });
