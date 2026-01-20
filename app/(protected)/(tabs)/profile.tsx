@@ -40,11 +40,14 @@ const profile = () => {
 
     <View style={styles.avatarNameRow}>
     
-    <Pressable onPress={() => router.push('/settingsEditProfile')}>
-      <Avatar.Icon
-        size={80}
-        icon="account-edit"
-      />
+    <Pressable onPress={() => { 
+      router.push('/settingsEditProfile'); 
+      console.log('User sent to edit profile page'); 
+      }}>
+        <Avatar.Icon
+          size={80}
+          icon="account-edit"
+        />
     </Pressable>
 
       <View>
