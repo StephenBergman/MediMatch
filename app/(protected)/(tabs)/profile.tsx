@@ -10,8 +10,15 @@ import { Avatar } from 'react-native-paper'
 
 const profile = () => {
 	
+  //routes to other pages
 	const router = useRouter();
+
+  //stores for profile information
   const [zipCode, setZipCode] = React.useState('');
+  const [area, setArea] = React.useState('');
+  const [healthinsurance, setHealthInsurance] = React.useState('');
+  const [healthinsurancenumber, setHealthInsuranceNumber] = React.useState('');
+  const [costSensitivity, setCostSensitivity] = React.useState('');
 
   return (
 	 <View style={styles.mainContainer}>
@@ -41,10 +48,47 @@ const profile = () => {
                         value={zipCode}
                         autoCapitalize="none"
                       />
-
+                      
+        <Text style={styles.inputLabels}>City, State</Text>
+                      <TextInput
+                        style={styles.areaInputBox}
+                        placeholder="City, State"
+                        onChangeText={text => setZipCode(text)}
+                        value={zipCode}
+                        autoCapitalize="none"
+                      />
 
         <Text style={styles.subheaderTitle}>Health Preferences</Text>
         <View style={styles.dividerLine} />
+
+        <Text style={styles.inputLabels}>Health Insurance Provider</Text>
+                      <TextInput
+                        style={styles.currentInsuranceInputBox}
+                        placeholder="Name of Provider"
+                        onChangeText={text => setHealthInsurance(text)}
+                        value={healthinsurance}
+                        autoCapitalize="none"
+                      />
+        {/* Needs to be updated for a drop box option for insurance providers*/}
+        <Text style={styles.inputLabels}>Insurance Number</Text>
+                      <TextInput
+                        style={styles.currentInsuranceInputBox}
+                        placeholder="Insurance #"
+                        onChangeText={text => setHealthInsuranceNumber(text)}
+                        value={healthinsurancenumber}
+                        autoCapitalize="none"
+                      />
+        
+        {/* Needs to be updated for a drop box option*/}
+        <Text style={styles.inputLabels}>Cost Sensitivity</Text>
+                      <TextInput
+                        style={styles.costSensitivityInputBox}
+                        placeholder="High, Medium, Low"
+                        onChangeText={text => setCostSensitivity(text)}
+                        value={costSensitivity}
+                        autoCapitalize="none"
+                      />
+        
 
         <Text style={styles.subheaderTitle}>Recent Activity</Text>
         <View style={styles.dividerLine} />
@@ -120,9 +164,9 @@ const styles = StyleSheet.create({
   inputLabels:{
     fontSize:14,
     color:'#000000ff',
-    marginLeft: 20,
-    marginBottom:-14,
+    marginBottom: -15,
     marginTop: 10,
+    marginLeft: 10,
   },
   zipCodeInputBox:{
     height: 50,
@@ -132,6 +176,36 @@ const styles = StyleSheet.create({
     paddingLeft: 10, 
     borderRadius: 5,
     width: '30%',
-    alignSelf: 'flex-start',
+    marginLeft: 10,
+  },
+  areaInputBox:{
+    height: 50,
+    borderColor: '#000', 
+    borderWidth: 3, 
+    margin: 20, 
+    paddingLeft: 10, 
+    borderRadius: 5,
+    width: '30%',
+    marginLeft: 10,
+  },
+  currentInsuranceInputBox:{
+    height: 50,
+    borderColor: '#000', 
+    borderWidth: 3, 
+    margin: 20, 
+    paddingLeft: 10, 
+    borderRadius: 5,
+    width: '50%',
+    marginLeft: 10,
+  },
+  costSensitivityInputBox:{
+    height: 50,
+    borderColor: '#000', 
+    borderWidth: 3, 
+    margin: 20, 
+    paddingLeft: 10, 
+    borderRadius: 5,
+    width: '50%',
+    marginLeft: 10,
   },
 });
