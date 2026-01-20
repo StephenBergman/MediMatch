@@ -2,7 +2,7 @@
 
 import { useRouter } from 'expo-router'
 import React from 'react'
-import { StyleSheet, Text, View } from 'react-native'
+import { Pressable, StyleSheet, Text, View } from 'react-native'
 import { ScrollView, TextInput } from 'react-native-gesture-handler'
 import { Avatar } from 'react-native-paper'
 
@@ -39,11 +39,13 @@ const profile = () => {
     <Text style={styles.profileTitle}>Profile</Text>
 
     <View style={styles.avatarNameRow}>
-
+    
+    <Pressable onPress={() => router.push('/settingsEditProfile')}>
       <Avatar.Icon
         size={80}
         icon="account-edit"
       />
+    </Pressable>
 
       <View>
         <Text style={styles.username}>Username: {username}</Text>
@@ -103,7 +105,7 @@ const profile = () => {
           <Text style={styles.HealthPreferencesName}>Cost Sensitivity: {costSensitivity}</Text>
         </View>
       
-      
+
         <Text style={styles.subheaderTitle}>Recent Activity</Text>
         <View style={styles.dividerLine}/>
         
