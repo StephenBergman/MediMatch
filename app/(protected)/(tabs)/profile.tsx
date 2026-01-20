@@ -13,12 +13,19 @@ const profile = () => {
   //routes to other pages
 	const router = useRouter();
 
-  //stores for profile information
+  //Location preferences storage
   const [zipCode, setZipCode] = React.useState('');
   const [area, setArea] = React.useState('');
-  const [healthinsurance, setHealthInsurance] = React.useState('');
+
+  //Health Preferences storage
+  const [healthinsuranceprovidername, setHealthInsuranceProviderName] = React.useState('');
   const [healthinsurancenumber, setHealthInsuranceNumber] = React.useState('');
   const [costSensitivity, setCostSensitivity] = React.useState('');
+
+  //Recent Activity storage
+  const [lastsymptomcheck, setLastSymptomCheck] = React.useState('');
+  const [lastdoctorvisit, setLastDoctorVisit] = React.useState('');
+  const [mostcommonsymptom, setMostCommonSymptom] = React.useState('');
 
   return (
 	 <View style={styles.mainContainer}>
@@ -63,10 +70,10 @@ const profile = () => {
 
         <Text style={styles.inputLabels}>Health Insurance Provider</Text>
                       <TextInput
-                        style={styles.currentInsuranceInputBox}
+                        style={styles.healthInsuranceProviderInputBox}
                         placeholder="Name of Provider"
-                        onChangeText={text => setHealthInsurance(text)}
-                        value={healthinsurance}
+                        onChangeText={text => setHealthInsuranceProviderName(text)}
+                        value={healthinsuranceprovidername}
                         autoCapitalize="none"
                       />
         {/* Needs to be updated for a drop box option for insurance providers*/}
@@ -92,8 +99,31 @@ const profile = () => {
 
         <Text style={styles.subheaderTitle}>Recent Activity</Text>
         <View style={styles.dividerLine} />
-       
-
+        
+        <Text style={styles.inputLabels}>Last Symptom Check</Text>
+                      <TextInput
+                        style={styles.lastSymptomCheckInputBox}
+                        placeholder="MM/DD/YYYY"
+                        onChangeText={text => setLastSymptomCheck(text)}
+                        value={lastsymptomcheck}
+                        autoCapitalize="none"
+                      />
+        <Text style={styles.inputLabels}>Last Doctor Visit</Text>
+                      <TextInput
+                        style={styles.lastDoctorVisitInputBox}
+                        placeholder="MM/DD/YYYY"
+                        onChangeText={text => setLastDoctorVisit(text)}
+                        value={lastdoctorvisit}
+                        autoCapitalize="none"
+                      />
+        <Text style={styles.inputLabels}>Most Common Symptom</Text>
+                      <TextInput
+                        style={styles.mostCommonSymptomInputBox}
+                        placeholder="e.g., Headache"
+                        onChangeText={text => setMostCommonSymptom(text)}
+                        value={mostcommonsymptom}
+                        autoCapitalize="none"
+                      />                         
      </ScrollView>
     </View>
     
@@ -199,6 +229,46 @@ const styles = StyleSheet.create({
     marginLeft: 10,
   },
   costSensitivityInputBox:{
+    height: 50,
+    borderColor: '#000', 
+    borderWidth: 3, 
+    margin: 20, 
+    paddingLeft: 10, 
+    borderRadius: 5,
+    width: '50%',
+    marginLeft: 10,
+  },
+  healthInsuranceProviderInputBox:{
+    height: 50,
+    borderColor: '#000', 
+    borderWidth: 3, 
+    margin: 20, 
+    paddingLeft: 10, 
+    borderRadius: 5,
+    width: '50%',
+    marginLeft: 10,
+  },
+  lastSymptomCheckInputBox:{
+    height: 50,
+    borderColor: '#000', 
+    borderWidth: 3, 
+    margin: 20, 
+    paddingLeft: 10, 
+    borderRadius: 5,
+    width: '50%',
+    marginLeft: 10,
+  },
+  lastDoctorVisitInputBox:{
+    height: 50,
+    borderColor: '#000', 
+    borderWidth: 3, 
+    margin: 20, 
+    paddingLeft: 10, 
+    borderRadius: 5,
+    width: '50%',
+    marginLeft: 10,
+  },
+  mostCommonSymptomInputBox:{
     height: 50,
     borderColor: '#000', 
     borderWidth: 3, 
