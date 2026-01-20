@@ -26,13 +26,16 @@ const profile = () => {
   const [lastsymptomcheck, setLastSymptomCheck] = React.useState('');
   const [lastdoctorvisit, setLastDoctorVisit] = React.useState('');
   const [mostcommonsymptom, setMostCommonSymptom] = React.useState('');
+  const [lastcarerecommended, setLastCareRecommended] = React.useState('');
 
   return (
 	 <View style={styles.mainContainer}>
 
+    <Text style={styles.profileTitle}>Profile</Text>
+
     <View style={styles.mainProfileHeader}>
 
-      <Text style={styles.profileTitle}>Profile</Text>
+      
 
       <Avatar.Icon
         size={100}
@@ -123,6 +126,14 @@ const profile = () => {
                         onChangeText={text => setMostCommonSymptom(text)}
                         value={mostcommonsymptom}
                         autoCapitalize="none"
+                      />
+        <Text style={styles.inputLabels}>Last Care Recommended</Text>
+                      <TextInput
+                        style={styles.mostCommonSymptomInputBox}
+                        placeholder="e.g., Headache"
+                        onChangeText={text => setLastCareRecommended(text)}
+                        value={lastcarerecommended}
+                        autoCapitalize="none"
                       />                         
      </ScrollView>
     </View>
@@ -157,16 +168,15 @@ const styles = StyleSheet.create({
 	fontSize: 30,
 	textAlign: 'center',
 	alignContent: 'center',
-	marginTop: -15,
-	marginBottom: 5,
-	marginHorizontal: 20,
+	marginTop: 5,
 	fontWeight: 'bold',
-  marginLeft: -150,
+  marginLeft: 5,
   },
   profileIcon: {
-    marginTop: 6,
-    marginBottom: 6,
-    marginLeft  : -260,
+    marginTop: -15,
+    marginBottom: 4,
+    marginLeft  : -270,
+    flexDirection: 'row',
   },
    mainProfileHeader: {
     marginTop: 20,
