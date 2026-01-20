@@ -41,16 +41,18 @@ const profile = () => {
     <Text style={styles.profileTitle}>Profile</Text>
 
       <View style={styles.avatarNameRow}>
-      
-        <Pressable onPress={() => { 
-          router.push('/settingsEditProfile'); 
-          console.log('User sent to edit profile page'); 
-          }}>
-            <Avatar.Icon
-              size={80}
-              icon="account-edit"
-            />
-        </Pressable>
+
+        <View style={styles.avatarIcon}>
+          <Pressable onPress={() => { 
+            router.push('/settingsEditProfile'); 
+            console.log('User sent to edit profile page'); 
+            }}>
+              <Avatar.Icon
+                size={80}
+                icon="account-edit"
+              />
+          </Pressable>
+        </View>
 
         <View>
           <Text style={styles.username}>Username: {username}</Text>
@@ -319,5 +321,11 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
     marginBottom: 10,
     marginTop: 10,
+  },
+  avatarIcon: {
+    borderWidth: 3,
+    borderRadius: 999,
+    padding: 0,
+    color: '#000000ff',
   },
 });

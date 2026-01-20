@@ -41,12 +41,15 @@ const settingsEditProfile = () => {
 	 <View style={styles.mainContainer}>
 
     <View style={styles.mainSettingsHeader}>
+
       <Text style={styles.settingsTitle}>Edit Profile</Text>
+
+      <View style={styles.avatarIcon}>
         <Avatar.Icon
           size={100}
           icon="account-edit"
-          style={styles.SettingsIcon}
         />
+      </View>
 		</View>
 		
 		<View style={styles.subSettingsContainer}>
@@ -222,7 +225,6 @@ const styles = StyleSheet.create({
 	marginBottom: 5,
 	marginHorizontal: 20,
 	fontWeight: 'bold',
-  marginLeft: -145,
   },
   SettingsIcon: {
     marginTop: 6,
@@ -232,7 +234,7 @@ const styles = StyleSheet.create({
    mainSettingsHeader: {
     marginTop: 20,
     marginBottom: 25,
-    marginLeft: 170,
+    alignItems: 'center',
   },
   ButtonGroup: {
 	flexDirection: 'row',
@@ -410,6 +412,12 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     width: '60%',
     alignSelf: 'flex-start',
+  },
+  avatarIcon: {
+    borderWidth: 3,
+    borderRadius: 999,
+    padding: 0,
+    color: '#000000ff',
   },
 
 });
