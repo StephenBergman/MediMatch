@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Image, StyleSheet, TextInput, View } from 'react-native';
 
 //this page will route to the home page after user signs in successfully
@@ -7,6 +7,31 @@ import { Button, Checkbox, Text } from 'react-native-paper';
 
 //for Google Sign-In
 import * as WebBrowser from "expo-web-browser";
+
+useEffect(() => {
+  const testConnection = async () => {
+    try {
+      // Test plain fetch to Supabase root (should return a simple JSON)
+      const response = await fetch('https://kvdiaivyfbvvaynpcjig.supabase.co/rest/v1/', {
+        headers: {
+          apikey: process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY || '',
+        },
+      });
+      const data = await response.json();
+      console.log('Plain fetch success:', data);
+
+      // Or even simpler test to a public site
+      // const google = await fetch('https://jsonplaceholder.typicode.com/todos/1');
+      // console.log('Google test:', await google.json());
+    } catch (err) {
+      console.log('Fetch error:', err instanceof Error ? err.message : 'Unknown error');
+    }
+    
+  };
+  testConnection();
+}, []);
+
+
 
 WebBrowser.maybeCompleteAuthSession();
 
