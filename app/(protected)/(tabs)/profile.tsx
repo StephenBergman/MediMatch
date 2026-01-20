@@ -103,12 +103,12 @@ const profile = () => {
           <Text style={styles.recentActivityName}>Last Symptom Check: {lastsymptomcheck}</Text>
         </View>
 
-        <View style={styles.recentActivityRow}>  
-          <Text style={styles.recentActivityName}>Last Doctor Visit: {lastdoctorvisit}</Text>
-        </View>
-
         <View style={styles.recentActivityRow}>                 
           <Text style={styles.recentActivityName}>Most Common Symptom: {mostcommonsymptom}</Text>
+        </View>
+
+        <View style={styles.recentActivityRow}>  
+          <Text style={styles.recentActivityName}>Last Doctor Visit: {lastdoctorvisit}</Text>
         </View>
 
         <View style={styles.recentActivityRow}>
@@ -177,7 +177,7 @@ const styles = StyleSheet.create({
   },
   dividerLine:{
     backgroundColor: '#000000ff',
-    height: 4,
+    height: 2,
     width: '100%',
     marginLeft: 0,
   },
