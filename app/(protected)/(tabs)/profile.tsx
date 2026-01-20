@@ -99,52 +99,30 @@ const profile = () => {
                         autoCapitalize="none"
                       />
         
-        {/* Needs to be updated for a drop box option*/}
-        <Text style={styles.inputLabels}>Cost Sensitivity</Text>
-                      <TextInput
-                        style={styles.costSensitivityInputBox}
-                        placeholder="High, Medium, Low"
-                        onChangeText={text => setCostSensitivity(text)}
-                        value={costSensitivity}
-                        autoCapitalize="none"
-                      />
-        
-
+        <View style={styles.healthPreferencesRow}>
+          <Text style={styles.HealthPreferencesName}>Cost Sensitivity: {costSensitivity}</Text>
+        </View>
+      
+      
         <Text style={styles.subheaderTitle}>Recent Activity</Text>
-        <View style={styles.dividerLine} />
+        <View style={styles.dividerLine}/>
         
-        <Text style={styles.inputLabels}>Last Symptom Check</Text>
-                      <TextInput
-                        style={styles.lastSymptomCheckInputBox}
-                        placeholder="MM/DD/YYYY"
-                        onChangeText={text => setLastSymptomCheck(text)}
-                        value={lastsymptomcheck}
-                        autoCapitalize="none"
-                      />
-        <Text style={styles.inputLabels}>Last Doctor Visit</Text>
-                      <TextInput
-                        style={styles.lastDoctorVisitInputBox}
-                        placeholder="MM/DD/YYYY"
-                        onChangeText={text => setLastDoctorVisit(text)}
-                        value={lastdoctorvisit}
-                        autoCapitalize="none"
-                      />
-        <Text style={styles.inputLabels}>Most Common Symptom</Text>
-                      <TextInput
-                        style={styles.mostCommonSymptomInputBox}
-                        placeholder="e.g., Headache"
-                        onChangeText={text => setMostCommonSymptom(text)}
-                        value={mostcommonsymptom}
-                        autoCapitalize="none"
-                      />
-        <Text style={styles.inputLabels}>Last Care Recommended</Text>
-                      <TextInput
-                        style={styles.lastCareRecommendedInputBox}
-                        placeholder="e.g., Headache"
-                        onChangeText={text => setLastCareRecommended(text)}
-                        value={lastcarerecommended}
-                        autoCapitalize="none"
-                      />                         
+        <View style={styles.recentActivityRow}>  
+          <Text style={styles.recentActivityName}>Last Symptom Check: {lastsymptomcheck}</Text>
+        </View>
+
+        <View style={styles.recentActivityRow}>  
+          <Text style={styles.recentActivityName}>Last Doctor Visit: {lastdoctorvisit}</Text>
+        </View>
+
+        <View style={styles.recentActivityRow}>                 
+          <Text style={styles.recentActivityName}>Most Common Symptom: {mostcommonsymptom}</Text>
+        </View>
+
+        <View style={styles.recentActivityRow}>
+          <Text style={styles.recentActivityName}>Last Care Recommended: {lastcarerecommended}</Text>
+        </View>
+
      </ScrollView>
     </View>
     
@@ -313,5 +291,29 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
     marginLeft: 12,
+  },
+  HealthPreferencesName: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginLeft: 12,
+  },
+  healthPreferencesRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'flex-start',
+    marginBottom: 10,
+    marginTop: 10,
+  },
+  recentActivityName: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginLeft: 12,
+  },
+  recentActivityRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'flex-start',
+    marginBottom: 10,
+    marginTop: 10,
   },
 });
