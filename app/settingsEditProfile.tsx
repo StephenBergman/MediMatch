@@ -159,6 +159,7 @@ const settingsEditProfile = () => {
               textColor='#ffffff'
               style={styles.saveChangesButton}
               onPress={() => {
+                  router.replace('/(protected)/(tabs)/profile');
                   console.log("Profile changes have been made")
               }}
           >
