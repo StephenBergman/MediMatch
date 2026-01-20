@@ -139,7 +139,7 @@ const profile = () => {
                       />
         <Text style={styles.inputLabels}>Last Care Recommended</Text>
                       <TextInput
-                        style={styles.mostCommonSymptomInputBox}
+                        style={styles.lastCareRecommendedInputBox}
                         placeholder="e.g., Headache"
                         onChangeText={text => setLastCareRecommended(text)}
                         value={lastcarerecommended}
@@ -257,7 +257,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     width: '50%',
     marginLeft: 10,
-  },
+  },  
   healthInsuranceProviderInputBox:{
     height: 50,
     borderColor: '#000', 
@@ -268,6 +268,7 @@ const styles = StyleSheet.create({
     width: '50%',
     marginLeft: 10,
   },
+
   lastSymptomCheckInputBox:{
     height: 50,
     borderColor: '#000', 
@@ -289,6 +290,16 @@ const styles = StyleSheet.create({
     marginLeft: 10,
   },
   mostCommonSymptomInputBox:{
+    height: 50,
+    borderColor: '#000', 
+    borderWidth: 3, 
+    margin: 20, 
+    paddingLeft: 10, 
+    borderRadius: 5,
+    width: '50%',
+    marginLeft: 10,
+  },
+  lastCareRecommendedInputBox:{
     height: 50,
     borderColor: '#000', 
     borderWidth: 3, 
