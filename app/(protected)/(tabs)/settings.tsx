@@ -17,6 +17,7 @@ const settings = () => {
 
   //stores for search bar
   const [query, setQuery] = React.useState("");
+  
 
   return (
 	 <View style={styles.mainContainer}>
