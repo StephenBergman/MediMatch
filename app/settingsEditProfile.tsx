@@ -24,6 +24,8 @@ const settingsEditProfile = () => {
   const[email, setEmail] = React.useState('');
   const[secondaryEmail, setSecondaryEmail] = React.useState('');
   const[phoneNumber, setPhoneNumber] = React.useState('');
+  const[birthDate, setBirthDate] = React.useState('');
+  const[gender, setGender] = React.useState('');
 
   //Location preferences storage
   const [zipCode, setZipCode] = React.useState('');
@@ -91,6 +93,25 @@ const settingsEditProfile = () => {
                 value={phoneNumber}
                 autoCapitalize="none"
               />
+      
+      <Text style={styles.inputLabels}>Birth Date</Text>
+              <TextInput
+                style={styles.changebirhthdateInputBox}
+                placeholder="Birth Date"
+                onChangeText={text => setBirthDate(text)}
+                value={birthDate}
+                autoCapitalize="none"
+              />
+
+      <Text style={styles.inputLabels}>Gender</Text>
+              <TextInput
+                style={styles.changeGenderInputBox}
+                placeholder="Gender"
+                onChangeText={text => setGender(text)}
+                value={gender}
+                autoCapitalize="none"
+              />
+              
       <Text style={styles.inputLabels}>Zip Code</Text>
               <TextInput
                 style={styles.changeZipCodeInputBox}
@@ -370,8 +391,25 @@ const styles = StyleSheet.create({
     width: '60%',
     alignSelf: 'flex-start',
   },
-
-
-
+  changeGenderInputBox:{
+    height: 50, 
+    borderColor: '#000', 
+    borderWidth: 3, 
+    margin: 20, 
+    paddingLeft: 10, 
+    borderRadius: 5,
+    width: '60%',
+    alignSelf: 'flex-start',
+  },
+  changebirhthdateInputBox:{
+    height: 50, 
+    borderColor: '#000', 
+    borderWidth: 3, 
+    margin: 20, 
+    paddingLeft: 10, 
+    borderRadius: 5,
+    width: '60%',
+    alignSelf: 'flex-start',
+  },
 
 });
