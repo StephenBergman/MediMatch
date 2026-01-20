@@ -3,7 +3,7 @@
 import { useRouter } from 'expo-router'
 import React from 'react'
 import { StyleSheet, Text, View } from 'react-native'
-import { ScrollView } from 'react-native-gesture-handler'
+import { ScrollView, TextInput } from 'react-native-gesture-handler'
 import { Avatar } from 'react-native-paper'
 
 //icons logic
@@ -11,7 +11,7 @@ import { Avatar } from 'react-native-paper'
 const profile = () => {
 	
 	const router = useRouter();
-
+  const [zipCode, setZipCode] = React.useState('');
 
   return (
 	 <View style={styles.mainContainer}>
@@ -32,6 +32,16 @@ const profile = () => {
 
         <Text style={styles.subheaderTitle}>User Location</Text>
         <View style={styles.dividerLine} />
+
+        <Text style={styles.inputLabels}>Zip Code</Text>
+                      <TextInput
+                        style={styles.zipCodeInputBox}
+                        placeholder="1234"
+                        onChangeText={text => setZipCode(text)}
+                        value={zipCode}
+                        autoCapitalize="none"
+                      />
+
 
         <Text style={styles.subheaderTitle}>Health Preferences</Text>
         <View style={styles.dividerLine} />
@@ -70,14 +80,14 @@ const styles = StyleSheet.create({
   marginBottom: -15,
   },
   profileTitle: {
-	fontSize: 20,
+	fontSize: 30,
 	textAlign: 'center',
 	alignContent: 'center',
 	marginTop: -15,
 	marginBottom: 5,
 	marginHorizontal: 20,
 	fontWeight: 'bold',
-  marginLeft: -145,
+  marginLeft: -150,
   },
   profileIcon: {
     marginTop: 6,
@@ -112,5 +122,16 @@ const styles = StyleSheet.create({
     color:'#000000ff',
     marginLeft: 20,
     marginBottom:-14,
+    marginTop: 10,
+  },
+  zipCodeInputBox:{
+    height: 50,
+    borderColor: '#000', 
+    borderWidth: 3, 
+    margin: 20, 
+    paddingLeft: 10, 
+    borderRadius: 5,
+    width: '30%',
+    alignSelf: 'flex-start',
   },
 });
