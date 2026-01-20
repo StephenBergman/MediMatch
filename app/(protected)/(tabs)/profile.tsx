@@ -20,7 +20,9 @@ const profile = () => {
 
   //Location preferences storage
   const [zipCode, setZipCode] = React.useState('');
-  const [area, setArea] = React.useState('');
+  const [city, setCity] = React.useState('');
+  const [state, setState] = React.useState('');
+  const [country, setCountry] = React.useState('');
 
   //Health Preferences storage
   const [healthinsuranceprovidername, setHealthInsuranceProviderName] = React.useState('');
@@ -38,71 +40,56 @@ const profile = () => {
 
     <Text style={styles.profileTitle}>Profile</Text>
 
-    <View style={styles.avatarNameRow}>
-    
-    <Pressable onPress={() => { 
-      router.push('/settingsEditProfile'); 
-      console.log('User sent to edit profile page'); 
-      }}>
-        <Avatar.Icon
-          size={80}
-          icon="account-edit"
-        />
-    </Pressable>
+      <View style={styles.avatarNameRow}>
+      
+        <Pressable onPress={() => { 
+          router.push('/settingsEditProfile'); 
+          console.log('User sent to edit profile page'); 
+          }}>
+            <Avatar.Icon
+              size={80}
+              icon="account-edit"
+            />
+        </Pressable>
 
-      <View>
-        <Text style={styles.username}>Username: {username}</Text>
-        <Text style={styles.username}>Age: {age}</Text>
-        <Text style={styles.username}>Gender: {gender}</Text>
+        <View>
+          <Text style={styles.username}>Username: {username}</Text>
+          <Text style={styles.username}>Age: {age}</Text>
+          <Text style={styles.username}>Gender: {gender}</Text>
+        </View>
+
       </View>
-
-		</View>
 
 		
 		<View style={styles.subProfileContainer}>
 		 <ScrollView style={{margin: 10}}>
 
-        <Text style={styles.subheaderTitle}>User Location</Text>
+        <Text style={styles.subheaderTitle}>User Prefered Location</Text>
         <View style={styles.dividerLine} />
 
-        <Text style={styles.inputLabels}>Zip Code</Text>
-                      <TextInput
-                        style={styles.zipCodeInputBox}
-                        placeholder="1234"
-                        onChangeText={text => setZipCode(text)}
-                        value={zipCode}
-                        autoCapitalize="none"
-                      />
+        <View style={styles.locationRow}>
+          <Text style={styles.locationName}>Zip Code: {zipCode}</Text>
+        </View>
                       
-        <Text style={styles.inputLabels}>City, State</Text>
-                      <TextInput
-                        style={styles.areaInputBox}
-                        placeholder="City, State"
-                        onChangeText={text => setZipCode(text)}
-                        value={zipCode}
-                        autoCapitalize="none"
-                      />
+        <View style={styles.locationRow}>
+          <Text style={styles.locationName}>City: {city}</Text>
+        </View>
+        <View style={styles.locationRow}>
+          <Text style={styles.locationName}>State: {state}</Text>
+        </View>
+        <View style={styles.locationRow}>
+          <Text style={styles.locationName}>Country: {country}</Text>
+        </View>
 
         <Text style={styles.subheaderTitle}>Health Preferences</Text>
         <View style={styles.dividerLine} />
 
-        <Text style={styles.inputLabels}>Health Insurance Provider</Text>
-                      <TextInput
-                        style={styles.healthInsuranceProviderInputBox}
-                        placeholder="Name of Provider"
-                        onChangeText={text => setHealthInsuranceProviderName(text)}
-                        value={healthinsuranceprovidername}
-                        autoCapitalize="none"
-                      />
-        {/* Needs to be updated for a drop box option for insurance providers*/}
-        <Text style={styles.inputLabels}>Insurance Number</Text>
-                      <TextInput
-                        style={styles.currentInsuranceInputBox}
-                        placeholder="Insurance #"
-                        onChangeText={text => setHealthInsuranceNumber(text)}
-                        value={healthinsurancenumber}
-                        autoCapitalize="none"
-                      />
+        <View style={styles.healthPreferencesRow}>
+          <Text style={styles.HealthPreferencesName}>Health Insurance Provider: {healthinsuranceprovidername}</Text>
+        </View>
+        <View style={styles.healthPreferencesRow}>
+          <Text style={styles.HealthPreferencesName}>Insurance Number: {healthinsurancenumber}</Text>
+        </View>
         
         <View style={styles.healthPreferencesRow}>
           <Text style={styles.HealthPreferencesName}>Cost Sensitivity: {costSensitivity}</Text>
@@ -296,6 +283,18 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
     marginLeft: 12,
+  },
+  locationName: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginLeft: 12,
+  },
+  locationRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'flex-start',
+    marginBottom: 10,
+    marginTop: 10,
   },
   HealthPreferencesName: {
     fontSize: 18,
