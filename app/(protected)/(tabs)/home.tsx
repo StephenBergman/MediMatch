@@ -54,10 +54,10 @@ const styles = StyleSheet.create({
   subHomeContainer: {
     flex: 1,
     backgroundColor: '#ffffffff',
-    borderRadius: 15,
+    borderRadius: 0,
     borderWidth:3,
     borderColor: '#0000000000',
-    width: '100%',
+    width: '101%',
     marginTop: -10,
     marginBottom: -15,
   },
