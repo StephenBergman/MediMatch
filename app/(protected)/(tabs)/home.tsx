@@ -1,5 +1,4 @@
 //this is the home page, there will be profile info and other details here
-
 import { StyleSheet, View, Image, Text, BackHandler, TextInput} from 'react-native'
 import React from 'react'
 import { Button, List, Searchbar, Divider, Avatar, IconButton, Icon } from 'react-native-paper'
@@ -72,9 +71,15 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   avatarHomeIcon: {
-    marginTop: 6,
-    marginBottom: 6,
+    marginTop: 40,
+    marginBottom: -60,
     justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 100,
+    borderWidth: 3,
+    borderColor: '#000000',
+    elevation: 10,
+    zIndex: 10,
   },
    mainHomeHeader: {
     marginTop: 20,
