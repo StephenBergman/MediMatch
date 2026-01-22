@@ -12,6 +12,9 @@ WebBrowser.maybeCompleteAuthSession();
 
 const login = () => {
 
+    //Login page is being loaded log
+  console.log('Login page loaded');
+
   //for users email and password variables
   const[email, setEmail] = React.useState('');
   const[password, setPassword] = React.useState('');

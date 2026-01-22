@@ -9,6 +9,9 @@ import { Avatar } from 'react-native-paper'
 //icons logic
 
 const profile = () => {
+
+  //profile page is being loaded log
+  console.log('Profile page loaded');
 	
   //routes to other pages
 	const router = useRouter();
