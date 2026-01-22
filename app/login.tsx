@@ -6,13 +6,18 @@ import { useRouter } from 'expo-router';
 import { Button, Checkbox, Text } from 'react-native-paper';
 
 //for Google Sign-In
+import * as Google from 'expo-auth-session/providers/google';
 import * as WebBrowser from "expo-web-browser";
+
+WebBrowser.maybeCompleteAuthSession();
+
+
 
 useEffect(() => {
   const testConnection = async () => {
     try {
-      // Test plain fetch to Supabase root (should return a simple JSON)
-      const response = await fetch('https://kvdiaivyfbvvaynpcjig.supabase.co/rest/v1/', {
+      // Plain fetch to Supabase root (returns simple JSON)
+      const response = await fetch('https://xnsxgefnbonqftldkfri.supabase.co/rest/v1/', {
         headers: {
           apikey: process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY || '',
         },
@@ -20,9 +25,7 @@ useEffect(() => {
       const data = await response.json();
       console.log('Plain fetch success:', data);
 
-      // Or even simpler test to a public site
-      // const google = await fetch('https://jsonplaceholder.typicode.com/todos/1');
-      // console.log('Google test:', await google.json());
+      
     } catch (err) {
       console.log('Fetch error:', err instanceof Error ? err.message : 'Unknown error');
     }
@@ -33,7 +36,6 @@ useEffect(() => {
 
 
 
-WebBrowser.maybeCompleteAuthSession();
 
 const login = () => {
 
@@ -46,6 +48,43 @@ const login = () => {
 
   //user is able to check the box to stay signed into there account
   const [rememberMe, setRememberMe] = React.useState(false);
+
+
+const redirectUri = 'https://auth.expo.io/@Dd0nk/medimatch';
+
+console.log('Using redirectUri:', redirectUri);  // Test Log 
+
+
+   // Google hook for authentication
+  const [request, response, promptAsync] = Google.useAuthRequest({
+    clientId: process.env.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID, 
+    redirectUri: redirectUri, 
+    scopes: ['profile', 'email'], 
+  });
+
+    const [loading, setLoading] = React.useState(false);
+
+    const handleGoogleSignIn = async () => {
+        try {
+            setLoading(true);
+            const result = await promptAsync();
+            
+            if (result.type === 'success') {
+                // Handle successful authentication
+                // Extract the access token from result.authentication.accessToken
+                console.log('Google sign-in successful:', result);
+                
+                // Navigate to home page after successful sign-in
+                router.push('/home');
+            } else {
+                console.log('Google sign-in cancelled or failed');
+            }
+        } catch (error) {
+            console.error('Google sign-in error:', error);
+        } finally {
+            setLoading(false);
+        }
+    };
 
   return (
   <View>
@@ -114,14 +153,13 @@ const login = () => {
 
     <Button
         mode="outlined"
-        textColor='#ffffff'
-        style={ styles.googleButton }
-        onPress={() => {
-            console.log('Google Sign-In pressed');
-        }}
-    >
+        textColor="#ffffff"
+        style={styles.googleButton}
+        onPress={handleGoogleSignIn}
+        disabled={loading || !request} // Disable until request is ready
+      >
         Sign In with Google
-    </Button> 
+      </Button>
 
     <Button
         mode="text"
@@ -139,6 +177,9 @@ const login = () => {
 }
 
 export default login
+
+
+
 
 const styles = StyleSheet.create({
     MedimatchLogo: {
