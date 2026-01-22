@@ -82,7 +82,7 @@ const login = () => {
         textColor='#ffffff'
         style={styles.signInButton}
         onPress={() => {
-            console.log("Home screen pressed")
+            console.log("Sign in pressed with email: " + email + " and password: " + password);
             router.replace('/(protected)/(tabs)/home');
         }}
     >
