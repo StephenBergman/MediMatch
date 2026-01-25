@@ -67,7 +67,8 @@ const settings = () => {
           <List.Item 
           title="Notifications"
           left={(props) => <List.Icon {...props} icon="bell" />} 
-          right={(props) => <List.Icon {...props} icon="chevron-right" />} 
+          right={(props) => <List.Icon {...props} icon="chevron-right" />}
+          onPress={() => router.push('/notifications')}
           />
 
           <List.Item 
