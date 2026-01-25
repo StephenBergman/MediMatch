@@ -89,7 +89,8 @@ const settings = () => {
           <List.Item 
           title="Privacy Policy"
           left={(props) => <List.Icon {...props} icon="shield-account-outline" />} 
-          right={(props) => <List.Icon {...props} icon="chevron-right" />} 
+          right={(props) => <List.Icon {...props} icon="chevron-right" />}
+          onPress={() => router.push('/privacyPolicy')}
           />
 
         </List.Section>
