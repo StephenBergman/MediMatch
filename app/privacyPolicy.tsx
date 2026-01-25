@@ -81,19 +81,17 @@ const privacyPolicy = () => {
           [Contact Email]
           {"\n"}  
           [Company Address — optional]
-          {"\n"}{"\n"}
           {"\n"}
         </Text>
+      </ScrollView>
 
-        <MaterialCommunityIcons
+      <MaterialCommunityIcons
           name="arrow-left"
           size={34}
           color="#000000"
           style={styles.backButton}
           onPress={() => router.back()}
         />
-
-      </ScrollView>
 	
 		</View>
     </View>
