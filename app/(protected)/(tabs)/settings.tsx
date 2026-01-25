@@ -83,7 +83,8 @@ const settings = () => {
           <List.Item 
           title="About Us"
           left={(props) => <List.Icon {...props} icon="information" />} 
-          right={(props) => <List.Icon {...props} icon="chevron-right" />} 
+          right={(props) => <List.Icon {...props} icon="chevron-right" />}
+          onPress={() => router.push('/aboutUs')}
           />
 
           <List.Item 
