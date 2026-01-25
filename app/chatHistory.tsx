@@ -8,40 +8,48 @@ import { MaterialCommunityIcons } from '@expo/vector-icons'
 const chatHistory = () => {
 	
 	const router = useRouter();
-  
+  const [query, setQuery] = React.useState("");
+
   return (
-	 <View style={styles.mainContainer}>
-
-    <View style={styles.mainPrivacyPolicyHeader}>
-      <MaterialCommunityIcons style={styles.privacyPolicyIcon}
-        name='chat-outline'
-        size={50}
-        color='#000000'
-        >
-          <Text style={styles.privacyPolicyTitle}>
-            Chat History
-          </Text>
-
-      </MaterialCommunityIcons>
-		</View>
-		
-		<View style={styles.subSettingsContainer}>
-
-      <ScrollView>
+	  <View style={styles.mainContainer}>
       
-        
+      <View style={styles.mainPrivacyPolicyHeader}>
+        <MaterialCommunityIcons style={styles.privacyPolicyIcon}
+          name='chat-outline'
+          size={50}
+          color='#000000'
+          >
+            <Text style={styles.privacyPolicyTitle}>
+              Chat History
+            </Text>
 
-      </ScrollView>
+        </MaterialCommunityIcons>
+      </View>
+		
+		  <View style={styles.subSettingsContainer}>
 
-      <MaterialCommunityIcons
+        <View style={{alignItems:'center', justifyContent:'center'}}> 
+          <Searchbar
+            placeholder="Search"
+            value={query}
+            onChangeText={setQuery}
+            style={styles.searchBar}
+          />
+        </View>          
+
+        <ScrollView>
+
+        </ScrollView>
+
+        <MaterialCommunityIcons
           name="arrow-left"
           size={34}
           color="#000000"
           style={styles.backButton}
           onPress={() => router.back()}
         />
-	
-		</View>
+
+		  </View>
     </View>
   )
 }
@@ -116,6 +124,16 @@ const styles = StyleSheet.create({
     fontSize: 16,
     marginHorizontal: 15,
     textAlign: 'left',
+  },
+  searchBar: {
+    marginTop: 10,
+    width: '95%',
+    alignContent: 'center',
+    borderRadius: 10,
+    borderWidth: 2,
+    borderColor: '#000000ff',
+    marginBottom: 10,
+    backgroundColor:'#ffffffff',
   },
  
 });
