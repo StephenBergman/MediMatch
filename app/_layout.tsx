@@ -144,7 +144,7 @@ function AppShell() {
 							initialRouteName="index"
 							screenOptions={{
 								headerShown: false,
-								animation: 'none',
+								animation: 'fade',
 								contentStyle: {
 									backgroundColor: navigationTheme.colors.background,
 								},
