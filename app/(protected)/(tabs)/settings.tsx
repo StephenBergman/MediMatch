@@ -154,9 +154,6 @@ const styles = StyleSheet.create({
 	fontWeight: 'bold',
   marginLeft: -80,
   },
-  SettingsIcon: {
-    marginTop: 6,
-  },
   SettingsSearchBar: {
     borderRadius: 10,
     borderWidth: 2,
@@ -206,6 +203,9 @@ const styles = StyleSheet.create({
     height: 4,
     width: '100%',
     marginLeft: 0,
-  }
+  },
+  SettingsIcon:{
+    marginLeft: 130,
+  },
  
 });
