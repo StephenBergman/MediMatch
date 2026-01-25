@@ -73,7 +73,8 @@ const settings = () => {
           <List.Item 
           title="Chat History"
           left={(props) => <List.Icon {...props} icon="chat" />} 
-          right={(props) => <List.Icon {...props} icon="chevron-right" />} 
+          right={(props) => <List.Icon {...props} icon="chevron-right" />}
+          onPress={() => router.push('/chatHistory')} 
           />
           
           <Divider style={styles.dividerLine} />
