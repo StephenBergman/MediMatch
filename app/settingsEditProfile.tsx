@@ -1,6 +1,6 @@
 //this is the settings page, there will be sub settings included and logout option.
 
-import { StyleSheet, View, Image, Text, BackHandler, TextInput} from 'react-native'
+import { StyleSheet, View, Image, Text, BackHandler, TextInput } from 'react-native'
 import React from 'react'
 import { Button, List, Searchbar, Divider, Avatar, IconButton, Icon } from 'react-native-paper'
 import { ScrollView } from 'react-native-gesture-handler'
@@ -10,10 +10,15 @@ import { useRouter } from 'expo-router'
 
 //icons logic
 import { MaterialCommunityIcons } from '@expo/vector-icons'
+import { Colors } from '@/constants/theme'
+import { useColorScheme } from '@/hooks/use-color-scheme'
 
 const settingsEditProfile = () => {
 	
 	const router = useRouter();
+  const scheme = useColorScheme() ?? 'light';
+  const colors = Colors[scheme];
+  const styles = React.useMemo(() => createStyles(colors), [colors]);
 
   //stores for search bar
   const [query, setQuery] = React.useState("");
@@ -48,6 +53,8 @@ const settingsEditProfile = () => {
         <Avatar.Icon
           size={100}
           icon="account-edit"
+          color={colors.inverseText}
+          style={styles.avatarIconInner}
         />
       </View>
 		</View>
@@ -63,6 +70,7 @@ const settingsEditProfile = () => {
                 onChangeText={text => setFirstName(text)}
                 value={firstName}
                 autoCapitalize="none"
+                placeholderTextColor={colors.tabIconDefault}
               />
       <Text style={styles.inputLabels}>Last Name</Text>
               <TextInput
@@ -71,6 +79,7 @@ const settingsEditProfile = () => {
                 onChangeText={text => setLastName(text)}
                 value={lastName}
                 autoCapitalize="none"
+                placeholderTextColor={colors.tabIconDefault}
               />
       <Text style={styles.inputLabels}>Email</Text>
               <TextInput
@@ -79,6 +88,7 @@ const settingsEditProfile = () => {
                 onChangeText={text => setEmail(text)}
                 value={email}
                 autoCapitalize="none"
+                placeholderTextColor={colors.tabIconDefault}
               />
       <Text style={styles.inputLabels}>Secondary Email</Text>
               <TextInput
@@ -87,6 +97,7 @@ const settingsEditProfile = () => {
                 onChangeText={text => setSecondaryEmail(text)}
                 value={secondaryEmail}
                 autoCapitalize="none"
+                placeholderTextColor={colors.tabIconDefault}
               /> 
       <Text style={styles.inputLabels}>Phone Number</Text>
               <TextInput
@@ -95,6 +106,7 @@ const settingsEditProfile = () => {
                 onChangeText={text => setPhoneNumber(text)}
                 value={phoneNumber}
                 autoCapitalize="none"
+                placeholderTextColor={colors.tabIconDefault}
               />
       
       <Text style={styles.inputLabels}>Birth Date</Text>
@@ -104,6 +116,7 @@ const settingsEditProfile = () => {
                 onChangeText={text => setBirthDate(text)}
                 value={birthDate}
                 autoCapitalize="none"
+                placeholderTextColor={colors.tabIconDefault}
               />
 
       <Text style={styles.inputLabels}>Gender</Text>
@@ -113,6 +126,7 @@ const settingsEditProfile = () => {
                 onChangeText={text => setGender(text)}
                 value={gender}
                 autoCapitalize="none"
+                placeholderTextColor={colors.tabIconDefault}
               />
               
       <Text style={styles.inputLabels}>Zip Code</Text>
@@ -122,6 +136,7 @@ const settingsEditProfile = () => {
                 onChangeText={text => setZipCode(text)}
                 value={zipCode}
                 autoCapitalize="none"
+                placeholderTextColor={colors.tabIconDefault}
               />
       <Text style={styles.inputLabels}>City</Text>
               <TextInput
@@ -130,6 +145,7 @@ const settingsEditProfile = () => {
                 onChangeText={text => setCity(text)}            
                 value={city}
                 autoCapitalize="none"
+                placeholderTextColor={colors.tabIconDefault}
               />
       <Text style={styles.inputLabels}>State</Text>
               <TextInput
@@ -138,6 +154,7 @@ const settingsEditProfile = () => {
                 onChangeText={text => setState(text)}
                 value={state}
                 autoCapitalize="none"
+                placeholderTextColor={colors.tabIconDefault}
               />
       <Text style={styles.inputLabels}>Country</Text>
               <TextInput
@@ -146,6 +163,7 @@ const settingsEditProfile = () => {
                 onChangeText={text => setCountry(text)}
                 value={country}
                 autoCapitalize="none"
+                placeholderTextColor={colors.tabIconDefault}
               />
       <Text style={styles.inputLabels}>Health Insurance Provider Name</Text>
               <TextInput
@@ -154,6 +172,7 @@ const settingsEditProfile = () => {
                 onChangeText={text => setHealthInsuranceProviderName(text)}
                 value={healthinsuranceprovidername}
                 autoCapitalize="none"
+                placeholderTextColor={colors.tabIconDefault}
               />
       <Text style={styles.inputLabels}>Health Insurance Number</Text>
               <TextInput
@@ -162,13 +181,14 @@ const settingsEditProfile = () => {
                 onChangeText={text => setHealthInsuranceNumber(text)}
                 value={healthinsurancenumber}
                 autoCapitalize="none"
+                placeholderTextColor={colors.tabIconDefault}
               />
         
 
       </ScrollView>
         <Button
               mode="contained"
-              textColor='#ffffff'
+              textColor={colors.inverseText}
               style={styles.changePasswordButton}
               onPress={() => {
                   console.log("user directed to change password")
@@ -180,7 +200,7 @@ const settingsEditProfile = () => {
         
         <Button
               mode="contained"
-              textColor='#ffffff'
+              textColor={colors.inverseText}
               style={styles.saveChangesButton}
               onPress={() => {
                   router.replace('/(protected)/(tabs)/profile');
@@ -196,23 +216,23 @@ const settingsEditProfile = () => {
 
 export default settingsEditProfile
 
-const styles = StyleSheet.create({
+const createStyles = (colors: typeof Colors.light) => StyleSheet.create({
   mainContainer: {
     flex: 1,
-    backgroundColor: '#7e7e7eff',
+    backgroundColor: colors.surface,
     alignItems: 'center',
     justifyContent: 'flex-start',
     paddingTop: 0,
     borderRadius:'',
     borderWidth:3,
-    borderColor: '#0000000000'
+    borderColor: colors.surface,
   },
   subSettingsContainer: {
 	flex: 1,
-	backgroundColor: '#ffffffff',
+	backgroundColor: colors.card,
 	borderRadius: 15,
   borderWidth:3,
-  borderColor: '#0000000000',
+  borderColor: colors.card,
 	width: '100%',
 	marginTop: -10,
   marginBottom: -15,
@@ -225,6 +245,7 @@ const styles = StyleSheet.create({
 	marginBottom: 5,
 	marginHorizontal: 20,
 	fontWeight: 'bold',
+  color: colors.text,
   },
   SettingsIcon: {
     marginTop: 6,
@@ -244,26 +265,26 @@ const styles = StyleSheet.create({
     fontSize:25,
     fontWeight:'bold',
     paddingLeft: -1,
-    color: '#000000ff',
+    color: colors.text,
     marginBottom: 5,
     marginTop: 5,
   },
   dividerLine:{
-    backgroundColor: '#000000ff',
+    backgroundColor: colors.border,
     height: 4,
     width: '100%',
     marginLeft: 0,
   },
   inputLabels:{
     fontSize:14,
-    color:'#000000ff',
+    color: colors.text,
     marginLeft: 20,
     marginBottom:-14,
   },
   changePasswordButton: {
         width: '50%',
         alignSelf: 'center',
-        backgroundColor: '#000000',
+        backgroundColor: colors.primary,
         marginTop: 20, 
         padding: 5,
         marginBottom: 10,
@@ -271,153 +292,182 @@ const styles = StyleSheet.create({
   saveChangesButton: {
         width: '50%',
         alignSelf: 'center',
-        backgroundColor: '#000000',
+        backgroundColor: colors.primary,
         marginTop: 20, 
         padding: 5,
         marginBottom: 30,
     },
   firstNameInputlabel:{
     fontSize:14,
-    color:'#000000ff',
+    color: colors.text,
     marginLeft: 20,
     marginBottom:-14,
     marginTop: 20,
   },
   changeFirstNameInputBox:{
     height: 50, 
-    borderColor: '#000', 
+    borderColor: colors.border, 
     borderWidth: 3, 
     margin: 20,
     paddingLeft: 10, 
     borderRadius: 5,
     width: '60%',
     alignSelf: 'flex-start',
+    backgroundColor: colors.card,
+    color: colors.text,
   },
   changeLastNameInputBox:{
     height: 50, 
-    borderColor: '#000', 
+    borderColor: colors.border, 
     borderWidth: 3, 
     margin: 20, 
     paddingLeft: 10, 
     borderRadius: 5,
     width: '60%',
     alignSelf: 'flex-start',
+    backgroundColor: colors.card,
+    color: colors.text,
   },
   changePrimaryEmailInputBox:{
     height: 50, 
-    borderColor: '#000', 
+    borderColor: colors.border, 
     borderWidth: 3, 
     margin: 20, 
     paddingLeft: 10, 
     borderRadius: 5,
     width: '90%',
     alignSelf: 'flex-start',
+    backgroundColor: colors.card,
+    color: colors.text,
   },
   changesecondaryEmailInputBox:{
     height: 50, 
-    borderColor: '#000', 
+    borderColor: colors.border, 
     borderWidth: 3, 
     margin: 20, 
     paddingLeft: 10, 
     borderRadius: 5,
     width: '90%',
     alignSelf: 'flex-start',
+    backgroundColor: colors.card,
+    color: colors.text,
   },
   changePhoneNumberInputBox:{
     height: 50, 
-    borderColor: '#000', 
+    borderColor: colors.border, 
     borderWidth: 3, 
     margin: 20, 
     paddingLeft: 10, 
     borderRadius: 5,
     width: '40%',
     alignSelf: 'flex-start',
+    backgroundColor: colors.card,
+    color: colors.text,
   },
   changeZipCodeInputBox:{
     height: 50, 
-    borderColor: '#000', 
+    borderColor: colors.border, 
     borderWidth: 3, 
     margin: 20, 
     paddingLeft: 10, 
     borderRadius: 5,
     width: '30%',
     alignSelf: 'flex-start',
+    backgroundColor: colors.card,
+    color: colors.text,
   },
   changeCityNameInputBox:{
     height: 50, 
-    borderColor: '#000', 
+    borderColor: colors.border, 
     borderWidth: 3, 
     margin: 20, 
     paddingLeft: 10, 
     borderRadius: 5,
     width: '40%',
     alignSelf: 'flex-start',
+    backgroundColor: colors.card,
+    color: colors.text,
   },
   changeStateNameInputBox:{
     height: 50, 
-    borderColor: '#000', 
+    borderColor: colors.border, 
     borderWidth: 3, 
     margin: 20, 
     paddingLeft: 10, 
     borderRadius: 5,
     width: '40%',
     alignSelf: 'flex-start',
+    backgroundColor: colors.card,
+    color: colors.text,
   },
   changeCountryNameInputBox:{
     height: 50, 
-    borderColor: '#000', 
+    borderColor: colors.border, 
     borderWidth: 3, 
     margin: 20, 
     paddingLeft: 10, 
     borderRadius: 5,
     width: '60%',
     alignSelf: 'flex-start',
+    backgroundColor: colors.card,
+    color: colors.text,
   },
   changeHealthInsuranceProviderNameInputBox:{
     height: 50, 
-    borderColor: '#000', 
+    borderColor: colors.border, 
     borderWidth: 3, 
     margin: 20, 
     paddingLeft: 10, 
     borderRadius: 5,
     width: '90%',
     alignSelf: 'flex-start',
+    backgroundColor: colors.card,
+    color: colors.text,
   },
   changeHealthInsuranceNumberInputBox:{
     height: 50, 
-    borderColor: '#000', 
+    borderColor: colors.border, 
     borderWidth: 3, 
     margin: 20, 
     paddingLeft: 10, 
     borderRadius: 5,
     width: '60%',
     alignSelf: 'flex-start',
+    backgroundColor: colors.card,
+    color: colors.text,
   },
   changeGenderInputBox:{
     height: 50, 
-    borderColor: '#000', 
+    borderColor: colors.border, 
     borderWidth: 3, 
     margin: 20, 
     paddingLeft: 10, 
     borderRadius: 5,
     width: '60%',
     alignSelf: 'flex-start',
+    backgroundColor: colors.card,
+    color: colors.text,
   },
   changebirhthdateInputBox:{
     height: 50, 
-    borderColor: '#000', 
+    borderColor: colors.border, 
     borderWidth: 3, 
     margin: 20, 
     paddingLeft: 10, 
     borderRadius: 5,
     width: '60%',
     alignSelf: 'flex-start',
+    backgroundColor: colors.card,
+    color: colors.text,
   },
   avatarIcon: {
     borderWidth: 3,
     borderRadius: 999,
     padding: 0,
-    color: '#000000ff',
+    borderColor: colors.border,
+  },
+  avatarIconInner: {
+    backgroundColor: colors.primary,
   },
 
 });

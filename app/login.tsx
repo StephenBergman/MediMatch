@@ -4,6 +4,8 @@ import React from 'react'
 //this page will route to the home page after user signs in successfully
 import { useRouter } from 'expo-router'
 import { Button, Text, Checkbox} from 'react-native-paper';
+import { Colors } from '@/constants/theme'
+import { useColorScheme } from '@/hooks/use-color-scheme'
 
 //for Google Sign-In
 import * as WebBrowser from "expo-web-browser";
@@ -11,6 +13,9 @@ import * as WebBrowser from "expo-web-browser";
 WebBrowser.maybeCompleteAuthSession();
 
 const login = () => {
+  const scheme = useColorScheme() ?? 'light';
+  const colors = Colors[scheme];
+  const styles = React.useMemo(() => createStyles(colors), [colors]);
 
   //Login page is being loaded log
   console.log('Login page loaded');
@@ -26,7 +31,7 @@ const login = () => {
   const [rememberMe, setRememberMe] = React.useState(false);
 
   return (
-  <View>
+  <View style={styles.mainContainer}>
 
     <Image style={styles.MedimatchLogo}
       source={require('../assets/images/medimatch_logoMain.png')}
@@ -46,6 +51,7 @@ const login = () => {
         value={email}
         keyboardType="email-address"
         autoCapitalize="none"
+        placeholderTextColor={colors.tabIconDefault}
     />
 
     <TextInput
@@ -57,14 +63,18 @@ const login = () => {
         }}
         value={password}
         secureTextEntry={true}
+        placeholderTextColor={colors.tabIconDefault}
     />
 
     <View style={styles.buttonHorizontal}>
 
         <View style={styles.rememberMeRow}>
 
-            <Checkbox status={rememberMe ? 'checked' : 'unchecked'} 
+            <Checkbox
+            status={rememberMe ? 'checked' : 'unchecked'} 
             onPress={() => setRememberMe(!rememberMe)}
+            color={colors.primary}
+            uncheckedColor={colors.border}
             />
             <Text 
                 style={styles.rememberMeButton}
@@ -79,7 +89,7 @@ const login = () => {
 
             <Button
                 mode="text"
-                textColor='#000000ff'
+                textColor={colors.text}
                 style={styles.forgotpasswordButton}
                 onPress={() => {
                     console.log('Forgot-Password Pressed')
@@ -92,7 +102,7 @@ const login = () => {
 
     <Button
         mode="contained"
-        textColor='#ffffff'
+        textColor={colors.inverseText}
         style={styles.signInButton}
         onPress={() => {
             console.log("Sign in pressed with email: " + email + " and password: " + password);
@@ -104,7 +114,7 @@ const login = () => {
 
     <Button
         mode="outlined"
-        textColor='#ffffff'
+        textColor={colors.primary}
         style={ styles.googleButton }
         onPress={() => {
             console.log('Google Sign-In pressed');
@@ -115,7 +125,7 @@ const login = () => {
 
     <Button
         mode="text"
-        textColor='#000000ff'
+        textColor={colors.text}
         style={styles.signupButton}
         onPress={() => {
             console.log('Sign-Up pressed')
@@ -131,7 +141,12 @@ const login = () => {
 
 export default login
 
-const styles = StyleSheet.create({
+const createStyles = (colors: typeof Colors.light) => StyleSheet.create({
+    mainContainer: {
+        flex: 1,
+        backgroundColor: colors.surface,
+        paddingHorizontal: 12,
+    },
     MedimatchLogo: {
         width: 200,
         height: 200,
@@ -142,27 +157,32 @@ const styles = StyleSheet.create({
         fontSize: 30, 
         fontWeight: 'bold', 
         textAlign: 'center', 
-        marginTop: 25
+        marginTop: 25,
+        color: colors.text,
     },
     emailInputBox: {
         height: 50, 
-        borderColor: '#000', 
+        borderColor: colors.border, 
         borderWidth: 3, 
         margin: 20, 
         paddingLeft: 10, 
         borderRadius: 5,
         alignSelf: 'center',
         width: '75%',
+        backgroundColor: colors.card,
+        color: colors.text,
     },
     passwordInputBox: {
         height: 50, 
-        borderColor: '#000', 
+        borderColor: colors.border, 
         borderWidth: 3, 
         margin: 20, 
         paddingLeft: 10, 
         borderRadius: 5,
         width: '75%',
         alignSelf: 'center',
+        backgroundColor: colors.card,
+        color: colors.text,
     },
     signupButton: {
         width: '75%', 
@@ -173,14 +193,15 @@ const styles = StyleSheet.create({
     googleButton: {
         width: '50%',
         alignSelf: 'center',
-        backgroundColor: '#000000',
+        borderColor: colors.primary,
+        borderWidth: 2,
         marginTop: 20, 
         padding: 5
     },
     signInButton: {
         width: '50%', 
         alignSelf: 'center',
-        backgroundColor: '#000000',
+        backgroundColor: colors.primary,
         marginTop: 20, 
         padding: 5
     },
@@ -195,7 +216,7 @@ const styles = StyleSheet.create({
         alignSelf: 'auto',
         fontSize: 14,
         marginLeft: 4,
-        color:'#000000',
+        color: colors.text,
     },
     buttonHorizontal: {
         flexDirection: 'row',

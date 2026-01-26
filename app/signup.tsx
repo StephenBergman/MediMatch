@@ -1,6 +1,6 @@
 //this is the settings page, there will be sub settings included and logout option.
 
-import { StyleSheet, View, Image, Text, BackHandler} from 'react-native'
+import { StyleSheet, View, Image, Text, BackHandler } from 'react-native'
 import React from 'react'
 import { Button, List, Searchbar, Divider } from 'react-native-paper'
 import { ScrollView, TextInput } from 'react-native-gesture-handler'
@@ -10,10 +10,15 @@ import { useRouter } from 'expo-router'
 
 //icons logic
 import { MaterialCommunityIcons } from '@expo/vector-icons'
+import { Colors } from '@/constants/theme'
+import { useColorScheme } from '@/hooks/use-color-scheme'
 
 const signup = () => {
 	
 	const router = useRouter();
+  const scheme = useColorScheme() ?? 'light';
+  const colors = Colors[scheme];
+  const styles = React.useMemo(() => createStyles(colors), [colors]);
 
   //profile inputs
   const [firstName, setFirstName] = React.useState('');
@@ -34,7 +39,7 @@ const signup = () => {
       <MaterialCommunityIcons style={styles.signUpIcon}
         name='account'
         size={60}
-        color='#000000'
+        color={colors.primary}
         >
           <Text style={styles.settingsTitle}>
             Create Account	
@@ -54,6 +59,7 @@ const signup = () => {
           onChangeText={text => setFirstName(text)}
           value={firstName}
           autoCapitalize="none"
+          placeholderTextColor={colors.tabIconDefault}
         />
       <Text style={styles.inputLabels}>Last Name</Text>
         <TextInput
@@ -62,6 +68,7 @@ const signup = () => {
           onChangeText={text => setLastName(text)}
           value={lastName}
           autoCapitalize="none"
+          placeholderTextColor={colors.tabIconDefault}
         />
       <Text style={styles.inputLabels}>Username</Text>
         <TextInput
@@ -70,6 +77,7 @@ const signup = () => {
           onChangeText={text => setUsername(text)}
           value={username}
           autoCapitalize="none"
+          placeholderTextColor={colors.tabIconDefault}
         />
       <Text style={styles.inputLabels}>Email Address</Text>
         <TextInput
@@ -78,6 +86,7 @@ const signup = () => {
           onChangeText={text => setEmail(text)}
           value={email}
           autoCapitalize="none"
+          placeholderTextColor={colors.tabIconDefault}
         />
       <Text style={styles.inputLabels}>Create Password</Text>
         <TextInput
@@ -86,6 +95,7 @@ const signup = () => {
           onChangeText={text => setPassword(text)}
           value={password}
           autoCapitalize="none"
+          placeholderTextColor={colors.tabIconDefault}
         />
       <Text style={styles.inputLabels}>Confirm Password</Text>
         <TextInput
@@ -95,6 +105,7 @@ const signup = () => {
           value={confirmPassword}
           secureTextEntry={true}
           autoCapitalize="none"
+          placeholderTextColor={colors.tabIconDefault}
         />
     
 			</ScrollView>
@@ -102,6 +113,7 @@ const signup = () => {
 				<View style={styles.ButtonGroup}>
 
 					<Button style={styles.createAccountButton} mode="contained" 
+          textColor={colors.inverseText}
 					onPress={() => 
 					{
 						console.log("User account is created")
@@ -118,7 +130,7 @@ const signup = () => {
 
         <Button
           mode="outlined"
-          textColor='#ffffff'
+          textColor={colors.primary}
           style={ styles.googleButton }
           onPress={() => {
             console.log('Google Sign-In pressed');
@@ -130,7 +142,7 @@ const signup = () => {
         <MaterialCommunityIcons
           name="arrow-left"
           size={15}
-          color="#ffffff"
+          color={colors.inverseText}
           style={styles.backButton}
           onPress={() => router.back()}
         />
@@ -141,23 +153,23 @@ const signup = () => {
 
 export default signup
 
-const styles = StyleSheet.create({
+const createStyles = (colors: typeof Colors.light) => StyleSheet.create({
   mainContainer: {
     flex: 1,
-    backgroundColor: '#7e7e7eff',
+    backgroundColor: colors.surface,
     alignItems: 'center',
     justifyContent: 'flex-start',
     paddingTop: 0,
     borderRadius:'',
     borderWidth:3,
-    borderColor: '#0000000000'
+    borderColor: colors.surface,
   },
   subSignUpContainer: {
 	flex: 1,
-	backgroundColor: '#ffffffff',
+	backgroundColor: colors.card,
 	borderRadius: 15,
   borderWidth:3,
-  borderColor: '#0000000000',
+  borderColor: colors.card,
 	width: '100%',
 	marginTop: -10,
   marginBottom: -15,
@@ -171,6 +183,7 @@ const styles = StyleSheet.create({
 	marginHorizontal: 20,
 	fontWeight: 'bold',
   marginLeft: -80,
+  color: colors.text,
   },
   signUpIcon: {
     marginTop: 6,
@@ -186,11 +199,12 @@ const styles = StyleSheet.create({
 	marginTop: -20,
 	marginBottom: 15,
 	padding: 5,
-	backgroundColor: '#000000ff',
+	backgroundColor: colors.primary,
 	flexWrap: 'wrap',
 	alignContent: 'center',
 	borderRadius: 10,
 	borderWidth: 3,
+  borderColor: colors.primary,
   },
   ButtonGroup: {
 	flexDirection: 'row',
@@ -201,42 +215,45 @@ const styles = StyleSheet.create({
     fontSize:25,
     fontWeight:'bold',
     paddingLeft: -1,
-    color: '#000000ff',
+    color: colors.text,
     marginBottom: 5,
     marginTop: 5,
   },
   dividerLine:{
-    backgroundColor: '#000000ff',
+    backgroundColor: colors.border,
     height: 4,
     width: '80%',
     marginHorizontal: 40,
   },
   signUpInputBox:{
     height: 50, 
-    borderColor: '#000', 
+    borderColor: colors.border, 
     borderWidth: 3, 
     margin: 20, 
     paddingLeft: 10, 
     borderRadius: 5,
     width: '90%',
     alignSelf: 'center',
+    backgroundColor: colors.card,
+    color: colors.text,
   },
   googleButton: {
     width: '50%',
     alignSelf: 'center',
-    backgroundColor: '#000000',
+    borderColor: colors.primary,
+    borderWidth: 2,
     marginTop: 20,
     marginBottom: 40,
     padding: 5
   },
   smallText:{
     fontSize:18,
-    color:'#000000ff',
+    color: colors.text,
     marginHorizontal:194,
   },
   inputLabels:{
     fontSize:14,
-    color:'#000000ff',
+    color: colors.text,
     marginLeft: 20,
     marginBottom:-14,
   },
@@ -244,7 +261,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom: 40,
     left: 16,
-    backgroundColor: '#000000',
+    backgroundColor: colors.primary,
     padding: 12,
     borderRadius: 20,
   }
