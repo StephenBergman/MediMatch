@@ -1,6 +1,6 @@
 //this is the settings page, there will be sub settings included and logout option.
 
-import { StyleSheet, View, Image, Text, BackHandler} from 'react-native'
+import { StyleSheet, View, Image, Text, BackHandler } from 'react-native'
 import React from 'react'
 import { Button, List, Searchbar, Divider } from 'react-native-paper'
 import { ScrollView } from 'react-native-gesture-handler'
@@ -10,10 +10,15 @@ import { useRouter } from 'expo-router'
 
 //icons logic
 import { MaterialCommunityIcons } from '@expo/vector-icons'
+import { Colors } from '@/constants/theme'
+import { useColorScheme } from '@/hooks/use-color-scheme'
 
 const settings = () => {
 	
 	const router = useRouter();
+  const scheme = useColorScheme() ?? 'light';
+  const colors = Colors[scheme];
+  const styles = React.useMemo(() => createStyles(colors), [colors]);
 
   //stores for search bar
   const [query, setQuery] = React.useState("");
@@ -26,7 +31,7 @@ const settings = () => {
       <MaterialCommunityIcons style={styles.SettingsIcon}
         name='cog-outline'
         size={60}
-        color='#000000'
+        color={colors.primary}
         >
           <Text style={styles.settingsTitle}>
             Settings	
@@ -44,6 +49,9 @@ const settings = () => {
           value={query}
           onChangeText={setQuery}
           style={styles.SettingsSearchBar}
+          inputStyle={{ color: colors.text }}
+          placeholderTextColor={colors.tabIconDefault}
+          iconColor={colors.icon}
         />
       
         <List.Section>
@@ -52,29 +60,33 @@ const settings = () => {
 
           <List.Item 
           title="Edit Profile"
-          left={(props) => <List.Icon {...props} icon="account-circle" />} 
-          right={(props) => <List.Icon {...props} icon="chevron-right" />}
+          titleStyle={{ color: colors.text }}
+          left={(props) => <List.Icon {...props} icon="account-circle" color={colors.primary} />} 
+          right={(props) => <List.Icon {...props} icon="chevron-right" color={colors.icon} />}
           onPress={() => router.push('/settingsEditProfile')}
           />
 
           <List.Item 
           title="Edit Password"
-          left={(props) => <List.Icon {...props} icon="lock" />}
-          right={(props) => <List.Icon {...props} icon="chevron-right" />}
+          titleStyle={{ color: colors.text }}
+          left={(props) => <List.Icon {...props} icon="lock" color={colors.primary} />}
+          right={(props) => <List.Icon {...props} icon="chevron-right" color={colors.icon} />}
           onPress={() => router.push('/verificationCode_NP')}
           />
 
           <List.Item 
           title="Notifications"
-          left={(props) => <List.Icon {...props} icon="bell" />} 
-          right={(props) => <List.Icon {...props} icon="chevron-right" />}
+          titleStyle={{ color: colors.text }}
+          left={(props) => <List.Icon {...props} icon="bell" color={colors.primary} />} 
+          right={(props) => <List.Icon {...props} icon="chevron-right" color={colors.icon} />}
           onPress={() => router.push('/notifications')}
           />
 
           <List.Item 
           title="Chat History"
-          left={(props) => <List.Icon {...props} icon="chat" />} 
-          right={(props) => <List.Icon {...props} icon="chevron-right" />}
+          titleStyle={{ color: colors.text }}
+          left={(props) => <List.Icon {...props} icon="chat" color={colors.primary} />} 
+          right={(props) => <List.Icon {...props} icon="chevron-right" color={colors.icon} />}
           onPress={() => router.push('/chatHistory')} 
           />
           
@@ -84,15 +96,17 @@ const settings = () => {
 
           <List.Item 
           title="About Us"
-          left={(props) => <List.Icon {...props} icon="information" />} 
-          right={(props) => <List.Icon {...props} icon="chevron-right" />}
+          titleStyle={{ color: colors.text }}
+          left={(props) => <List.Icon {...props} icon="information" color={colors.primary} />} 
+          right={(props) => <List.Icon {...props} icon="chevron-right" color={colors.icon} />}
           onPress={() => router.push('/aboutUs')}
           />
 
           <List.Item 
           title="Privacy Policy"
-          left={(props) => <List.Icon {...props} icon="shield-account-outline" />} 
-          right={(props) => <List.Icon {...props} icon="chevron-right" />}
+          titleStyle={{ color: colors.text }}
+          left={(props) => <List.Icon {...props} icon="shield-account-outline" color={colors.primary} />} 
+          right={(props) => <List.Icon {...props} icon="chevron-right" color={colors.icon} />}
           onPress={() => router.push('/privacyPolicy')}
           />
 
@@ -105,6 +119,7 @@ const settings = () => {
 				<View style={styles.ButtonGroup}>
 
 					<Button style={styles.logoutButton} mode="contained" 
+          textColor={colors.inverseText}
 					onPress={() => 
 					{
 						console.log('User has been logged out, re-directed to login screen');
@@ -123,23 +138,23 @@ const settings = () => {
 
 export default settings
 
-const styles = StyleSheet.create({
+const createStyles = (colors: typeof Colors.light) => StyleSheet.create({
   mainContainer: {
     flex: 1,
-    backgroundColor: '#7e7e7eff',
+    backgroundColor: colors.surface,
     alignItems: 'center',
     justifyContent: 'flex-start',
     paddingTop: 0,
     borderRadius:'',
     borderWidth:3,
-    borderColor: '#0000000000'
+    borderColor: colors.surface,
   },
   subSettingsContainer: {
 	flex: 1,
-	backgroundColor: '#ffffffff',
+	backgroundColor: colors.card,
 	borderRadius: 15,
   borderWidth:3,
-  borderColor: '#0000000000',
+  borderColor: colors.card,
 	width: '100%',
 	marginTop: -10,
   marginBottom: -15,
@@ -153,13 +168,14 @@ const styles = StyleSheet.create({
 	marginHorizontal: 20,
 	fontWeight: 'bold',
   marginLeft: -80,
+  color: colors.text,
   },
   SettingsSearchBar: {
     borderRadius: 10,
     borderWidth: 2,
-    borderColor: '#000000ff',
+    borderColor: colors.border,
     marginBottom: 10,
-    backgroundColor:'#ffffffff',
+    backgroundColor: colors.card,
   },
    mainSettingsHeader: {
     marginTop: 20,
@@ -176,11 +192,12 @@ const styles = StyleSheet.create({
 	marginTop: 0,
 	marginBottom: 15,
 	padding: 5,
-	backgroundColor: '#000000ff',
+	backgroundColor: colors.primary,
 	flexWrap: 'wrap',
 	alignContent: 'center',
 	borderRadius: 10,
 	borderWidth: 3,
+  borderColor: colors.primary,
   },
   ButtonGroup: {
 	flexDirection: 'row',
@@ -194,12 +211,12 @@ const styles = StyleSheet.create({
     fontSize:25,
     fontWeight:'bold',
     paddingLeft: -1,
-    color: '#000000ff',
+    color: colors.text,
     marginBottom: 5,
     marginTop: 5,
   },
   dividerLine:{
-    backgroundColor: '#000000ff',
+    backgroundColor: colors.border,
     height: 4,
     width: '100%',
     marginLeft: 0,

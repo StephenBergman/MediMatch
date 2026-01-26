@@ -2,15 +2,20 @@ import { StyleSheet, Text, View, TextInput } from 'react-native'
 import React from 'react'
 import { Button } from 'react-native-paper'
 import { router } from 'expo-router'
+import { Colors } from '@/constants/theme'
+import { useColorScheme } from '@/hooks/use-color-scheme'
 
 const verificationCode_NP = () => {
+  const scheme = useColorScheme() ?? 'light';
+  const colors = Colors[scheme];
+  const styles = React.useMemo(() => createStyles(colors), [colors]);
 
   //for users email entry
     const[password, setPassword] = React.useState('');
     const[confirmPassword, setConfirmPassword] = React.useState('');
 
   return (
-    <View>
+    <View style={styles.mainContainer}>
       <Text style={styles.verificationCode_NP_Title}>Verify New Password</Text>
 
 
@@ -23,6 +28,7 @@ const verificationCode_NP = () => {
               value={password}
               secureTextEntry={false}
               autoCapitalize="none"
+              placeholderTextColor={colors.tabIconDefault}
       />
 
       <Text style={styles.inputLabels}>Confirm New Password</Text>
@@ -33,11 +39,12 @@ const verificationCode_NP = () => {
               value={confirmPassword}
               secureTextEntry={true}
               autoCapitalize="none"
+              placeholderTextColor={colors.tabIconDefault}
       />
 
       <Button
         mode="contained"
-        textColor='#ffffff'
+        textColor={colors.inverseText}
         style={styles.verificationCode_NP_Button}
           onPress={() => {
             console.log("User confirmed new passwor and is being sent to back to login screen")
@@ -54,10 +61,15 @@ const verificationCode_NP = () => {
 
 export default verificationCode_NP
 
-const styles = StyleSheet.create({
+const createStyles = (colors: typeof Colors.light) => StyleSheet.create({
+    mainContainer: {
+        flex: 1,
+        backgroundColor: colors.surface,
+        paddingHorizontal: 16,
+    },
     verificationCode_NP_Title:{
         fontSize: 16,
-        color:"#000000ff" ,
+        color: colors.text,
         fontWeight:'bold',
         textAlign: 'center',
         marginTop: 40,
@@ -65,7 +77,7 @@ const styles = StyleSheet.create({
     },
     verificationCode_NP_EnterEmailText:{
         fontSize: 18,
-        color:"#000000ff" ,
+        color: colors.text,
         fontWeight:'bold',
         textAlign: 'center',
         marginTop: 40,
@@ -73,17 +85,19 @@ const styles = StyleSheet.create({
     },
     verificationCode_NP_EmailInputBox: {
         height: 50, 
-        borderColor: '#000', 
+        borderColor: colors.border, 
         borderWidth: 3, 
         margin: 20, 
         paddingLeft: 10, 
         borderRadius: 5,
         alignSelf: 'center',
         width: '80%',
+        backgroundColor: colors.card,
+        color: colors.text,
     },
     backToSignInText:{
         fontSize: 14,
-        color:"#000000ff" ,
+        color: colors.text,
         fontWeight:'bold',
         textAlign: 'center',
         marginTop: -5, 
@@ -91,14 +105,14 @@ const styles = StyleSheet.create({
     verificationCode_NP_Button:{
         width: '50%', 
         alignSelf: 'center',
-        backgroundColor: '#000000',
+        backgroundColor: colors.primary,
         marginTop: 20, 
         padding: 5,
         borderRadius: 5,
     },
     haveAnAccountText:{
         fontSize: 20,
-        color:"#000000ff" ,
+        color: colors.text,
         fontWeight:'bold',
         textAlign: 'center',
         marginTop: -5, 
@@ -106,7 +120,7 @@ const styles = StyleSheet.create({
     signUpButton: {
         width: '50%', 
         alignSelf: 'center',
-        backgroundColor: '#000000',
+        backgroundColor: colors.primary,
         marginTop: 20, 
         padding: 5,
         borderRadius: 5,
@@ -114,7 +128,7 @@ const styles = StyleSheet.create({
     googleButton: {
         width: '50%',
         alignSelf: 'center',
-        backgroundColor: '#000000',
+        backgroundColor: colors.primary,
         marginTop: 20, 
         padding: 5,
         borderRadius: 5,
@@ -126,7 +140,7 @@ const styles = StyleSheet.create({
     },
     orText:{
         fontSize: 20,
-        color:"#000000ff" ,
+        color: colors.text,
         fontWeight:'bold',
         textAlign: 'center',
         marginTop: 20, 
@@ -134,7 +148,7 @@ const styles = StyleSheet.create({
     },
     inputLabels:{
     fontSize:14,
-    color:'#000000ff',
+    color: colors.text,
     marginLeft: 45,
     marginBottom:-14,
   },

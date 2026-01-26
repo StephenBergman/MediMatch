@@ -1,13 +1,18 @@
-import { StyleSheet, View, Image, Text, BackHandler} from 'react-native'
+import { StyleSheet, View, Image, Text, BackHandler } from 'react-native'
 import React from 'react'
 import { Button, List, Searchbar, Divider } from 'react-native-paper'
 import { ScrollView } from 'react-native-gesture-handler'
 import { useRouter } from 'expo-router'
 import { MaterialCommunityIcons } from '@expo/vector-icons'
+import { Colors } from '@/constants/theme'
+import { useColorScheme } from '@/hooks/use-color-scheme'
 
 const privacyPolicy = () => {
 	
 	const router = useRouter();
+  const scheme = useColorScheme() ?? 'light';
+  const colors = Colors[scheme];
+  const styles = React.useMemo(() => createStyles(colors), [colors]);
   
   return (
 	 <View style={styles.mainContainer}>
@@ -16,7 +21,7 @@ const privacyPolicy = () => {
       <MaterialCommunityIcons style={styles.privacyPolicyIcon}
         name='lock-outline'
         size={50}
-        color='#000000'
+        color={colors.primary}
         >
           <Text style={styles.privacyPolicyTitle}>
             Privacy Policy
@@ -88,7 +93,7 @@ const privacyPolicy = () => {
       <MaterialCommunityIcons
           name="arrow-left"
           size={34}
-          color="#000000"
+          color={colors.icon}
           style={styles.backButton}
           onPress={() => router.back()}
         />
@@ -100,23 +105,23 @@ const privacyPolicy = () => {
 
 export default privacyPolicy
 
-const styles = StyleSheet.create({
+const createStyles = (colors: typeof Colors.light) => StyleSheet.create({
   mainContainer: {
     flex: 1,
-    backgroundColor: '#7e7e7eff',
+    backgroundColor: colors.surface,
     alignItems: 'center',
     justifyContent: 'flex-start',
     paddingTop: 0,
     borderRadius:'',
     borderWidth:3,
-    borderColor: '#0000000000'
+    borderColor: colors.surface,
   },
   subSettingsContainer: {
 	flex: 1,
-	backgroundColor: '#ffffffff',
+	backgroundColor: colors.card,
 	borderRadius: 15,
   borderWidth:3,
-  borderColor: '#0000000000',
+  borderColor: colors.card,
 	width: '100%',
 	marginTop: -10,
   marginBottom: -15,
@@ -141,17 +146,18 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     textAlign: 'center',
     marginTop: 10,
+    color: colors.text,
   },
   subheaderTitle:{
     fontSize:25,
     fontWeight:'bold',
     paddingLeft: -1,
-    color: '#000000ff',
+    color: colors.text,
     marginBottom: 5,
     marginTop: 5,
   },
   dividerLine:{
-    backgroundColor: '#000000ff',
+    backgroundColor: colors.border,
     height: 4,
     width: '100%',
     marginLeft: 0,
@@ -168,6 +174,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     marginHorizontal: 15,
     textAlign: 'left',
+    color: colors.text,
   },
  
 });
