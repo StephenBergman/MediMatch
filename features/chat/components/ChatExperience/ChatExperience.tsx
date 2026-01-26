@@ -33,12 +33,12 @@ function ChatExperienceInner() {
 		messages,
 		sendMessage,
 		isSending,
+		isAssistantTyping,
 		error,
 		clearError,
 		resetChat,
 		handleFollowUpAction,
 	} = useChatContext();
-	const [isAssistantTyping, setIsAssistantTyping] = useState(false);
 	const listRef = useRef<FlatList<ChatMessage> | null>(null);
 	const fadeAnim = useRef(new Animated.Value(1)).current;
 	const [isClearing, setIsClearing] = useState(false);
@@ -114,7 +114,7 @@ function ChatExperienceInner() {
 					actionId,
 					() => {
 						router.push({
-							pathname: '/(protected)/(tabs)/Map',
+							pathname: '/(protected)/(tabs)/map',
 							params: { route: 'nearest', care: carePreference },
 						});
 					},

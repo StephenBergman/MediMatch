@@ -28,8 +28,12 @@ export function useRequestLocation() {
 					setStatus('requesting');
 					setErrorMessage(undefined);
 
+					const existing =
+						await Location.getForegroundPermissionsAsync();
 					const permission =
-						await Location.requestForegroundPermissionsAsync();
+						existing.status === Location.PermissionStatus.GRANTED
+							? existing
+							: await Location.requestForegroundPermissionsAsync();
 					if (permission.status !== Location.PermissionStatus.GRANTED) {
 						setStatus('denied');
 						return { granted: false };

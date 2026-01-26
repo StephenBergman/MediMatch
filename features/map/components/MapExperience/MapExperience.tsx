@@ -14,7 +14,7 @@ import MapView, {
 	type LatLng,
 	type Region,
 } from 'react-native-maps';
-import { Icon, IconButton, Surface, Text, useTheme } from 'react-native-paper';
+import { Button, Icon, IconButton, Surface, Text, useTheme } from 'react-native-paper';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { useAppToast } from '@/components/contexts/AppToastProvider';
@@ -144,7 +144,12 @@ export function MapExperience({
 	const tabBarHeight = useBottomTabBarHeight();
 	const mapRef = useRef<MapView | null>(null);
 	const directionsApiKey = process.env.EXPO_PUBLIC_GOOGLE_MAPS_API_KEY;
-	const { region: cachedUserRegion, refresh } = useCachedUserLocation();
+	const {
+		region: cachedUserRegion,
+		refresh,
+		status: locationStatus,
+		errorMessage: locationError,
+	} = useCachedUserLocation();
 	const hasCenteredOnUser = useRef(false);
 	const [mapRegion, setMapRegion] = useState<Region>(initialRegion);
 	const [userRegion, setUserRegion] = useState<Region | null>(null);
@@ -518,6 +523,10 @@ export function MapExperience({
 				? fallbackCoordinates
 				: null;
 
+	const bannerOffset = tabBarHeight + (places.length ? 170 : 100);
+	const showLocationBanner =
+		locationStatus === 'denied' || locationStatus === 'unavailable';
+
 	return (
 		<Surface
 			style={[styles.container, { backgroundColor: colors.background }]}
@@ -570,40 +579,169 @@ export function MapExperience({
 				) : null}
 			</MapView>
 			<View style={styles.controls} pointerEvents="box-none">
-				{placesStatus === 'error' ? (
-					<Surface
-						style={[
-							styles.banner,
-							{
-								backgroundColor: colors.surface,
-								borderColor: colors.outline,
-								bottom: tabBarHeight + (places.length ? 170 : 100),
-							},
-						]}
-						elevation={1}
-					>
-						<View style={styles.bannerRow}>
-							<Icon
-								source="alert-circle-outline"
-								size={18}
-								color={colors.error}
-							/>
-							<View style={{ flex: 1 }}>
-								<Text style={{ color: colors.onSurface }}>
-									{placesError || 'Places lookup failed.'}
-								</Text>
+				{routeStatus === 'fallback' ? (
+					<View style={[styles.bannerStack, { bottom: bannerOffset }]}>
+						<Surface
+							style={[
+								styles.bannerCard,
+								{ backgroundColor: colors.surface, borderColor: colors.outline },
+							]}
+							elevation={1}
+						>
+							<View style={styles.bannerRow}>
+								<Icon
+									source="map-marker-alert-outline"
+									size={18}
+									color={colors.error}
+								/>
+								<View style={{ flex: 1 }}>
+									<Text style={{ color: colors.onSurface }}>
+										Directions unavailable. Showing a straight-line route.
+									</Text>
+								</View>
 							</View>
-							<IconButton
-								icon="refresh"
-								size={18}
-								onPress={refetch}
-								iconColor={colors.onSurface}
-								style={styles.bannerAction}
-								accessibilityLabel="Retry places search"
-							/>
-						</View>
-					</Surface>
-				) : null}
+						</Surface>
+						{showLocationBanner ? (
+							<Surface
+								style={[
+									styles.bannerCard,
+									{
+										backgroundColor: colors.surface,
+										borderColor: colors.outline,
+									},
+								]}
+								elevation={1}
+							>
+								<View style={styles.bannerRow}>
+									<Icon
+										source="crosshairs-gps"
+										size={18}
+										color={colors.primary}
+									/>
+									<View style={{ flex: 1 }}>
+										<Text style={{ color: colors.onSurface }}>
+											{locationStatus === 'denied'
+												? 'Location access is off. Enable it for accurate routing.'
+												: locationError || 'Location is unavailable right now.'}
+										</Text>
+									</View>
+									<Button
+										mode="text"
+										compact
+										onPress={handleCenterOnUser}
+										textColor={colors.primary}
+									>
+										Enable
+									</Button>
+								</View>
+							</Surface>
+						) : null}
+						{placesStatus === 'error' ? (
+							<Surface
+								style={[
+									styles.bannerCard,
+									{
+										backgroundColor: colors.surface,
+										borderColor: colors.outline,
+									},
+								]}
+								elevation={1}
+							>
+								<View style={styles.bannerRow}>
+									<Icon
+										source="alert-circle-outline"
+										size={18}
+										color={colors.error}
+									/>
+									<View style={{ flex: 1 }}>
+										<Text style={{ color: colors.onSurface }}>
+											{placesError || 'Places lookup failed.'}
+										</Text>
+									</View>
+									<IconButton
+										icon="refresh"
+										size={18}
+										onPress={refetch}
+										iconColor={colors.onSurface}
+										style={styles.bannerAction}
+										accessibilityLabel="Retry places search"
+									/>
+								</View>
+							</Surface>
+						) : null}
+					</View>
+				) : (
+					<View style={[styles.bannerStack, { bottom: bannerOffset }]}>
+						{showLocationBanner ? (
+							<Surface
+								style={[
+									styles.bannerCard,
+									{
+										backgroundColor: colors.surface,
+										borderColor: colors.outline,
+									},
+								]}
+								elevation={1}
+							>
+								<View style={styles.bannerRow}>
+									<Icon
+										source="crosshairs-gps"
+										size={18}
+										color={colors.primary}
+									/>
+									<View style={{ flex: 1 }}>
+										<Text style={{ color: colors.onSurface }}>
+											{locationStatus === 'denied'
+												? 'Location access is off. Enable it for accurate routing.'
+												: locationError || 'Location is unavailable right now.'}
+										</Text>
+									</View>
+									<Button
+										mode="text"
+										compact
+										onPress={handleCenterOnUser}
+										textColor={colors.primary}
+									>
+										Enable
+									</Button>
+								</View>
+							</Surface>
+						) : null}
+						{placesStatus === 'error' ? (
+							<Surface
+								style={[
+									styles.bannerCard,
+									{
+										backgroundColor: colors.surface,
+										borderColor: colors.outline,
+									},
+								]}
+								elevation={1}
+							>
+								<View style={styles.bannerRow}>
+									<Icon
+										source="alert-circle-outline"
+										size={18}
+										color={colors.error}
+									/>
+									<View style={{ flex: 1 }}>
+										<Text style={{ color: colors.onSurface }}>
+											{placesError || 'Places lookup failed.'}
+										</Text>
+									</View>
+									<IconButton
+										icon="refresh"
+										size={18}
+										onPress={refetch}
+										iconColor={colors.onSurface}
+										style={styles.bannerAction}
+										accessibilityLabel="Retry places search"
+									/>
+								</View>
+							</Surface>
+						) : null}
+					</View>
+				)}
 			</View>
 			{routeDestination ? null : (
 				<View style={[styles.topStack, { top: 0 }]} pointerEvents="box-none">
@@ -634,7 +772,7 @@ export function MapExperience({
 					showStart={
 						!isRouteActive &&
 						Boolean(routeDestination) &&
-						routeStatus !== 'idle'
+						routeStatus === 'success'
 					}
 					onStartRoute={handleStartRoute}
 				/>
@@ -672,10 +810,13 @@ const styles = StyleSheet.create({
 		alignItems: 'flex-end',
 		zIndex: 10,
 	},
-	banner: {
+	bannerStack: {
 		position: 'absolute',
 		left: 16,
 		right: 16,
+		gap: 8,
+	},
+	bannerCard: {
 		borderRadius: 12,
 		borderWidth: 1,
 		paddingVertical: 10,

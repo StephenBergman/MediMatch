@@ -32,6 +32,7 @@ export type FetchPlacesParams = {
 	apiKey: string;
 	keyword?: string;
 	type?: string;
+	signal?: AbortSignal;
 };
 
 /** Fetch places from Google Places Nearby Search for a given region. */
@@ -40,6 +41,7 @@ export async function fetchPlaces({
 	apiKey,
 	keyword,
 	type,
+	signal,
 }: FetchPlacesParams): Promise<PlaceResult[]> {
 	const radiusMeters = clampRadius(
 		Math.max(region.latitudeDelta, region.longitudeDelta) *
@@ -59,7 +61,9 @@ export async function fetchPlaces({
 		query.set('type', type);
 	}
 
-	const response = await fetch(`${GOOGLE_PLACES_BASE_URL}?${query.toString()}`);
+	const response = await fetch(`${GOOGLE_PLACES_BASE_URL}?${query.toString()}`, {
+		signal,
+	});
 	if (!response.ok) {
 		throw new Error(`Places request failed (${response.status})`);
 	}
