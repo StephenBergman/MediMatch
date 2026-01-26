@@ -36,6 +36,20 @@ type Props = {
 export function ChatMessageBubble({ message, onFollowUpAction }: Props) {
 	const theme = useTheme();
 	const isUser = message.role === 'user';
+	const textColor = isUser
+		? theme.colors.onPrimaryContainer
+		: theme.colors.onSurface;
+	const timeLabel = formatTime(message.createdAt);
+	const statusLabel =
+		message.status === 'failed'
+			? 'Failed'
+			: message.status === 'sending'
+				? 'Sending...'
+				: '';
+	const statusColor =
+		message.status === 'failed'
+			? theme.colors.error
+			: theme.colors.onSurfaceVariant;
 
 	const markdownStyles = {
 		text: {

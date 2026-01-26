@@ -8,6 +8,9 @@ type Status = 'idle' | 'loading' | 'success' | 'error';
 
 const MEDICAL_KEYWORDS =
 	'hospital pharmacy urgent care clinic walk-in clinic after hours clinic express care immediate care optometrist optical veterinarian vet doctor health';
+const METERS_PER_DEGREE = 111_000;
+const MIN_MOVE_METERS = 250;
+const MIN_ZOOM_DELTA = 0.02;
 
 export function usePlacesSearch(region: Region | null) {
 	const apiKey = process.env.EXPO_PUBLIC_GOOGLE_MAPS_API_KEY;
@@ -15,20 +18,26 @@ export function usePlacesSearch(region: Region | null) {
 	const [places, setPlaces] = useState<PlaceResult[]>([]);
 	const [error, setError] = useState<string | null>(null);
 	const abortRef = useRef<AbortController | null>(null);
+	const lastRegionRef = useRef<Region | null>(null);
 
 	const canSearch = useMemo(() => Boolean(region && apiKey), [region, apiKey]);
 
 	const guardedSearch = useMemo(
 		() =>
 			guard(
-				async () => {
+				async (force = false) => {
 					if (!region || !apiKey) {
 						setError('Google Maps API key is missing.');
+						return;
+					}
+					const lastRegion = lastRegionRef.current;
+					if (!force && lastRegion && !hasRegionChanged(lastRegion, region)) {
 						return;
 					}
 					abortRef.current?.abort();
 					const controller = new AbortController();
 					abortRef.current = controller;
+					lastRegionRef.current = region;
 
 					setStatus('loading');
 					setError(null);
@@ -48,6 +57,7 @@ export function usePlacesSearch(region: Region | null) {
 								apiKey,
 								keyword: MEDICAL_KEYWORDS,
 								type,
+								signal: controller.signal,
 							}),
 						),
 						fetchPlaces({
@@ -55,6 +65,7 @@ export function usePlacesSearch(region: Region | null) {
 							apiKey,
 							keyword:
 								'urgent care walk-in clinic after hours clinic express care immediate care',
+							signal: controller.signal,
 						}),
 					]);
 					const merged = new Map<string, PlaceResult>();
@@ -82,9 +93,16 @@ export function usePlacesSearch(region: Region | null) {
 		[apiKey, region],
 	);
 
-	const runSearch = useCallback(() => {
-		guardedSearch();
-	}, [guardedSearch]);
+	const runSearch = useCallback(
+		(force = false) => {
+			guardedSearch(force);
+		},
+		[guardedSearch],
+	);
+
+	const forceRefetch = useCallback(() => {
+		runSearch(true);
+	}, [runSearch]);
 
 	useEffect(() => {
 		if (!canSearch) return;
@@ -98,7 +116,21 @@ export function usePlacesSearch(region: Region | null) {
 		places,
 		status,
 		error,
-		refetch: runSearch,
+		refetch: forceRefetch,
 		canSearch,
 	};
+}
+
+function hasRegionChanged(previous: Region, next: Region) {
+	const toRadians = (value: number) => (value * Math.PI) / 180;
+	const latMeters = (next.latitude - previous.latitude) * METERS_PER_DEGREE;
+	const lonMeters =
+		(next.longitude - previous.longitude) *
+		METERS_PER_DEGREE *
+		Math.cos(toRadians(next.latitude));
+	const distance = Math.hypot(latMeters, lonMeters);
+	const zoomDelta =
+		Math.abs(next.latitudeDelta - previous.latitudeDelta) +
+		Math.abs(next.longitudeDelta - previous.longitudeDelta);
+	return distance >= MIN_MOVE_METERS || zoomDelta >= MIN_ZOOM_DELTA;
 }

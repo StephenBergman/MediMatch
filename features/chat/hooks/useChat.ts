@@ -138,6 +138,7 @@ export function useChat() {
 	const resetChat = useCallback(() => {
 		setMessages([]);
 		setError(null);
+		setIsAssistantTyping(false);
 	}, []);
 
 	/**
@@ -252,7 +253,15 @@ export function useChat() {
 		async ({ content }: { content: string }): Promise<boolean> => {
 			const trimmed = content.trim();
 			if (!trimmed) {
-				setError('Please enter a message before sending.');
+				setError({
+					message: 'Please enter a message before sending.',
+					ux: {
+						escalate: false,
+						intent: 'warning',
+						title: 'Missing message',
+						userMessage: 'Please enter a message before sending.',
+					},
+				});
 				return false;
 			}
 
@@ -266,16 +275,20 @@ export function useChat() {
 				return false;
 			}
 
+			const now = Date.now();
 			const userMessage: ChatMessage = {
 				id: createId(),
 				role: 'user',
 				content: trimmed,
+				createdAt: now,
+				status: 'sending',
 			};
 
 			const conversation = [...messages, userMessage];
 			setMessages(conversation);
 			setIsSending(true);
 			setError(null);
+			startTyping();
 
 			let wasSuccessful = false;
 
@@ -283,17 +296,17 @@ export function useChat() {
 				const history = messagesRef.current.filter(
 					(msg) => msg.status !== 'failed',
 				);
+				const promptHistory = [...history, userMessage].map(
+					({ role, content: text }) => ({
+						role,
+						content: text,
+					}),
+				);
 				const reply = useMockAssistant
 					? buildMockMessage(trimmed)
 					: await createChatCompletion({
 							apiKey,
-							messages: [
-								SYSTEM_PROMPT,
-								...history.map(({ role, content: text }) => ({
-									role,
-									content: text,
-								})),
-							],
+							messages: [SYSTEM_PROMPT, ...promptHistory],
 						});
 
 				// Count assistant messages to determine if follow-up should be shown
@@ -305,6 +318,7 @@ export function useChat() {
 					id: createId(),
 					role: 'assistant',
 					content: reply,
+					createdAt: Date.now(),
 				};
 
 				// Add follow-up prompt if conditions are met
@@ -331,6 +345,7 @@ export function useChat() {
 				);
 			} finally {
 				setIsSending(false);
+				stopTypingSoon();
 			}
 
 			return wasSuccessful;
@@ -343,6 +358,7 @@ export function useChat() {
 		messages,
 		sendMessage,
 		isSending,
+		isAssistantTyping,
 		error,
 		clearError,
 		resetChat,
