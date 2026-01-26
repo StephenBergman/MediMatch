@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 import {
 	createChatCompletion,
@@ -39,10 +39,10 @@ type MessageStatus = NonNullable<ChatMessage['status']>;
 const updateMessageStatus = (
 	messages: ChatMessage[],
 	messageId: string,
-	nextStatus: MessageStatus
+	nextStatus: MessageStatus,
 ): ChatMessage[] =>
 	messages.map((msg) =>
-		msg.id === messageId ? { ...msg, status: nextStatus } : msg
+		msg.id === messageId ? { ...msg, status: nextStatus } : msg,
 	);
 
 const useMockAssistant =
@@ -93,7 +93,7 @@ export function useChat() {
 				clearTimeout(typingTimerRef.current);
 			}
 		},
-		[]
+		[],
 	);
 
 	const clearError = useCallback(() => setError(null), []);
@@ -148,7 +148,7 @@ export function useChat() {
 		(
 			actionId: string,
 			onNavigateToFacility?: () => void,
-			onEndChat?: () => void
+			onEndChat?: () => void,
 		): { type: string; message?: string } => {
 			const now = Date.now();
 			const endChatPrompt = {
@@ -168,12 +168,19 @@ export function useChat() {
 			};
 
 			const actionMap: Record<
-				'answered' | 'more_questions' | 'find_facility' | 'end_chat_yes' | 'end_chat_no',
+				| 'answered'
+				| 'more_questions'
+				| 'find_facility'
+				| 'end_chat_yes'
+				| 'end_chat_no',
 				{
 					type: 'message' | 'navigation' | 'end';
 					user: string;
 					assistant: string;
-					followUp?: { message: string; actions: { id: string; label: string; description?: string }[] };
+					followUp?: {
+						message: string;
+						actions: { id: string; label: string; description?: string }[];
+					};
 				}
 			> = {
 				answered: {
@@ -206,8 +213,7 @@ export function useChat() {
 				},
 			};
 
-			const selection =
-				actionMap[actionId as keyof typeof actionMap] ?? null;
+			const selection = actionMap[actionId as keyof typeof actionMap] ?? null;
 			if (!selection) return { type: 'unknown' };
 
 			appendMessages([
@@ -240,7 +246,7 @@ export function useChat() {
 
 			return { type: selection.type, message: selection.assistant };
 		},
-		[appendMessages]
+		[appendMessages],
 	);
 	const sendMessage = useCallback(
 		async ({ content }: { content: string }): Promise<boolean> => {
@@ -254,8 +260,8 @@ export function useChat() {
 				handleFailure(
 					validationError(
 						'Gemini API key is missing. Set EXPO_PUBLIC_GEMINI_API_KEY (or GEMINI_API_KEY).',
-						{ code: 'VALIDATION_REQUIRED' }
-					)
+						{ code: 'VALIDATION_REQUIRED' },
+					),
 				);
 				return false;
 			}
@@ -275,7 +281,7 @@ export function useChat() {
 
 			try {
 				const history = messagesRef.current.filter(
-					(msg) => msg.status !== 'failed'
+					(msg) => msg.status !== 'failed',
 				);
 				const reply = useMockAssistant
 					? buildMockMessage(trimmed)
@@ -292,7 +298,7 @@ export function useChat() {
 
 				// Count assistant messages to determine if follow-up should be shown
 				const assistantMessageCount = messagesRef.current.filter(
-					(msg) => msg.role === 'assistant' && msg.status !== 'failed'
+					(msg) => msg.role === 'assistant' && msg.status !== 'failed',
 				).length;
 
 				const assistantMessage: ChatMessage = {
@@ -305,7 +311,7 @@ export function useChat() {
 				if (shouldShowFollowUp(assistantMessageCount)) {
 					const followUpData = generateFollowUpMessage(
 						assistantMessageCount,
-						reply
+						reply,
 					);
 					assistantMessage.followUp = {
 						message: followUpData.message,
@@ -321,7 +327,7 @@ export function useChat() {
 			} catch (err) {
 				handleFailure(err);
 				setMessages((prev) =>
-					updateMessageStatus(prev, userMessage.id, 'failed')
+					updateMessageStatus(prev, userMessage.id, 'failed'),
 				);
 			} finally {
 				setIsSending(false);
@@ -330,7 +336,7 @@ export function useChat() {
 			return wasSuccessful;
 		},
 		//eslint-disable-next-line react-hooks/exhaustive-deps
-		[messages]
+		[messages],
 	);
 
 	return {

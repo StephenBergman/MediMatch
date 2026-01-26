@@ -15,7 +15,6 @@ export default function TabLayout() {
 				tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
 				headerShown: false,
 				tabBarButton: HapticTab,
-				
 			}}
 		>
 			<Tabs.Screen
@@ -32,7 +31,7 @@ export default function TabLayout() {
 				}}
 			/>
 			<Tabs.Screen
-				name="Map"
+				name="map"
 				options={{
 					title: 'Map',
 					tabBarIcon: ({ color, size }) => (
@@ -57,19 +56,7 @@ export default function TabLayout() {
 					),
 				}}
 			/>
-			<Tabs.Screen
-				name="profile"
-				options={{
-					title: 'Profile',
-					tabBarIcon: ({ color, size }) => (
-						<MaterialCommunityIcons
-							name="account-outline"
-							size={size ?? 30}
-							color={color}
-						/>
-					),
-				}}
-			/>
+
 			<Tabs.Screen
 				name="settings"
 				options={{

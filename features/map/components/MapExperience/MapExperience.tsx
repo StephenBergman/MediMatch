@@ -1,3 +1,4 @@
+import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import React, {
 	useCallback,
 	useEffect,
@@ -15,25 +16,24 @@ import MapView, {
 } from 'react-native-maps';
 import { Icon, IconButton, Surface, Text, useTheme } from 'react-native-paper';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 
-import { PlaceMarker } from '@/features/map/components/PlaceMarker';
+import { useAppToast } from '@/components/contexts/AppToastProvider';
 import type { PlaceResult } from '@/features/map/api/places';
 import {
 	decodePolyline,
 	fetchDirections,
 	type TravelMode,
 } from '@/features/map/api/routes';
-import { useCachedUserLocation } from '@/features/map/hooks/useCachedUserLocation';
-import { usePlacesSearch } from '@/features/map/hooks/usePlacesSearch';
 import { MapToolsPanel } from '@/features/map/components/MapToolsPanel/MapToolsPanel';
+import { PlaceMarker } from '@/features/map/components/PlaceMarker';
 import { PlacesTray } from '@/features/map/components/PlacesTray/PlacesTray';
 import { SelectedPlaceBar } from '@/features/map/components/SelectedPlaceBar/SelectedPlaceBar';
 import {
 	TurnByTurnDrawer,
 	type TurnByTurnStep,
 } from '@/features/map/components/TurnByTurnDrawer/TurnByTurnDrawer';
-import { useAppToast } from '@/components/contexts/AppToastProvider';
+import { useCachedUserLocation } from '@/features/map/hooks/useCachedUserLocation';
+import { usePlacesSearch } from '@/features/map/hooks/usePlacesSearch';
 import { guard } from '@/utils/ErrorHandling/helpers/capture';
 
 const initialRegion: Region = {
@@ -101,25 +101,35 @@ const urgentKeywords = [
 ];
 
 const emergencyKeywords = ['emergency', 'er', 'emergency room', 'hospital'];
-const routineKeywords = ['primary care', 'family', 'internal medicine', 'clinic'];
+const routineKeywords = [
+	'primary care',
+	'family',
+	'internal medicine',
+	'clinic',
+];
 
 const isEmergencyPlace = (place: PlaceResult) => {
-	const normalized = `${place.name} ${place.address} ${place.types.join(' ')}`.toLowerCase();
+	const normalized =
+		`${place.name} ${place.address} ${place.types.join(' ')}`.toLowerCase();
 	if (place.types.includes('hospital')) return true;
 	return emergencyKeywords.some((keyword) => normalized.includes(keyword));
 };
 
 const isUrgentPlace = (place: PlaceResult) => {
-	const normalized = `${place.name} ${place.address} ${place.types.join(' ')}`.toLowerCase();
+	const normalized =
+		`${place.name} ${place.address} ${place.types.join(' ')}`.toLowerCase();
 	if (place.types.includes('hospital')) return false;
-	if (place.types.includes('doctor') || place.types.includes('health')) return true;
+	if (place.types.includes('doctor') || place.types.includes('health'))
+		return true;
 	return urgentKeywords.some((keyword) => normalized.includes(keyword));
 };
 
 const isRoutinePlace = (place: PlaceResult) => {
-	const normalized = `${place.name} ${place.address} ${place.types.join(' ')}`.toLowerCase();
+	const normalized =
+		`${place.name} ${place.address} ${place.types.join(' ')}`.toLowerCase();
 	if (place.types.includes('hospital')) return false;
-	if (place.types.includes('doctor') || place.types.includes('health')) return true;
+	if (place.types.includes('doctor') || place.types.includes('health'))
+		return true;
 	return routineKeywords.some((keyword) => normalized.includes(keyword));
 };
 
@@ -138,8 +148,7 @@ export function MapExperience({
 	const hasCenteredOnUser = useRef(false);
 	const [mapRegion, setMapRegion] = useState<Region>(initialRegion);
 	const [userRegion, setUserRegion] = useState<Region | null>(null);
-	const [activeRouteMode, setActiveRouteMode] =
-		useState<TravelMode>(routeMode);
+	const [activeRouteMode, setActiveRouteMode] = useState<TravelMode>(routeMode);
 	const [routeOrigin, setRouteOrigin] = useState<LatLng | null>(null);
 	const [routeDestination, setRouteDestination] = useState<PlaceResult | null>(
 		null,
@@ -160,7 +169,7 @@ export function MapExperience({
 	const [autoRouteEnabled, setAutoRouteEnabled] = useState(true);
 	const nextStep =
 		routeSteps.length > currentStepIndex
-			? routeSteps[currentStepIndex]?.instruction ?? null
+			? (routeSteps[currentStepIndex]?.instruction ?? null)
 			: null;
 	const {
 		places,
@@ -228,7 +237,7 @@ export function MapExperience({
 
 		void (async () => {
 			const result = await refresh();
-			if (result.region) {
+			if (result?.region) {
 				await resolveAndRoute(result.region);
 			}
 		})();
@@ -343,12 +352,12 @@ export function MapExperience({
 				}
 
 				const result = await refresh();
-				if (result.region) {
+				if (result?.region) {
 					setUserRegion(result.region);
 					mapRef.current?.animateToRegion(result.region, 300);
 				}
 			}),
-		[cachedUserRegion, refresh]
+		[cachedUserRegion, refresh],
 	);
 
 	const handleRegionChange = useCallback((region: Region) => {
@@ -379,7 +388,7 @@ export function MapExperience({
 				setCurrentStepIndex(0);
 				setIsRouteActive(false);
 			}),
-		[cachedUserRegion, mapRegion, userRegion]
+		[cachedUserRegion, mapRegion, userRegion],
 	);
 
 	const resetMapState = useMemo(
@@ -402,7 +411,7 @@ export function MapExperience({
 				setMapRegion(fallbackRegion);
 				mapRef.current?.animateToRegion(fallbackRegion, 280);
 			}),
-		[cachedUserRegion, routeMode]
+		[cachedUserRegion, routeMode],
 	);
 
 	useEffect(() => {
@@ -411,7 +420,7 @@ export function MapExperience({
 
 		const tick = async () => {
 			const result = await refresh();
-			if (!isMounted || !result.region) return;
+			if (!isMounted || !result?.region) return;
 			setUserRegion(result.region);
 			const zoomed: Region = {
 				latitude: result.region.latitude,
@@ -462,7 +471,7 @@ export function MapExperience({
 					return;
 				}
 				const result = await refresh();
-				if (result.region) {
+				if (result?.region) {
 					const zoomed: Region = {
 						latitude: result.region.latitude,
 						longitude: result.region.longitude,
@@ -474,7 +483,7 @@ export function MapExperience({
 					mapRef.current?.animateToRegion(zoomed, 320);
 				}
 			}),
-		[cachedUserRegion, refresh, routeDestination, routeStatus, userRegion]
+		[cachedUserRegion, refresh, routeDestination, routeStatus, userRegion],
 	);
 
 	const handleClearMap = useMemo(
@@ -489,7 +498,7 @@ export function MapExperience({
 				}
 				resetMapState();
 			}),
-		[resetMapState, routeDestination, showToast]
+		[resetMapState, routeDestination, showToast],
 	);
 
 	const fallbackCoordinates =
@@ -612,7 +621,10 @@ export function MapExperience({
 					) : null}
 				</View>
 			)}
-			<View style={[styles.bottomStack, { bottom: 0 }]} pointerEvents="box-none">
+			<View
+				style={[styles.bottomStack, { bottom: 0 }]}
+				pointerEvents="box-none"
+			>
 				<MapToolsPanel
 					mode={activeRouteMode}
 					onModeChange={setActiveRouteMode}
