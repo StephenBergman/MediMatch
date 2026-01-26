@@ -12,6 +12,9 @@ WebBrowser.maybeCompleteAuthSession();
 
 const login = () => {
 
+  //Login page is being loaded log
+  console.log('Login page loaded');
+
   //for users email and password variables
   const[email, setEmail] = React.useState('');
   const[password, setPassword] = React.useState('');
@@ -36,7 +39,10 @@ const login = () => {
     <TextInput
         style={styles.emailInputBox}
         placeholder="Enter Email"
-        onChangeText={text => setEmail(text)}
+        onChangeText={(text) => {
+            console.log("Email is being typed", text);
+            setEmail(text);
+        }}
         value={email}
         keyboardType="email-address"
         autoCapitalize="none"
@@ -45,7 +51,10 @@ const login = () => {
     <TextInput
         style={styles.passwordInputBox}
         placeholder="Enter Password"
-        onChangeText={text => setPassword(text)}
+        onChangeText={(text) => {
+            console.log("Password is being typed", text);
+            setPassword(text);
+        }}
         value={password}
         secureTextEntry={true}
     />
@@ -59,7 +68,11 @@ const login = () => {
             />
             <Text 
                 style={styles.rememberMeButton}
-                onPress={() => setRememberMe(!rememberMe)}>
+                onPress={() => {
+                    console.log('Remember Me pressed');
+                    setRememberMe(!rememberMe);
+                }}
+                >
                     Remember Me
             </Text>
         </View>
@@ -82,7 +95,7 @@ const login = () => {
         textColor='#ffffff'
         style={styles.signInButton}
         onPress={() => {
-            console.log("Home screen pressed")
+            console.log("Sign in pressed with email: " + email + " and password: " + password);
             router.replace('/(protected)/(tabs)/home');
         }}
     >

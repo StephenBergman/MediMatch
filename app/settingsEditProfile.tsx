@@ -24,6 +24,18 @@ const settingsEditProfile = () => {
   const[email, setEmail] = React.useState('');
   const[secondaryEmail, setSecondaryEmail] = React.useState('');
   const[phoneNumber, setPhoneNumber] = React.useState('');
+  const[birthDate, setBirthDate] = React.useState('');
+  const[gender, setGender] = React.useState('');
+
+  //Location preferences storage
+  const [zipCode, setZipCode] = React.useState('');
+  const [city, setCity] = React.useState('');
+  const [state, setState] = React.useState('');
+  const [country, setCountry] = React.useState('');  
+  
+  //Health Preferences storage
+  const [healthinsuranceprovidername, setHealthInsuranceProviderName] = React.useState('');
+  const [healthinsurancenumber, setHealthInsuranceNumber] = React.useState('');
 
   return (
 	 <View style={styles.mainContainer}>
@@ -32,57 +44,126 @@ const settingsEditProfile = () => {
 
       <Text style={styles.settingsTitle}>Edit Profile</Text>
 
-      <Avatar.Icon
-        size={100}
-        icon="account-edit"
-        style={styles.SettingsIcon}
-      />
+      <View style={styles.avatarIcon}>
+        <Avatar.Icon
+          size={100}
+          icon="account-edit"
+        />
+      </View>
 		</View>
 		
 		<View style={styles.subSettingsContainer}>
 
 			<ScrollView style={{margin: 10}}>
 
-      <Text style={styles.inputLabels}>First Name</Text>
+      <Text style={styles.firstNameInputlabel}>First Name</Text>
               <TextInput
                 style={styles.changeFirstNameInputBox}
-                placeholder="Set Firstname"
+                placeholder="Firstname"
                 onChangeText={text => setFirstName(text)}
                 value={firstName}
                 autoCapitalize="none"
               />
       <Text style={styles.inputLabels}>Last Name</Text>
               <TextInput
-                style={styles.changeFirstNameInputBox}
-                placeholder="Set Lastname"
+                style={styles.changeLastNameInputBox}
+                placeholder="Lastname"
                 onChangeText={text => setLastName(text)}
                 value={lastName}
                 autoCapitalize="none"
               />
       <Text style={styles.inputLabels}>Email</Text>
               <TextInput
-                style={styles.changeFirstNameInputBox}
-                placeholder="Set Email"
+                style={styles.changePrimaryEmailInputBox}
+                placeholder="Primary Email"
                 onChangeText={text => setEmail(text)}
                 value={email}
                 autoCapitalize="none"
               />
       <Text style={styles.inputLabels}>Secondary Email</Text>
               <TextInput
-                style={styles.changeFirstNameInputBox}
-                placeholder="Set Secondary Email"
+                style={styles.changesecondaryEmailInputBox}
+                placeholder="Secondary Email"
                 onChangeText={text => setSecondaryEmail(text)}
                 value={secondaryEmail}
                 autoCapitalize="none"
               /> 
       <Text style={styles.inputLabels}>Phone Number</Text>
               <TextInput
-                style={styles.changeFirstNameInputBox}
-                placeholder="Set Phone Number"
+                style={styles.changePhoneNumberInputBox}
+                placeholder="Phone Number"
                 onChangeText={text => setPhoneNumber(text)}
                 value={phoneNumber}
                 autoCapitalize="none"
-              /> 
+              />
+      
+      <Text style={styles.inputLabels}>Birth Date</Text>
+              <TextInput
+                style={styles.changebirhthdateInputBox}
+                placeholder="Birth Date"
+                onChangeText={text => setBirthDate(text)}
+                value={birthDate}
+                autoCapitalize="none"
+              />
+
+      <Text style={styles.inputLabels}>Gender</Text>
+              <TextInput
+                style={styles.changeGenderInputBox}
+                placeholder="Gender"
+                onChangeText={text => setGender(text)}
+                value={gender}
+                autoCapitalize="none"
+              />
+              
+      <Text style={styles.inputLabels}>Zip Code</Text>
+              <TextInput
+                style={styles.changeZipCodeInputBox}
+                placeholder="Zip Code"
+                onChangeText={text => setZipCode(text)}
+                value={zipCode}
+                autoCapitalize="none"
+              />
+      <Text style={styles.inputLabels}>City</Text>
+              <TextInput
+                style={styles.changeCityNameInputBox}
+                placeholder="City"
+                onChangeText={text => setCity(text)}            
+                value={city}
+                autoCapitalize="none"
+              />
+      <Text style={styles.inputLabels}>State</Text>
+              <TextInput
+                style={styles.changeStateNameInputBox}
+                placeholder="State"
+                onChangeText={text => setState(text)}
+                value={state}
+                autoCapitalize="none"
+              />
+      <Text style={styles.inputLabels}>Country</Text>
+              <TextInput
+                style={styles.changeCountryNameInputBox}
+                placeholder="Country" 
+                onChangeText={text => setCountry(text)}
+                value={country}
+                autoCapitalize="none"
+              />
+      <Text style={styles.inputLabels}>Health Insurance Provider Name</Text>
+              <TextInput
+                style={styles.changeHealthInsuranceProviderNameInputBox}
+                placeholder="Health Insurance Provider Name"
+                onChangeText={text => setHealthInsuranceProviderName(text)}
+                value={healthinsuranceprovidername}
+                autoCapitalize="none"
+              />
+      <Text style={styles.inputLabels}>Health Insurance Number</Text>
+              <TextInput
+                style={styles.changeHealthInsuranceNumberInputBox}
+                placeholder="Health Insurance Number"
+                onChangeText={text => setHealthInsuranceNumber(text)}
+                value={healthinsurancenumber}
+                autoCapitalize="none"
+              />
+        
 
       </ScrollView>
         <Button
@@ -102,6 +183,7 @@ const settingsEditProfile = () => {
               textColor='#ffffff'
               style={styles.saveChangesButton}
               onPress={() => {
+                  router.replace('/(protected)/(tabs)/profile');
                   console.log("Profile changes have been made")
               }}
           >
@@ -143,7 +225,6 @@ const styles = StyleSheet.create({
 	marginBottom: 5,
 	marginHorizontal: 20,
 	fontWeight: 'bold',
-  marginLeft: -145,
   },
   SettingsIcon: {
     marginTop: 6,
@@ -153,7 +234,7 @@ const styles = StyleSheet.create({
    mainSettingsHeader: {
     marginTop: 20,
     marginBottom: 25,
-    marginLeft: 170,
+    alignItems: 'center',
   },
   ButtonGroup: {
 	flexDirection: 'row',
@@ -179,16 +260,6 @@ const styles = StyleSheet.create({
     marginLeft: 20,
     marginBottom:-14,
   },
-  changeFirstNameInputBox:{
-    height: 50, 
-    borderColor: '#000', 
-    borderWidth: 3, 
-    margin: 20, 
-    paddingLeft: 10, 
-    borderRadius: 5,
-    width: '90%',
-    alignSelf: 'center',
-  },
   changePasswordButton: {
         width: '50%',
         alignSelf: 'center',
@@ -205,4 +276,148 @@ const styles = StyleSheet.create({
         padding: 5,
         marginBottom: 30,
     },
+  firstNameInputlabel:{
+    fontSize:14,
+    color:'#000000ff',
+    marginLeft: 20,
+    marginBottom:-14,
+    marginTop: 20,
+  },
+  changeFirstNameInputBox:{
+    height: 50, 
+    borderColor: '#000', 
+    borderWidth: 3, 
+    margin: 20,
+    paddingLeft: 10, 
+    borderRadius: 5,
+    width: '60%',
+    alignSelf: 'flex-start',
+  },
+  changeLastNameInputBox:{
+    height: 50, 
+    borderColor: '#000', 
+    borderWidth: 3, 
+    margin: 20, 
+    paddingLeft: 10, 
+    borderRadius: 5,
+    width: '60%',
+    alignSelf: 'flex-start',
+  },
+  changePrimaryEmailInputBox:{
+    height: 50, 
+    borderColor: '#000', 
+    borderWidth: 3, 
+    margin: 20, 
+    paddingLeft: 10, 
+    borderRadius: 5,
+    width: '90%',
+    alignSelf: 'flex-start',
+  },
+  changesecondaryEmailInputBox:{
+    height: 50, 
+    borderColor: '#000', 
+    borderWidth: 3, 
+    margin: 20, 
+    paddingLeft: 10, 
+    borderRadius: 5,
+    width: '90%',
+    alignSelf: 'flex-start',
+  },
+  changePhoneNumberInputBox:{
+    height: 50, 
+    borderColor: '#000', 
+    borderWidth: 3, 
+    margin: 20, 
+    paddingLeft: 10, 
+    borderRadius: 5,
+    width: '40%',
+    alignSelf: 'flex-start',
+  },
+  changeZipCodeInputBox:{
+    height: 50, 
+    borderColor: '#000', 
+    borderWidth: 3, 
+    margin: 20, 
+    paddingLeft: 10, 
+    borderRadius: 5,
+    width: '30%',
+    alignSelf: 'flex-start',
+  },
+  changeCityNameInputBox:{
+    height: 50, 
+    borderColor: '#000', 
+    borderWidth: 3, 
+    margin: 20, 
+    paddingLeft: 10, 
+    borderRadius: 5,
+    width: '40%',
+    alignSelf: 'flex-start',
+  },
+  changeStateNameInputBox:{
+    height: 50, 
+    borderColor: '#000', 
+    borderWidth: 3, 
+    margin: 20, 
+    paddingLeft: 10, 
+    borderRadius: 5,
+    width: '40%',
+    alignSelf: 'flex-start',
+  },
+  changeCountryNameInputBox:{
+    height: 50, 
+    borderColor: '#000', 
+    borderWidth: 3, 
+    margin: 20, 
+    paddingLeft: 10, 
+    borderRadius: 5,
+    width: '60%',
+    alignSelf: 'flex-start',
+  },
+  changeHealthInsuranceProviderNameInputBox:{
+    height: 50, 
+    borderColor: '#000', 
+    borderWidth: 3, 
+    margin: 20, 
+    paddingLeft: 10, 
+    borderRadius: 5,
+    width: '90%',
+    alignSelf: 'flex-start',
+  },
+  changeHealthInsuranceNumberInputBox:{
+    height: 50, 
+    borderColor: '#000', 
+    borderWidth: 3, 
+    margin: 20, 
+    paddingLeft: 10, 
+    borderRadius: 5,
+    width: '60%',
+    alignSelf: 'flex-start',
+  },
+  changeGenderInputBox:{
+    height: 50, 
+    borderColor: '#000', 
+    borderWidth: 3, 
+    margin: 20, 
+    paddingLeft: 10, 
+    borderRadius: 5,
+    width: '60%',
+    alignSelf: 'flex-start',
+  },
+  changebirhthdateInputBox:{
+    height: 50, 
+    borderColor: '#000', 
+    borderWidth: 3, 
+    margin: 20, 
+    paddingLeft: 10, 
+    borderRadius: 5,
+    width: '60%',
+    alignSelf: 'flex-start',
+  },
+  avatarIcon: {
+    borderWidth: 3,
+    borderRadius: 999,
+    padding: 0,
+    color: '#000000ff',
+  },
+
 });

@@ -17,6 +17,7 @@ const settings = () => {
 
   //stores for search bar
   const [query, setQuery] = React.useState("");
+  
 
   return (
 	 <View style={styles.mainContainer}>
@@ -66,13 +67,15 @@ const settings = () => {
           <List.Item 
           title="Notifications"
           left={(props) => <List.Icon {...props} icon="bell" />} 
-          right={(props) => <List.Icon {...props} icon="chevron-right" />} 
+          right={(props) => <List.Icon {...props} icon="chevron-right" />}
+          onPress={() => router.push('/notifications')}
           />
 
           <List.Item 
           title="Chat History"
           left={(props) => <List.Icon {...props} icon="chat" />} 
-          right={(props) => <List.Icon {...props} icon="chevron-right" />} 
+          right={(props) => <List.Icon {...props} icon="chevron-right" />}
+          onPress={() => router.push('/chatHistory')} 
           />
           
           <Divider style={styles.dividerLine} />
@@ -82,13 +85,15 @@ const settings = () => {
           <List.Item 
           title="About Us"
           left={(props) => <List.Icon {...props} icon="information" />} 
-          right={(props) => <List.Icon {...props} icon="chevron-right" />} 
+          right={(props) => <List.Icon {...props} icon="chevron-right" />}
+          onPress={() => router.push('/aboutUs')}
           />
 
           <List.Item 
           title="Privacy Policy"
           left={(props) => <List.Icon {...props} icon="shield-account-outline" />} 
-          right={(props) => <List.Icon {...props} icon="chevron-right" />} 
+          right={(props) => <List.Icon {...props} icon="chevron-right" />}
+          onPress={() => router.push('/privacyPolicy')}
           />
 
         </List.Section>
@@ -149,9 +154,6 @@ const styles = StyleSheet.create({
 	fontWeight: 'bold',
   marginLeft: -80,
   },
-  SettingsIcon: {
-    marginTop: 6,
-  },
   SettingsSearchBar: {
     borderRadius: 10,
     borderWidth: 2,
@@ -201,6 +203,9 @@ const styles = StyleSheet.create({
     height: 4,
     width: '100%',
     marginLeft: 0,
-  }
+  },
+  SettingsIcon:{
+    marginLeft: 130,
+  },
  
 });
