@@ -1,236 +1,292 @@
-import { StyleSheet, View, Image, TextInput } from 'react-native'
-import React from 'react'
+import React, { useEffect } from 'react';
+import { Image, Platform, StyleSheet, TextInput, View } from 'react-native';
 
 //this page will route to the home page after user signs in successfully
-import { useRouter } from 'expo-router'
-import { Button, Text, Checkbox} from 'react-native-paper';
-import { Colors } from '@/constants/theme'
-import { useColorScheme } from '@/hooks/use-color-scheme'
+import { useAppToast } from '@/components/contexts/AppToastProvider';
+import { Colors } from '@/constants/theme';
+import { useAuth } from '@/features/auth/contexts/AuthContext';
+import { useColorScheme } from '@/hooks/use-color-scheme';
+import { useRouter } from 'expo-router';
+import * as SecureStore from 'expo-secure-store';
+import { Button, Checkbox, Text } from 'react-native-paper';
 
 //for Google Sign-In
-import * as WebBrowser from "expo-web-browser";
+import * as WebBrowser from 'expo-web-browser';
 
 WebBrowser.maybeCompleteAuthSession();
 
-const login = () => {
-  const scheme = useColorScheme() ?? 'light';
-  const colors = Colors[scheme];
-  const styles = React.useMemo(() => createStyles(colors), [colors]);
+const Login = () => {
+	const scheme = useColorScheme() ?? 'light';
+	const colors = Colors[scheme];
+	const styles = React.useMemo(() => createStyles(colors), [colors]);
 
-  //Login page is being loaded log
-  console.log('Login page loaded');
+	//for users email and password variables
+	const [email, setEmail] = React.useState('');
+	const [password, setPassword] = React.useState('');
 
-  //for users email and password variables
-  const[email, setEmail] = React.useState('');
-  const[password, setPassword] = React.useState('');
+	//router variable to route to home page after login
+	const router = useRouter();
+	const { session, signInWithEmail, isLoading } = useAuth();
+	const { showToast } = useAppToast();
 
-  //router variable to route to home page after login
-  const router = useRouter();
+	//user is able to check the box to stay signed into there account
+	const [rememberMe, setRememberMe] = React.useState(false);
 
-  //user is able to check the box to stay signed into there account
-  const [rememberMe, setRememberMe] = React.useState(false);
+	const getRememberedEmail = async () => {
+		const key = 'rememberedEmail';
+		if (Platform.OS === 'web') {
+			if (typeof localStorage === 'undefined') return null;
+			return localStorage.getItem(key);
+		}
+		return SecureStore.getItemAsync(key);
+	};
 
-  return (
-  <View style={styles.mainContainer}>
+	const setRememberedEmail = async (value: string | null) => {
+		const key = 'rememberedEmail';
+		if (Platform.OS === 'web') {
+			if (typeof localStorage === 'undefined') return;
+			if (value) {
+				localStorage.setItem(key, value);
+			} else {
+				localStorage.removeItem(key);
+			}
+			return;
+		}
+		if (value) {
+			await SecureStore.setItemAsync(key, value);
+		} else {
+			await SecureStore.deleteItemAsync(key);
+		}
+	};
 
-    <Image style={styles.MedimatchLogo}
-      source={require('../assets/images/medimatch_logoMain.png')}
-    />
+	useEffect(() => {
+		let isMounted = true;
+		getRememberedEmail()
+			.then((savedEmail) => {
+				if (!isMounted || !savedEmail) return;
+				setEmail(savedEmail);
+				setRememberMe(true);
+			})
+			.catch(() => {});
 
-    <Text style={styles.MediMatchTitle}>
-        Welcome to Medimatch!
-    </Text>
-    
-    <TextInput
-        style={styles.emailInputBox}
-        placeholder="Enter Email"
-        onChangeText={(text) => {
-            console.log("Email is being typed", text);
-            setEmail(text);
-        }}
-        value={email}
-        keyboardType="email-address"
-        autoCapitalize="none"
-        placeholderTextColor={colors.tabIconDefault}
-    />
+		return () => {
+			isMounted = false;
+		};
+	}, []);
 
-    <TextInput
-        style={styles.passwordInputBox}
-        placeholder="Enter Password"
-        onChangeText={(text) => {
-            console.log("Password is being typed", text);
-            setPassword(text);
-        }}
-        value={password}
-        secureTextEntry={true}
-        placeholderTextColor={colors.tabIconDefault}
-    />
+	useEffect(() => {
+		if (session) {
+			router.replace('/(protected)/(tabs)/chat');
+		}
+	}, [session, router]);
 
-    <View style={styles.buttonHorizontal}>
+	const handleSignIn = async () => {
+		if (!email.trim() || !password) {
+			showToast('Please enter your email and password.');
+			return;
+		}
 
-        <View style={styles.rememberMeRow}>
+		const { error } = await signInWithEmail({ email: email.trim(), password });
+		if (error) {
+			showToast(error);
+			return;
+		}
 
-            <Checkbox
-            status={rememberMe ? 'checked' : 'unchecked'} 
-            onPress={() => setRememberMe(!rememberMe)}
-            color={colors.primary}
-            uncheckedColor={colors.border}
-            />
-            <Text 
-                style={styles.rememberMeButton}
-                onPress={() => {
-                    console.log('Remember Me pressed');
-                    setRememberMe(!rememberMe);
-                }}
-                >
-                    Remember Me
-            </Text>
-        </View>
+		if (rememberMe) {
+			setRememberedEmail(email.trim()).catch(() => {});
+		} else {
+			setRememberedEmail(null).catch(() => {});
+		}
+	};
 
-            <Button
-                mode="text"
-                textColor={colors.text}
-                style={styles.forgotpasswordButton}
-                onPress={() => {
-                    console.log('Forgot-Password Pressed')
-                    router.push('/forgotpassword');
-                }}
-            >
-                Forgot Password?
-            </Button>
-    </View>
+	return (
+		<View style={styles.mainContainer}>
+			<Image
+				style={styles.MedimatchLogo}
+				source={require('../assets/images/medimatch_logoMain.png')}
+			/>
 
-    <Button
-        mode="contained"
-        textColor={colors.inverseText}
-        style={styles.signInButton}
-        onPress={() => {
-            console.log("Sign in pressed with email: " + email + " and password: " + password);
-            router.replace('/(protected)/(tabs)/home');
-        }}
-    >
-        Sign In
-    </Button>
+			<Text style={styles.MediMatchTitle}>Welcome to Medimatch!</Text>
 
-    <Button
-        mode="outlined"
-        textColor={colors.primary}
-        style={ styles.googleButton }
-        onPress={() => {
-            console.log('Google Sign-In pressed');
-        }}
-    >
-        Sign In with Google
-    </Button> 
+			<TextInput
+				style={styles.emailInputBox}
+				placeholder="Enter Email"
+				onChangeText={(text) => {
+					setEmail(text);
+				}}
+				value={email}
+				keyboardType="email-address"
+				autoCapitalize="none"
+				placeholderTextColor={colors.tabIconDefault}
+			/>
 
-    <Button
-        mode="text"
-        textColor={colors.text}
-        style={styles.signupButton}
-        onPress={() => {
-            console.log('Sign-Up pressed')
-            router.push('/signup');
-        }}
-    >
-        Don't have an account? Sign Up Here
-    </Button> 
+			<TextInput
+				style={styles.passwordInputBox}
+				placeholder="Enter Password"
+				onChangeText={(text) => {
+					setPassword(text);
+				}}
+				value={password}
+				secureTextEntry={true}
+				placeholderTextColor={colors.tabIconDefault}
+			/>
 
-  </View>
-  )
-}
+			<View style={styles.buttonHorizontal}>
+				<View style={styles.rememberMeRow}>
+					<Checkbox
+						status={rememberMe ? 'checked' : 'unchecked'}
+						onPress={() => setRememberMe(!rememberMe)}
+						color={colors.primary}
+						uncheckedColor={colors.border}
+					/>
+					<Text
+						style={styles.rememberMeButton}
+						onPress={() => setRememberMe(!rememberMe)}
+					>
+						Remember Me
+					</Text>
+				</View>
 
-export default login
+				<Button
+					mode="text"
+					textColor={colors.text}
+					style={styles.forgotpasswordButton}
+					onPress={() => {
+						router.push('/forgotpassword');
+					}}
+				>
+					Forgot Password?
+				</Button>
+			</View>
 
-const createStyles = (colors: typeof Colors.light) => StyleSheet.create({
-    mainContainer: {
-        flex: 1,
-        backgroundColor: colors.surface,
-        paddingHorizontal: 12,
-    },
-    MedimatchLogo: {
-        width: 200,
-        height: 200,
-        alignSelf: 'center',
-        marginTop: 50,
-    },
-    MediMatchTitle: {
-        fontSize: 30, 
-        fontWeight: 'bold', 
-        textAlign: 'center', 
-        marginTop: 25,
-        color: colors.text,
-    },
-    emailInputBox: {
-        height: 50, 
-        borderColor: colors.border, 
-        borderWidth: 3, 
-        margin: 20, 
-        paddingLeft: 10, 
-        borderRadius: 5,
-        alignSelf: 'center',
-        width: '75%',
-        backgroundColor: colors.card,
-        color: colors.text,
-    },
-    passwordInputBox: {
-        height: 50, 
-        borderColor: colors.border, 
-        borderWidth: 3, 
-        margin: 20, 
-        paddingLeft: 10, 
-        borderRadius: 5,
-        width: '75%',
-        alignSelf: 'center',
-        backgroundColor: colors.card,
-        color: colors.text,
-    },
-    signupButton: {
-        width: '75%', 
-        alignSelf: 'center', 
-        marginTop: 20, 
-        padding: 5
-    },
-    googleButton: {
-        width: '50%',
-        alignSelf: 'center',
-        borderColor: colors.primary,
-        borderWidth: 2,
-        marginTop: 20, 
-        padding: 5
-    },
-    signInButton: {
-        width: '50%', 
-        alignSelf: 'center',
-        backgroundColor: colors.primary,
-        marginTop: 20, 
-        padding: 5
-    },
-    forgotpasswordButton: {
-        flexDirection: 'row',
-        alignSelf: 'auto',
-        marginRight: '11%',
-        marginTop: -25,
-    },
-    rememberMeButton: {
-        flexDirection: 'row',
-        alignSelf: 'auto',
-        fontSize: 14,
-        marginLeft: 4,
-        color: colors.text,
-    },
-    buttonHorizontal: {
-        flexDirection: 'row',
-        width: '95%',
-        alignSelf: 'center',
-        justifyContent: 'space-between',
-        marginTop: 5,
-        alignItems: 'center'
-    },
-    rememberMeRow:{
-        flexDirection: 'row',
-        alignItems: 'center',
-        marginTop: -25,
-        marginLeft: '11%',
-    },
-    
-})
+			<Button
+				mode="contained"
+				textColor={colors.inverseText}
+				style={styles.signInButton}
+				loading={isLoading}
+				disabled={isLoading}
+				onPress={handleSignIn}
+			>
+				Sign In
+			</Button>
+
+			<Button
+				mode="outlined"
+				textColor={colors.primary}
+				style={styles.googleButton}
+				onPress={() => {}}
+			>
+				Sign In with Google
+			</Button>
+
+			<Button
+				mode="text"
+				textColor={colors.text}
+				style={styles.signupButton}
+				onPress={() => {
+					router.push('/signup');
+				}}
+			>
+				{"Don't have an account? Sign Up Here"}
+			</Button>
+		</View>
+	);
+};
+
+export default Login;
+
+type ThemeColors = typeof Colors.light | typeof Colors.dark;
+
+const createStyles = (colors: ThemeColors) =>
+	StyleSheet.create({
+		mainContainer: {
+			flex: 1,
+			backgroundColor: colors.surface,
+			paddingHorizontal: 12,
+		},
+		MedimatchLogo: {
+			width: 200,
+			height: 200,
+			alignSelf: 'center',
+			marginTop: 50,
+		},
+		MediMatchTitle: {
+			fontSize: 30,
+			fontWeight: 'bold',
+			textAlign: 'center',
+			marginTop: 25,
+			color: colors.text,
+		},
+		emailInputBox: {
+			height: 50,
+			borderColor: colors.border,
+			borderWidth: 3,
+			margin: 20,
+			paddingLeft: 10,
+			borderRadius: 5,
+			alignSelf: 'center',
+			width: '75%',
+			backgroundColor: colors.card,
+			color: colors.text,
+		},
+		passwordInputBox: {
+			height: 50,
+			borderColor: colors.border,
+			borderWidth: 3,
+			margin: 20,
+			paddingLeft: 10,
+			borderRadius: 5,
+			width: '75%',
+			alignSelf: 'center',
+			backgroundColor: colors.card,
+			color: colors.text,
+		},
+		signupButton: {
+			width: '75%',
+			alignSelf: 'center',
+			marginTop: 20,
+			padding: 5,
+		},
+		googleButton: {
+			width: '50%',
+			alignSelf: 'center',
+			borderColor: colors.primary,
+			borderWidth: 2,
+			marginTop: 20,
+			padding: 5,
+		},
+		signInButton: {
+			width: '50%',
+			alignSelf: 'center',
+			backgroundColor: colors.primary,
+			marginTop: 20,
+			padding: 5,
+		},
+		forgotpasswordButton: {
+			flexDirection: 'row',
+			alignSelf: 'auto',
+			marginRight: '11%',
+			marginTop: -25,
+		},
+		rememberMeButton: {
+			flexDirection: 'row',
+			alignSelf: 'auto',
+			fontSize: 14,
+			marginLeft: 4,
+			color: colors.text,
+		},
+		buttonHorizontal: {
+			flexDirection: 'row',
+			width: '95%',
+			alignSelf: 'center',
+			justifyContent: 'space-between',
+			marginTop: 5,
+			alignItems: 'center',
+		},
+		rememberMeRow: {
+			flexDirection: 'row',
+			alignItems: 'center',
+			marginTop: -25,
+			marginLeft: '11%',
+		},
+	});

@@ -50,24 +50,32 @@ export function usePlacesSearch(region: Region | null) {
 						'optometrist',
 					];
 
-					const responses = await Promise.all([
-						...types.map((type) =>
+					let responses: PlaceResult[][] = [];
+					try {
+						responses = await Promise.all([
+							...types.map((type) =>
+								fetchPlaces({
+									region,
+									apiKey,
+									keyword: MEDICAL_KEYWORDS,
+									type,
+									signal: controller.signal,
+								}),
+							),
 							fetchPlaces({
 								region,
 								apiKey,
-								keyword: MEDICAL_KEYWORDS,
-								type,
+								keyword:
+									'urgent care walk-in clinic after hours clinic express care immediate care',
 								signal: controller.signal,
 							}),
-						),
-						fetchPlaces({
-							region,
-							apiKey,
-							keyword:
-								'urgent care walk-in clinic after hours clinic express care immediate care',
-							signal: controller.signal,
-						}),
-					]);
+						]);
+					} catch (err) {
+						if (isAbortError(err) || controller.signal.aborted) {
+							return;
+						}
+						throw err;
+					}
 					const merged = new Map<string, PlaceResult>();
 					responses.flat().forEach((place) => {
 						if (!merged.has(place.id)) {
@@ -81,8 +89,16 @@ export function usePlacesSearch(region: Region | null) {
 				},
 				{
 					asyncFallback: (appErr) => {
-						if (abortRef.current?.signal.aborted) return null;
 						const message = appErr.message || 'Unknown places error';
+						const normalized = message.toLowerCase();
+						const isAbort =
+							normalized.includes('aborted') ||
+							normalized.includes('aborterror') ||
+							normalized.includes('canceled');
+
+						if (isAbort || abortRef.current?.signal.aborted) {
+							return null;
+						}
 						console.warn('Places fetch failed', message);
 						setError(message);
 						setStatus('error');
@@ -119,6 +135,21 @@ export function usePlacesSearch(region: Region | null) {
 		refetch: forceRefetch,
 		canSearch,
 	};
+}
+
+function isAbortError(err: unknown) {
+	if (!err) return false;
+	if (err instanceof Error) {
+		const name = err.name.toLowerCase();
+		const message = err.message.toLowerCase();
+		return (
+			name.includes('abort') ||
+			message.includes('aborted') ||
+			message.includes('aborterror') ||
+			message.includes('canceled')
+		);
+	}
+	return false;
 }
 
 function hasRegionChanged(previous: Region, next: Region) {

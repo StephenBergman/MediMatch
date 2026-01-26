@@ -1,6 +1,6 @@
 //this is the settings page, there will be sub settings included and logout option.
 
-import { StyleSheet, View, Image, Text, BackHandler } from 'react-native'
+import { StyleSheet, View, Text } from 'react-native'
 import React from 'react'
 import { Button, List, Searchbar, Divider } from 'react-native-paper'
 import { ScrollView } from 'react-native-gesture-handler'
@@ -12,6 +12,8 @@ import { useRouter } from 'expo-router'
 import { MaterialCommunityIcons } from '@expo/vector-icons'
 import { Colors } from '@/constants/theme'
 import { useColorScheme } from '@/hooks/use-color-scheme'
+import { useAuth } from '@/features/auth/contexts/AuthContext'
+import { useAppToast } from '@/components/contexts/AppToastProvider'
 
 const settings = () => {
 	
@@ -19,9 +21,20 @@ const settings = () => {
   const scheme = useColorScheme() ?? 'light';
   const colors = Colors[scheme];
   const styles = React.useMemo(() => createStyles(colors), [colors]);
+  const { signOut, isLoading } = useAuth();
+  const { showToast } = useAppToast();
 
   //stores for search bar
   const [query, setQuery] = React.useState("");
+
+  const handleLogout = async () => {
+    const { error } = await signOut();
+    if (error) {
+      showToast(error);
+      return;
+    }
+    router.replace('/login');
+  };
   
 
   return (
@@ -120,12 +133,9 @@ const settings = () => {
 
 					<Button style={styles.logoutButton} mode="contained" 
           textColor={colors.inverseText}
-					onPress={() => 
-					{
-						console.log('User has been logged out, re-directed to login screen');
-						//if user accepts terms, they will be routed to the login page
-						router.push('/login');
-					}}>
+          loading={isLoading}
+          disabled={isLoading}
+					onPress={handleLogout}>
 						
 						Logout
 

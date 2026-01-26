@@ -50,6 +50,7 @@ type MapExperienceProps = {
 	autoRouteToNearest?: boolean;
 	routeMode?: TravelMode;
 	routePreference?: 'urgent' | 'emergency' | 'routine' | 'any';
+	routeRequestId?: string;
 };
 
 const toLatLng = (region: Region): LatLng => ({
@@ -137,6 +138,7 @@ export function MapExperience({
 	autoRouteToNearest = false,
 	routeMode = 'driving',
 	routePreference = 'any',
+	routeRequestId,
 }: MapExperienceProps) {
 	const theme = useTheme();
 	const colors = theme.colors;
@@ -172,6 +174,7 @@ export function MapExperience({
 	const [currentStepIndex, setCurrentStepIndex] = useState(0);
 	const [isRouteActive, setIsRouteActive] = useState(false);
 	const [autoRouteEnabled, setAutoRouteEnabled] = useState(true);
+	const [autoRouteSuppressed, setAutoRouteSuppressed] = useState(false);
 	const nextStep =
 		routeSteps.length > currentStepIndex
 			? (routeSteps[currentStepIndex]?.instruction ?? null)
@@ -188,6 +191,21 @@ export function MapExperience({
 	}, [routeMode]);
 
 	useEffect(() => {
+		if (!routeRequestId || !autoRouteToNearest) return;
+		setAutoRouteEnabled(true);
+		setAutoRouteSuppressed(false);
+		setRouteDestination(null);
+		setRouteOrigin(null);
+		setRoutePath(null);
+		setRouteSteps([]);
+		setRouteStatus('idle');
+		setRouteSource(null);
+		setIsDrawerOpen(false);
+		setCurrentStepIndex(0);
+		setIsRouteActive(false);
+	}, [autoRouteToNearest, routeRequestId]);
+
+	useEffect(() => {
 		if (!autoRouteToNearest && routeDestination && routeSource === 'auto') {
 			setRouteDestination(null);
 			setRoutePath(null);
@@ -199,14 +217,19 @@ export function MapExperience({
 			setCurrentStepIndex(0);
 			setIsRouteActive(false);
 			setAutoRouteEnabled(true);
+			setAutoRouteSuppressed(false);
 			return;
 		}
-		if (autoRouteToNearest) {
+		if (autoRouteToNearest && !autoRouteEnabled && !autoRouteSuppressed) {
 			setAutoRouteEnabled(true);
+		}
+		if (!autoRouteToNearest && autoRouteSuppressed) {
+			setAutoRouteSuppressed(false);
 		}
 		if (
 			!autoRouteToNearest ||
 			!autoRouteEnabled ||
+			autoRouteSuppressed ||
 			routeDestination ||
 			places.length === 0
 		) {
@@ -248,6 +271,7 @@ export function MapExperience({
 		})();
 	}, [
 		autoRouteEnabled,
+		autoRouteSuppressed,
 		autoRouteToNearest,
 		cachedUserRegion,
 		mapRegion,
@@ -399,7 +423,13 @@ export function MapExperience({
 	const resetMapState = useMemo(
 		() =>
 			guard(() => {
-				const fallbackRegion = cachedUserRegion ?? initialRegion;
+				const baseRegion = userRegion ?? cachedUserRegion ?? mapRegion ?? initialRegion;
+				const fallbackRegion: Region = {
+					latitude: baseRegion.latitude,
+					longitude: baseRegion.longitude,
+					latitudeDelta: baseRegion.latitudeDelta ?? initialRegion.latitudeDelta,
+					longitudeDelta: baseRegion.longitudeDelta ?? initialRegion.longitudeDelta,
+				};
 				setRouteDestination(null);
 				setRouteOrigin(null);
 				setRoutePath(null);
@@ -412,11 +442,12 @@ export function MapExperience({
 				setCurrentStepIndex(0);
 				setIsRouteActive(false);
 				setAutoRouteEnabled(false);
-				setUserRegion(cachedUserRegion ?? null);
+				setAutoRouteSuppressed(true);
+				setUserRegion(userRegion ?? cachedUserRegion ?? null);
 				setMapRegion(fallbackRegion);
 				mapRef.current?.animateToRegion(fallbackRegion, 280);
 			}),
-		[cachedUserRegion, routeMode],
+		[cachedUserRegion, mapRegion, routeMode, userRegion],
 	);
 
 	useEffect(() => {
