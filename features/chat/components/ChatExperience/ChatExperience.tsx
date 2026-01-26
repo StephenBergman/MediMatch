@@ -1,10 +1,10 @@
 import { useRouter } from 'expo-router';
 import React, {
-    useCallback,
-    useEffect,
-    useMemo,
-    useRef,
-    useState,
+	useCallback,
+	useEffect,
+	useMemo,
+	useRef,
+	useState,
 } from 'react';
 import { Animated, FlatList, StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -15,8 +15,8 @@ import { ChatErrorNotice } from '@/features/chat/components/ChatErrorNotice/Chat
 import { ChatHeader } from '@/features/chat/components/ChatHeader/ChatHeader';
 import { ChatMessageList } from '@/features/chat/components/ChatMessageList/ChatMessageList';
 import {
-    ChatProvider,
-    useChatContext,
+	ChatProvider,
+	useChatContext,
 } from '@/features/chat/contexts/ChatContext';
 import { type ChatMessage } from '@/features/chat/types';
 import { useColorScheme } from '@/hooks/use-color-scheme';
@@ -63,7 +63,6 @@ function ChatExperienceInner() {
 		});
 	}, [fadeAnim, isClearing, resetChat]);
 
-
 	const guardedSend = useMemo(
 		() =>
 			guard(async (value: string) => {
@@ -72,7 +71,7 @@ function ChatExperienceInner() {
 					setInput(value);
 				}
 			}),
-		[sendMessage]
+		[sendMessage],
 	);
 
 	const handleSend = useCallback(() => {
@@ -88,53 +87,55 @@ function ChatExperienceInner() {
 					.reverse()
 					.find((message) => message.role === 'assistant')?.content;
 				const normalized = lastAssistantMessage?.toLowerCase() ?? '';
-		const prefersEmergency =
-			normalized.includes('emergency room') ||
-			/\ber\b/.test(normalized) ||
-			normalized.includes('call 911') ||
-			normalized.includes('emergency services');
-		const prefersRoutine =
-			normalized.includes('primary care') ||
-			normalized.includes('primary doctor') ||
-			normalized.includes('family doctor');
-		const prefersUrgent =
-			normalized.includes('urgent care') ||
-			normalized.includes('express care') ||
-			normalized.includes('walk-in') ||
-			normalized.includes('walk in');
-		const carePreference = prefersEmergency
-			? 'emergency'
-			: prefersRoutine
-				? 'routine'
-				: prefersUrgent
-					? 'urgent'
-					: 'urgent';
+				const prefersEmergency =
+					normalized.includes('emergency room') ||
+					/\ber\b/.test(normalized) ||
+					normalized.includes('call 911') ||
+					normalized.includes('emergency services');
+				const prefersRoutine =
+					normalized.includes('primary care') ||
+					normalized.includes('primary doctor') ||
+					normalized.includes('family doctor');
+				const prefersUrgent =
+					normalized.includes('urgent care') ||
+					normalized.includes('express care') ||
+					normalized.includes('walk-in') ||
+					normalized.includes('walk in');
+				const carePreference = prefersEmergency
+					? 'emergency'
+					: prefersRoutine
+						? 'routine'
+						: prefersUrgent
+							? 'urgent'
+							: 'urgent';
 
 				const result = handleFollowUpAction(
 					actionId,
 					() => {
 						router.push({
 							pathname: '/(protected)/(tabs)/map',
-							params: { route: 'nearest', care: carePreference },
+							params: {
+								route: 'nearest',
+								care: carePreference,
+								routeRequestId: String(Date.now()),
+							},
 						});
 					},
-					runClearAnimation
+					runClearAnimation,
 				);
 
 				// If it's a message response, optionally add to chat
 				if (result.type === 'message' && result.message) {
-					// Auto-add a contextual message showing the user's action
-					console.log('User action:', actionId, result.message);
 				}
 			}),
-		[handleFollowUpAction, messages, router, runClearAnimation]
+		[handleFollowUpAction, messages, router, runClearAnimation],
 	);
 
 	const handleFollowUpClick = useCallback(
 		(actionId: string) => {
 			guardedFollowUp(actionId);
 		},
-		[guardedFollowUp]
+		[guardedFollowUp],
 	);
 
 	useEffect(() => {
@@ -206,7 +207,6 @@ function ChatExperienceInner() {
 					/>
 				</View>
 			</Animated.View>
-
 		</SafeAreaView>
 	);
 }

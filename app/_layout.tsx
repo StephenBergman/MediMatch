@@ -16,6 +16,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { AppToastProvider } from '@/components/contexts/AppToastProvider';
 import { ErrorFallback } from '@/components/Tools/ErrorHandling/ErrorFallback';
 import { Colors } from '@/constants/theme';
+import { AuthProvider } from '@/features/auth/contexts/AuthContext';
 import '@/global.css';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import {
@@ -31,7 +32,7 @@ import {
 } from '@/utils/ErrorHandling/helpers/FeedbackHost';
 
 export const unstable_settings = {
-	anchor: '(protected)/(tabs)',
+	anchor: '(protected)',
 };
 
 function AppShell() {
@@ -117,51 +118,57 @@ function AppShell() {
 		<GestureHandlerRootView style={{ flex: 1 }}>
 			<PaperProvider theme={paperTheme}>
 				<AppToastProvider>
-					<SafeAreaView
-						style={{
-							flex: 1,
-							backgroundColor: navigationTheme.colors.background,
-						}}
-						edges={['top', 'left', 'right']}
-					>
-						<ErrorNotificationsHost>
-							<ErrorBoundary>
-								<FeedbackHost>
-									{fatal ? (
-										<ErrorFallback
-											error={fatal}
-											origin={origin}
-											onRetry={resetFatal}
-											onReport={requestFeedbackModal}
-										/>
-									) : (
-										<ThemeProvider value={navigationTheme}>
-						<Stack
-							initialRouteName="index"
-							screenOptions={{
-								headerShown: false,
-								animation: 'fade',
-								contentStyle: {
-									backgroundColor: navigationTheme.colors.background,
-								},
+					<AuthProvider>
+						<SafeAreaView
+							style={{
+								flex: 1,
+								backgroundColor: navigationTheme.colors.background,
 							}}
+							edges={['top', 'left', 'right']}
 						>
+							<ErrorNotificationsHost>
+								<ErrorBoundary>
+									<FeedbackHost>
+										{fatal ? (
+											<ErrorFallback
+												error={fatal}
+												origin={origin}
+												onRetry={resetFatal}
+												onReport={requestFeedbackModal}
+											/>
+										) : (
+											<ThemeProvider value={navigationTheme}>
+												<Stack
+													initialRouteName="index"
+													screenOptions={{
+														headerShown: false,
+														animation: 'fade',
+														contentStyle: {
+															backgroundColor:
+																navigationTheme.colors.background,
+														},
+													}}
+												>
 							<Stack.Screen
-								name="(protected)/(tabs)"
+								name="(protected)"
 								options={{ headerShown: false }}
 							/>
-							<Stack.Screen name="dev" options={{ headerShown: false }} />
-						</Stack>
-											<StatusBar
-												style={scheme === 'dark' ? 'light' : 'dark'}
-												translucent
-											/>
-										</ThemeProvider>
-									)}
-								</FeedbackHost>
-							</ErrorBoundary>
-						</ErrorNotificationsHost>
-					</SafeAreaView>
+													<Stack.Screen
+														name="dev"
+														options={{ headerShown: false }}
+													/>
+												</Stack>
+												<StatusBar
+													style={scheme === 'dark' ? 'light' : 'dark'}
+													translucent
+												/>
+											</ThemeProvider>
+										)}
+									</FeedbackHost>
+								</ErrorBoundary>
+							</ErrorNotificationsHost>
+						</SafeAreaView>
+					</AuthProvider>
 				</AppToastProvider>
 			</PaperProvider>
 		</GestureHandlerRootView>

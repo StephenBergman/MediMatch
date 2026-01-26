@@ -1,161 +1,151 @@
-import { StyleSheet, Text, View, TextInput } from 'react-native'
-import React from 'react'
-import { Button } from 'react-native-paper'
-import { router } from 'expo-router'
+import { router } from 'expo-router';
+import React from 'react';
+import { StyleSheet, Text, TextInput, View } from 'react-native';
+import { Button } from 'react-native-paper';
 
-const forgotpassword = () => {
+const ForgotPassword = () => {
+	//for users email entry
+	const [email, setEmail] = React.useState('');
 
-  //for users email entry
-    const[email, setEmail] = React.useState('');
+	return (
+		<View>
+			<Text style={styles.forgotPasswordTitle}>Forgot Password</Text>
 
-  return (
-    <View>
-      <Text style={styles.forgotPasswordTitle}>Forgot Password</Text>
+			<Text style={styles.fp_EnterEmailText}>Enter Your Email Address</Text>
 
-      <Text style={styles.fp_EnterEmailText}>Enter Your Email Address</Text>
+			<TextInput
+				style={styles.fp_EmailInputBox}
+				placeholder="Enter Email"
+				onChangeText={(text) => setEmail(text)}
+				value={email}
+				keyboardType="email-address"
+				autoCapitalize="none"
+			/>
 
-      <TextInput
-              style={styles.fp_EmailInputBox}
-              placeholder="Enter Email"
-              onChangeText={text => setEmail(text)}
-              value={email}
-              keyboardType="email-address"
-              autoCapitalize="none"
-      />
+			<Text
+				style={styles.backToSignInText}
+				onPress={() => {
+					router.replace('../login');
+				}}
+			>
+				Back to sign in
+			</Text>
 
-      <Text style={styles.backToSignInText}
-          onPress={() => {
-            console.log("User sent back to login")
-            router.replace('../login');
-          }}
-        >
-        Back to sign in
-      </Text>
+			<Button
+				mode="contained"
+				textColor="#ffffff"
+				style={styles.resetpasswordButton}
+				onPress={() => {
+					router.replace('../verificationCode');
+				}}
+			>
+				Reset Password
+			</Button>
 
-      <Button
-        mode="contained"
-        textColor='#ffffff'
-        style={styles.resetpasswordButton}
-          onPress={() => {
-            console.log("User sent to verify code")
-            router.replace('../verificationCode');
-            }}
-        >
-        Reset Password
-      </Button>
-      
-      
-    
-      <View style={styles.bottomButtonGroup}>
+			<View style={styles.bottomButtonGroup}>
+				<Text style={styles.haveAnAccountText}>Do you have an Account? </Text>
 
-        <Text style={styles.haveAnAccountText}>Do you have an Account? </Text>
+				<Button
+					mode="contained"
+					textColor="#ffffff"
+					style={styles.signUpButton}
+					onPress={() => {
+						router.replace('../signup');
+					}}
+				>
+					Sign Up
+				</Button>
+				<Text style={styles.orText}>OR </Text>
+				<Button
+					mode="outlined"
+					textColor="#ffffff"
+					style={styles.googleButton}
+					onPress={() => {}}
+				>
+					Sign Up with Google
+				</Button>
+			</View>
+		</View>
+	);
+};
 
-        <Button
-          mode="contained"
-          textColor='#ffffff'
-          style={styles.signUpButton}
-            onPress={() => {
-              console.log("User sent to sign up page")
-              router.replace('../signup');
-              }}
-          >
-          Sign Up
-        </Button>
-              <Text style={styles.orText}>OR </Text>
-        <Button
-          mode="outlined"
-          textColor='#ffffff'
-          style={ styles.googleButton }
-              onPress={() => {
-              console.log('Google Sign-Up pressed');
-            }}
-          >
-          Sign Up with Google
-        </Button>
-      </View>
-
-
-    </View>
-  )
-}
-
-export default forgotpassword
+export default ForgotPassword;
 
 const styles = StyleSheet.create({
-    forgotPasswordTitle:{
-        fontSize: 16,
-        color:"#000000ff" ,
-        fontWeight:'bold',
-        textAlign: 'center',
-        marginTop: 40,       
-    },
-    fp_EnterEmailText:{
-        fontSize: 18,
-        color:"#000000ff" ,
-        fontWeight:'bold',
-        textAlign: 'center',
-        marginTop: 40,
-        marginBottom: -12,
-    },
-    fp_EmailInputBox: {
-        height: 50, 
-        borderColor: '#000', 
-        borderWidth: 3, 
-        margin: 20, 
-        paddingLeft: 10, 
-        borderRadius: 5,
-        alignSelf: 'center',
-        width: '75%',
-    },
-    backToSignInText:{
-        fontSize: 14,
-        color:"#000000ff" ,
-        fontWeight:'bold',
-        textAlign: 'center',
-        marginTop: -5, 
-    },
-    resetpasswordButton:{
-        width: '50%', 
-        alignSelf: 'center',
-        backgroundColor: '#000000',
-        marginTop: 20, 
-        padding: 5,
-        borderRadius: 5,
-    },
-    haveAnAccountText:{
-        fontSize: 20,
-        color:"#000000ff" ,
-        fontWeight:'bold',
-        textAlign: 'center',
-        marginTop: -5, 
-    },
-    signUpButton: {
-        width: '50%', 
-        alignSelf: 'center',
-        backgroundColor: '#000000',
-        marginTop: 20, 
-        padding: 5,
-        borderRadius: 5,
-    },
-    googleButton: {
-        width: '50%',
-        alignSelf: 'center',
-        backgroundColor: '#000000',
-        marginTop: 20, 
-        padding: 5,
-        borderRadius: 5,
-    },
-    bottomButtonGroup:{
-        marginTop: 300,
-        alignItems: 'center',
-        paddingBottom: 20,
-    },
-    orText:{
-        fontSize: 20,
-        color:"#000000ff" ,
-        fontWeight:'bold',
-        textAlign: 'center',
-        marginTop: 20, 
-        marginBottom: 3,
-    }
-})
+	forgotPasswordTitle: {
+		fontSize: 16,
+		color: '#000000ff',
+		fontWeight: 'bold',
+		textAlign: 'center',
+		marginTop: 40,
+	},
+	fp_EnterEmailText: {
+		fontSize: 18,
+		color: '#000000ff',
+		fontWeight: 'bold',
+		textAlign: 'center',
+		marginTop: 40,
+		marginBottom: -12,
+	},
+	fp_EmailInputBox: {
+		height: 50,
+		borderColor: '#000',
+		borderWidth: 3,
+		margin: 20,
+		paddingLeft: 10,
+		borderRadius: 5,
+		alignSelf: 'center',
+		width: '75%',
+	},
+	backToSignInText: {
+		fontSize: 14,
+		color: '#000000ff',
+		fontWeight: 'bold',
+		textAlign: 'center',
+		marginTop: -5,
+	},
+	resetpasswordButton: {
+		width: '50%',
+		alignSelf: 'center',
+		backgroundColor: '#000000',
+		marginTop: 20,
+		padding: 5,
+		borderRadius: 5,
+	},
+	haveAnAccountText: {
+		fontSize: 20,
+		color: '#000000ff',
+		fontWeight: 'bold',
+		textAlign: 'center',
+		marginTop: -5,
+	},
+	signUpButton: {
+		width: '50%',
+		alignSelf: 'center',
+		backgroundColor: '#000000',
+		marginTop: 20,
+		padding: 5,
+		borderRadius: 5,
+	},
+	googleButton: {
+		width: '50%',
+		alignSelf: 'center',
+		backgroundColor: '#000000',
+		marginTop: 20,
+		padding: 5,
+		borderRadius: 5,
+	},
+	bottomButtonGroup: {
+		marginTop: 300,
+		alignItems: 'center',
+		paddingBottom: 20,
+	},
+	orText: {
+		fontSize: 20,
+		color: '#000000ff',
+		fontWeight: 'bold',
+		textAlign: 'center',
+		marginTop: 20,
+		marginBottom: 3,
+	},
+});

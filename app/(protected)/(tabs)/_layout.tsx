@@ -10,7 +10,7 @@ export default function TabLayout() {
 
 	return (
 		<Tabs
-			initialRouteName="home"
+			initialRouteName="chat"
 			screenOptions={{
 				tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
 				headerShown: false,
@@ -44,12 +44,12 @@ export default function TabLayout() {
 				}}
 			/>
 			<Tabs.Screen
-				name="home"
+				name="profile"
 				options={{
-					title: 'Home',
+					title: 'Profile',
 					tabBarIcon: ({ color, size }) => (
 						<MaterialCommunityIcons
-							name="home-outline"
+							name="account-outline"
 							size={size ?? 30}
 							color={color}
 						/>
