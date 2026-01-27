@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import {
 	createChatCompletion,
@@ -13,6 +13,7 @@ import {
 	generateFollowUpMessage,
 	shouldShowFollowUp,
 } from '@/features/chat/utils/followUpPrompt';
+import { useAuth } from '@/features/auth/contexts/AuthContext';
 import { AppError } from 'utils/ErrorHandling/errors';
 import { normalizeUnknown } from 'utils/ErrorHandling/errors/normalize';
 import { decideUx, type UxDecision } from 'utils/ErrorHandling/errors/policy';
@@ -25,10 +26,49 @@ export type ChatUxError = {
 	appError?: AppError;
 };
 
-const SYSTEM_PROMPT: ChatMessagePayload = {
-	role: 'system',
-	content:
-		'You are a concise, helpful medical assistant for the MediMatch app. Provide clear, actionable answers and keep responses short.',
+const SYSTEM_PROMPT_BASE =
+	'You are a concise, helpful medical assistant for the MediMatch app. Provide clear, actionable answers and keep responses short.';
+
+const getAgeFromDob = (dob: string | null | undefined) => {
+	if (!dob) return null;
+	const parsed = new Date(dob);
+	if (Number.isNaN(parsed.getTime())) return null;
+	const today = new Date();
+	let age = today.getFullYear() - parsed.getFullYear();
+	const hasHadBirthdayThisYear =
+		today.getMonth() > parsed.getMonth() ||
+		(today.getMonth() === parsed.getMonth() &&
+			today.getDate() >= parsed.getDate());
+	if (!hasHadBirthdayThisYear) age -= 1;
+	return age >= 0 ? age : null;
+};
+
+const buildProfileInstruction = (profile: ReturnType<typeof useAuth>['profile']) => {
+	if (!profile) return null;
+
+	const name = [profile.firstName, profile.lastName].filter(Boolean).join(' ');
+	const age = getAgeFromDob(profile.dob ?? undefined);
+	const locationParts = [profile.city, profile.state, profile.country]
+		.map((part) => part?.trim())
+		.filter((part): part is string => Boolean(part));
+	const location = locationParts.length ? locationParts.join(', ') : null;
+
+	const details: string[] = [];
+	if (name) details.push(`name: ${name}`);
+	if (age !== null) details.push(`age: ${age}`);
+	if (profile.gender) details.push(`gender: ${profile.gender}`);
+	if (location) details.push(`location: ${location}`);
+	if (profile.zipCode) details.push(`zip: ${profile.zipCode}`);
+	if (profile.healthInsuranceProviderName) {
+		details.push(`insurance provider: ${profile.healthInsuranceProviderName}`);
+	}
+
+	if (!details.length) return null;
+
+	return [
+		'User context (may be incomplete; do not restate unless relevant):',
+		`- ${details.join(' | ')}`,
+	].join('\n');
 };
 
 const createId = () =>
@@ -79,9 +119,20 @@ export function useChat() {
 	const [isAssistantTyping, setIsAssistantTyping] = useState(false);
 	const [error, setError] = useState<ChatUxError | null>(null);
 	const apiKey = getGeminiApiKey();
+	const { profile } = useAuth();
 
 	const messagesRef = useRef<ChatMessage[]>([]);
 	const typingTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+	const systemPrompt = useMemo<ChatMessagePayload>(() => {
+		const profileInstruction = buildProfileInstruction(profile);
+		return {
+			role: 'system',
+			content: profileInstruction
+				? `${SYSTEM_PROMPT_BASE}\n\n${profileInstruction}`
+				: SYSTEM_PROMPT_BASE,
+		};
+	}, [profile]);
 
 	useEffect(() => {
 		messagesRef.current = messages;
@@ -306,7 +357,7 @@ export function useChat() {
 					? buildMockMessage(trimmed)
 					: await createChatCompletion({
 							apiKey,
-							messages: [SYSTEM_PROMPT, ...promptHistory],
+							messages: [systemPrompt, ...promptHistory],
 						});
 
 				// Count assistant messages to determine if follow-up should be shown
@@ -351,7 +402,7 @@ export function useChat() {
 			return wasSuccessful;
 		},
 		//eslint-disable-next-line react-hooks/exhaustive-deps
-		[messages],
+		[messages, systemPrompt],
 	);
 
 	return {
