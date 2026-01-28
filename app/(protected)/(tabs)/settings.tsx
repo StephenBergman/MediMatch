@@ -147,7 +147,7 @@ const Settings = () => {
 									color={colors.icon}
 								/>
 							)}
-							onPress={() => router.push('/chatHistory')}
+							onPress={() => router.push('/settingsMoreSettings')}
 						/>
 
 						<Divider style={styles.dividerLine} />
