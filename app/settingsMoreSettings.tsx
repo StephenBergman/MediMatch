@@ -37,6 +37,7 @@ const settingsMoreSettings = () => {
 						right={() => (
 							<Switch
 								value={darkModeEnabled}
+								onChange={() => setDarkModeEnabled(!darkModeEnabled)}
 								color={colors.primary}
 							/>
 						)}
