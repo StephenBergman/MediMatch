@@ -4,6 +4,7 @@ import { router } from 'expo-router';
 import React from 'react';
 import { StyleSheet, Text, TextInput, View } from 'react-native';
 import { Button } from 'react-native-paper';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 const VerificationCodeNP = () => {
 	const scheme = useColorScheme() ?? 'light';
@@ -50,6 +51,15 @@ const VerificationCodeNP = () => {
 			>
 				Confirm New Password
 			</Button>
+
+			<MaterialCommunityIcons
+				name="arrow-left"
+				size={34}
+				color={colors.icon}
+				style={styles.backButton}
+				onPress={() => router.back()}	
+			/>
+
 		</View>
 	);
 };
@@ -149,5 +159,12 @@ const createStyles = (colors: ThemeColors) =>
 			color: colors.text,
 			marginLeft: 45,
 			marginBottom: -14,
+		},
+		backButton: {
+			marginTop: 20,
+			marginBottom: 30,
+			marginLeft: 20,
+			position: 'absolute',
+			bottom: 20,
 		},
 	});
