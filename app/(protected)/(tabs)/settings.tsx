@@ -134,6 +134,22 @@ const Settings = () => {
 							onPress={() => router.push('/chatHistory')}
 						/>
 
+						<List.Item
+							title="More Settings"
+							titleStyle={{ color: colors.text }}
+							left={(props) => (
+								<List.Icon {...props} icon="cog-outline" color={colors.primary} />
+							)}
+							right={(props) => (
+								<List.Icon
+									{...props}
+									icon="chevron-right"
+									color={colors.icon}
+								/>
+							)}
+							onPress={() => router.push('/chatHistory')}
+						/>
+
 						<Divider style={styles.dividerLine} />
 
 						<List.Subheader style={styles.subheaderTitle}>
