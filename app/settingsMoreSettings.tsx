@@ -19,11 +19,11 @@ const settingsMoreSettings = () => {
 			<View style={styles.mainHeader}>
 				<MaterialCommunityIcons
 					style={styles.mainHeaderIcon}
-					name="bell-outline"
+					name="cog-outline"
 					size={50}
 					color={colors.primary}
 				>
-					<Text style={styles.notificationsTitle}>Notifications</Text>
+					<Text style={styles.notificationsTitle}>More Settings</Text>
 				</MaterialCommunityIcons>
 			</View>
 
