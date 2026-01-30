@@ -16,7 +16,7 @@ WebBrowser.maybeCompleteAuthSession();
 useEffect(() => {
   const testConnection = async () => {
     try {
-      // Plain fetch to Supabase root (returns simple JSON)
+      // Plain fetch to Supabase root (returns JSON)
       const response = await fetch('https://xnsxgefnbonqftldkfri.supabase.co/rest/v1/', {
         headers: {
           apikey: process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY || '',
@@ -34,9 +34,6 @@ useEffect(() => {
   testConnection();
 }, []);
 
-
-
-
 const login = () => {
 
   //for users email and password variables
@@ -46,13 +43,13 @@ const login = () => {
   //router variable to route to home page after login
   const router = useRouter();
 
-  //user is able to check the box to stay signed into there account
+  //user is able to check the box to stay signed into their account
   const [rememberMe, setRememberMe] = React.useState(false);
 
 
 const redirectUri = 'https://auth.expo.io/@Dd0nk/medimatch';
 
-console.log('Using redirectUri:', redirectUri);  // Test Log 
+console.log('Using redirectUri:', redirectUri);  // Connection Log 
 
 
    // Google hook for authentication
@@ -70,11 +67,9 @@ console.log('Using redirectUri:', redirectUri);  // Test Log
             const result = await promptAsync();
             
             if (result.type === 'success') {
-                // Handle successful authentication
-                // Extract the access token from result.authentication.accessToken
+                // Handles successful authentication
+                // Extracts access token from result.authentication.accessToken
                 console.log('Google sign-in successful:', result);
-                
-                // Navigate to home page after successful sign-in
                 router.push('/home');
             } else {
                 console.log('Google sign-in cancelled or failed');
