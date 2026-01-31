@@ -15,10 +15,14 @@ const Notifications = () => {
 
 	const [isPushEnabled, setIsPushEnabled] = React.useState(true);
 	const [isEmailEnabled, setIsEmailEnabled] = React.useState(false);
+	const [isTextMessageEnabled, setIsTextMessageEnabled] = React.useState(false);
+	
 	const togglePushNotifications = () =>
 		setIsPushEnabled((previousState) => !previousState);
 	const toggleEmailNotifications = () =>
 		setIsEmailEnabled((previousState) => !previousState);
+	const toggleTextMessageNotifications = () =>
+		setIsTextMessageEnabled((previousState) => !previousState);
 
 	return (
 		<View style={styles.mainContainer}>
@@ -58,6 +62,20 @@ const Notifications = () => {
 							<Switch
 								value={isEmailEnabled}
 								onValueChange={toggleEmailNotifications}
+								color={colors.primary}
+							/>
+						)}
+					/>
+					<Divider style={styles.dividerLine} />
+					<List.Item
+						title="Text Message Notifications"
+						description="Receive notifications via text message"
+						titleStyle={{ color: colors.text }}
+						descriptionStyle={{ color: colors.tabIconDefault }}
+						right={() => (
+							<Switch
+								value={isTextMessageEnabled}
+								onValueChange={toggleTextMessageNotifications}
 								color={colors.primary}
 							/>
 						)}
