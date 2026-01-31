@@ -154,7 +154,7 @@ const Settings = () => {
 
 						<List.Subheader style={styles.subheaderTitle}>
 							{' '}
-							More Settings{' '}
+							App Information{' '}
 						</List.Subheader>
 
 						<List.Item
