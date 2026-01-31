@@ -17,6 +17,7 @@ const Notifications = () => {
 	const [isEmailEnabled, setIsEmailEnabled] = React.useState(false);
 	const [isTextMessageEnabled, setIsTextMessageEnabled] = React.useState(false);
 	const [isAlertSoundEnabled, setIsAlertSoundEnabled] = React.useState(true);
+	const [reminderAlertsEnabled, setIsReminderAlertsEnabled] = React.useState(true);
 	
 	const togglePushNotifications = () =>
 		setIsPushEnabled((previousState) => !previousState);
@@ -26,6 +27,8 @@ const Notifications = () => {
 		setIsTextMessageEnabled((previousState) => !previousState);
 	const toggleAlertSound = () =>
 		setIsAlertSoundEnabled((previousState) => !previousState);
+	const toggleReminderAlerts = () =>
+		setIsReminderAlertsEnabled((previousState) => !previousState);
 
 	return (
 		<View style={styles.mainContainer}>
@@ -79,6 +82,20 @@ const Notifications = () => {
 							<Switch
 								value={isTextMessageEnabled}
 								onValueChange={toggleTextMessageNotifications}
+								color={colors.primary}
+							/>
+						)}
+					/>
+					<Divider style={styles.dividerLine} />
+					<List.Item
+						title="Reminder Alerts"
+						description="Receive reminder alerts for important events"
+						titleStyle={{ color: colors.text }}
+						descriptionStyle={{ color: colors.tabIconDefault }}
+						right={() => (
+							<Switch
+								value={isAlertSoundEnabled}
+								onValueChange={toggleAlertSound}
 								color={colors.primary}
 							/>
 						)}
