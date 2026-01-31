@@ -13,6 +13,10 @@ const settingsMoreSettings = () => {
 	const colors = Colors[scheme];
 	const styles = React.useMemo(() => createStyles(colors), [colors]);
     const [darkModeEnabled, setDarkModeEnabled] = React.useState(false);
+	const [offlineModeEnabled, setOfflineModeEnabled] = React.useState(false);
+
+	const toggleOfflineMode = () =>
+		setDarkModeEnabled((previousState) => !previousState);
 
 	return (
 		<View style={styles.mainContainer}>
@@ -43,6 +47,22 @@ const settingsMoreSettings = () => {
 						)}
 					/>
 					<Divider style={styles.dividerLine} />
+
+					<List.Item
+						title="Offline Mode"
+						description="App works without internet connection with limited functionality"
+						titleStyle={{ color: colors.text }}
+						descriptionStyle={{ color: colors.tabIconDefault }}
+						right={() => (
+							<Switch
+								value={offlineModeEnabled}
+								onChange={() => setOfflineModeEnabled(!offlineModeEnabled)}
+								color={colors.primary}
+							/>
+						)}
+					/>
+					<Divider style={styles.dividerLine} />
+					
 				</ScrollView>
 
 				<MaterialCommunityIcons
