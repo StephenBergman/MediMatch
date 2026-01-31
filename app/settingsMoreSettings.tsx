@@ -17,6 +17,7 @@ const settingsMoreSettings = () => {
 	const [soundOnTypingEnabled, setSoundOnTypingEnabled] = React.useState(false);
 	const [clearChatHistory, setClearChatHistory] = React.useState(false);
 	const [voiceOverEnabled, setVoiceOverEnabled] = React.useState(false);
+	const [displayTextSize, setDisplayTextSize] = React.useState(false);
 
 	const toggleDarkMode = () =>
 		setDarkModeEnabled((previousState) => !previousState);
@@ -32,6 +33,9 @@ const settingsMoreSettings = () => {
 
 	const toggleVoiceOver = () =>
 		setVoiceOverEnabled((previousState) => !previousState);
+	
+	const toggleDisplayTextSize = () =>
+		setDisplayTextSize((previousState) => !previousState);
 
 	return (
 		<View style={styles.mainContainer}>
@@ -108,7 +112,20 @@ const settingsMoreSettings = () => {
 					/>
 					<Divider style={styles.dividerLine} />
 
-					
+					<List.Item
+						title="Display Text Size"
+						description="Adjust the size of the text displayed in the app"
+						titleStyle={{ color: colors.text }}
+						descriptionStyle={{ color: colors.tabIconDefault }}
+						right={() => (
+							<Switch
+								value={soundOnTypingEnabled}
+								onChange={() => setSoundOnTypingEnabled(!soundOnTypingEnabled)}
+								color={colors.primary}
+							/>
+						)}
+					/>
+					<Divider style={styles.dividerLine} />
 					
 					<List.Item
 						title="Clear Chat History"
