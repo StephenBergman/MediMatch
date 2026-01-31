@@ -16,6 +16,7 @@ const settingsMoreSettings = () => {
 	const [offlineModeEnabled, setOfflineModeEnabled] = React.useState(false);
 	const [soundOnTypingEnabled, setSoundOnTypingEnabled] = React.useState(false);
 	const [clearChatHistory, setClearChatHistory] = React.useState(false);
+	const [voiceOverEnabled, setVoiceOverEnabled] = React.useState(false);
 
 	const toggleDarkMode = () =>
 		setDarkModeEnabled((previousState) => !previousState);
@@ -28,6 +29,9 @@ const settingsMoreSettings = () => {
 
 	const toggleClearChatHistory = () =>
 		setClearChatHistory((previousState) => !previousState);
+
+	const toggleVoiceOver = () =>
+		setVoiceOverEnabled((previousState) => !previousState);
 
 	return (
 		<View style={styles.mainContainer}>
@@ -88,6 +92,23 @@ const settingsMoreSettings = () => {
 						)}
 					/>
 					<Divider style={styles.dividerLine} />
+
+					<List.Item
+						title="Voice Over"
+						description="Voice feedback while typing or reading information on screen"
+						titleStyle={{ color: colors.text }}
+						descriptionStyle={{ color: colors.tabIconDefault }}
+						right={() => (
+							<Switch
+								value={soundOnTypingEnabled}
+								onChange={() => setSoundOnTypingEnabled(!soundOnTypingEnabled)}
+								color={colors.primary}
+							/>
+						)}
+					/>
+					<Divider style={styles.dividerLine} />
+
+					
 					
 					<List.Item
 						title="Clear Chat History"
@@ -97,6 +118,8 @@ const settingsMoreSettings = () => {
 					/>
 
 					<Divider style={styles.dividerLine} />
+
+					
 
 				</ScrollView>
 
