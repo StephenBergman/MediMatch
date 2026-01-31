@@ -18,6 +18,7 @@ const settingsMoreSettings = () => {
 	const [clearChatHistory, setClearChatHistory] = React.useState(false);
 	const [voiceOverEnabled, setVoiceOverEnabled] = React.useState(false);
 	const [displayTextSize, setDisplayTextSize] = React.useState(false);
+	const [deleteAccount, setDeleteAccount] = React.useState(false);
 
 	const toggleDarkMode = () =>
 		setDarkModeEnabled((previousState) => !previousState);
@@ -33,9 +34,12 @@ const settingsMoreSettings = () => {
 
 	const toggleVoiceOver = () =>
 		setVoiceOverEnabled((previousState) => !previousState);
-	
+
 	const toggleDisplayTextSize = () =>
 		setDisplayTextSize((previousState) => !previousState);
+	
+	const toggleDeleteAccount = () =>
+		setDeleteAccount((previousState) => !previousState);
 
 	return (
 		<View style={styles.mainContainer}>
@@ -129,11 +133,32 @@ const settingsMoreSettings = () => {
 					
 					<List.Item
 						title="Clear Chat History"
-						description="Delete all chat history"
+						description="Delete all chat history data"
 						titleStyle={{ color: colors.text }}
 						descriptionStyle={{ color: colors.tabIconDefault }}
+						right={() => (
+							<Switch
+								value={clearChatHistory}
+								onChange={() => setClearChatHistory(!clearChatHistory)}
+								color={colors.primary}
+							/>
+						)}
 					/>
+					<Divider style={styles.dividerLine} />
 
+					<List.Item
+						title="Delete Account"
+						description="Delete the account permanently and all associated data"
+						titleStyle={{ color: colors.text }}
+						descriptionStyle={{ color: colors.tabIconDefault }}
+						right={() => (
+							<Switch
+								value={deleteAccount}
+								onChange={() => setDeleteAccount(!deleteAccount)}
+								color={colors.primary}
+							/>
+						)}
+					/>
 					<Divider style={styles.dividerLine} />
 
 					
