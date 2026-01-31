@@ -15,6 +15,7 @@ const settingsMoreSettings = () => {
     const [darkModeEnabled, setDarkModeEnabled] = React.useState(false);
 	const [offlineModeEnabled, setOfflineModeEnabled] = React.useState(false);
 	const [soundOnTypingEnabled, setSoundOnTypingEnabled] = React.useState(false);
+	const [clearChatHistory, setClearChatHistory] = React.useState(false);
 
 	const toggleDarkMode = () =>
 		setDarkModeEnabled((previousState) => !previousState);
@@ -24,6 +25,9 @@ const settingsMoreSettings = () => {
 
 	const toggleSoundOnTyping = () =>
 		setSoundOnTypingEnabled((previousState) => !previousState);
+
+	const toggleClearChatHistory = () =>
+		setClearChatHistory((previousState) => !previousState);
 
 	return (
 		<View style={styles.mainContainer}>
@@ -83,8 +87,15 @@ const settingsMoreSettings = () => {
 							/>
 						)}
 					/>
-
+					<Divider style={styles.dividerLine} />
 					
+					<List.Item
+						title="Clear Chat History"
+						description="Delete all chat history"
+						titleStyle={{ color: colors.text }}
+						descriptionStyle={{ color: colors.tabIconDefault }}
+					/>
+
 					<Divider style={styles.dividerLine} />
 
 				</ScrollView>
