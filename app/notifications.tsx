@@ -13,14 +13,13 @@ const Notifications = () => {
 	const colors = Colors[scheme];
 	const styles = React.useMemo(() => createStyles(colors), [colors]);
 
-	const [isPushEnabled, setIsPushEnabled] = React.useState(true);
 	const [isEmailEnabled, setIsEmailEnabled] = React.useState(false);
 	const [isTextMessageEnabled, setIsTextMessageEnabled] = React.useState(false);
 	const [isAlertSoundEnabled, setIsAlertSoundEnabled] = React.useState(true);
 	const [reminderAlertsEnabled, setIsReminderAlertsEnabled] = React.useState(true);
+	const [isAppUpdatesEnabled, setIsAppUpdatesEnabled] = React.useState(true);
 	
-	const togglePushNotifications = () =>
-		setIsPushEnabled((previousState) => !previousState);
+	
 	const toggleEmailNotifications = () =>
 		setIsEmailEnabled((previousState) => !previousState);
 	const toggleTextMessageNotifications = () =>
@@ -29,6 +28,8 @@ const Notifications = () => {
 		setIsAlertSoundEnabled((previousState) => !previousState);
 	const toggleReminderAlerts = () =>
 		setIsReminderAlertsEnabled((previousState) => !previousState);
+	const toggleAppUpdates = () =>
+		setIsAppUpdatesEnabled((previousState) => !previousState);
 
 	return (
 		<View style={styles.mainContainer}>
@@ -45,22 +46,9 @@ const Notifications = () => {
 
 			<View style={styles.subHeaderContainer}>
 				<ScrollView>
-					<List.Item
-						title="Push Notifications"
-						description="Receive notifications on your device"
-						titleStyle={{ color: colors.text }}
-						descriptionStyle={{ color: colors.tabIconDefault }}
-						right={() => (
-							<Switch
-								value={isPushEnabled}
-								onValueChange={togglePushNotifications}
-								color={colors.primary}
-							/>
-						)}
-					/>
 					<Divider style={styles.dividerLine} />
 					<List.Item
-						title="Email Notifications"
+						title="Emails"
 						description="Receive notifications via email"
 						titleStyle={{ color: colors.text }}
 						descriptionStyle={{ color: colors.tabIconDefault }}
@@ -74,7 +62,7 @@ const Notifications = () => {
 					/>
 					<Divider style={styles.dividerLine} />
 					<List.Item
-						title="Text Message Notifications"
+						title="Text Messages"
 						description="Receive notifications via text message"
 						titleStyle={{ color: colors.text }}
 						descriptionStyle={{ color: colors.tabIconDefault }}
@@ -110,6 +98,20 @@ const Notifications = () => {
 							<Switch
 								value={isAlertSoundEnabled}
 								onValueChange={toggleAlertSound}
+								color={colors.primary}
+							/>
+						)}
+					/>
+					<Divider style={styles.dividerLine} />
+					<List.Item
+						title="App Updates"
+						description="Receive notifications about app updates"
+						titleStyle={{ color: colors.text }}
+						descriptionStyle={{ color: colors.tabIconDefault }}
+						right={() => (
+							<Switch
+								value={isAppUpdatesEnabled}
+								onValueChange={toggleAppUpdates}
 								color={colors.primary}
 							/>
 						)}
