@@ -14,9 +14,16 @@ const settingsMoreSettings = () => {
 	const styles = React.useMemo(() => createStyles(colors), [colors]);
     const [darkModeEnabled, setDarkModeEnabled] = React.useState(false);
 	const [offlineModeEnabled, setOfflineModeEnabled] = React.useState(false);
+	const [soundOnTypingEnabled, setSoundOnTypingEnabled] = React.useState(false);
+
+	const toggleDarkMode = () =>
+		setDarkModeEnabled((previousState) => !previousState);
 
 	const toggleOfflineMode = () =>
 		setDarkModeEnabled((previousState) => !previousState);
+
+	const toggleSoundOnTyping = () =>
+		setSoundOnTypingEnabled((previousState) => !previousState);
 
 	return (
 		<View style={styles.mainContainer}>
@@ -62,7 +69,24 @@ const settingsMoreSettings = () => {
 						)}
 					/>
 					<Divider style={styles.dividerLine} />
+
+					<List.Item
+						title="Sound while Typing"
+						description="Play a sound when typing"
+						titleStyle={{ color: colors.text }}
+						descriptionStyle={{ color: colors.tabIconDefault }}
+						right={() => (
+							<Switch
+								value={soundOnTypingEnabled}
+								onChange={() => setSoundOnTypingEnabled(!soundOnTypingEnabled)}
+								color={colors.primary}
+							/>
+						)}
+					/>
+
 					
+					<Divider style={styles.dividerLine} />
+
 				</ScrollView>
 
 				<MaterialCommunityIcons
