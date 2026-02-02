@@ -32,10 +32,10 @@ const PrivacyPolicy = () => {
 						MediMatch Privacy Policy
 						{'\n'}
 						{'\n'}
-						Last updated: [Insert Date]
+						Last updated: 1/30/2026
 						{'\n'}
 						{'\n'}
-						This Privacy Policy describes how [Your Company Name] (“we”, “us”,
+						This Privacy Policy describes how MediMatch (“we”, “us”,
 						or “our”) collects, uses, and shares your personal information when
 						you use the mobile application [App Name] (the “App”).
 						{'\n'}
@@ -80,7 +80,7 @@ const PrivacyPolicy = () => {
 						{'\n'}
 						{'\n'}
 						You may access, correct, or delete your personal data by contacting
-						us at [Contact Email].
+						us at MediMatch@gmail.com.
 						{'\n'}
 						{'\n'}
 						Children’s Privacy Our App is not intended for children under the
@@ -103,9 +103,17 @@ const PrivacyPolicy = () => {
 						please contact us at:
 						{'\n'}
 						{'\n'}
-						[Contact Email]
+						MediMatch@gmail.com
 						{'\n'}
-						[Company Address — optional]
+						Phone: (123) 456-7890
+						{'\n'}{'\n'}
+						Full Sail University
+						{'\n'}
+						3300 University Blvd,
+						{'\n'}
+						Winter Park, FL 32792,
+						{'\n'}
+						USA
 						{'\n'}
 					</Text>
 				</ScrollView>

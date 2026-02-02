@@ -6,10 +6,8 @@ import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import { Avatar } from 'react-native-paper';
 
-//icons logic
-
 const Profile = () => {
-	//profile page is being loaded log
+
 
 	//routes to other pages
 	const router = useRouter();

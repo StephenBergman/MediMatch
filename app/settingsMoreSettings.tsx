@@ -7,116 +7,162 @@ import { StyleSheet, Text, View } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import { Divider, List, Switch } from 'react-native-paper';
 
-const Notifications = () => {
+const settingsMoreSettings = () => {
 	const router = useRouter();
 	const scheme = useColorScheme() ?? 'light';
 	const colors = Colors[scheme];
 	const styles = React.useMemo(() => createStyles(colors), [colors]);
+    const [darkModeEnabled, setDarkModeEnabled] = React.useState(false);
+	const [offlineModeEnabled, setOfflineModeEnabled] = React.useState(false);
+	const [soundOnTypingEnabled, setSoundOnTypingEnabled] = React.useState(false);
+	const [clearChatHistory, setClearChatHistory] = React.useState(false);
+	const [voiceOverEnabled, setVoiceOverEnabled] = React.useState(false);
+	const [displayTextSize, setDisplayTextSize] = React.useState(false);
+	const [deleteAccount, setDeleteAccount] = React.useState(false);
 
-	const [isEmailEnabled, setIsEmailEnabled] = React.useState(false);
-	const [isTextMessageEnabled, setIsTextMessageEnabled] = React.useState(false);
-	const [isAlertSoundEnabled, setIsAlertSoundEnabled] = React.useState(true);
-	const [reminderAlertsEnabled, setIsReminderAlertsEnabled] = React.useState(true);
-	const [isAppUpdatesEnabled, setIsAppUpdatesEnabled] = React.useState(true);
+	const toggleDarkMode = () =>
+		setDarkModeEnabled((previousState) => !previousState);
+
+	const toggleOfflineMode = () =>
+		setDarkModeEnabled((previousState) => !previousState);
+
+	const toggleSoundOnTyping = () =>
+		setSoundOnTypingEnabled((previousState) => !previousState);
+
+	const toggleClearChatHistory = () =>
+		setClearChatHistory((previousState) => !previousState);
+
+	const toggleVoiceOver = () =>
+		setVoiceOverEnabled((previousState) => !previousState);
+
+	const toggleDisplayTextSize = () =>
+		setDisplayTextSize((previousState) => !previousState);
 	
-	
-	const toggleEmailNotifications = () =>
-		setIsEmailEnabled((previousState) => !previousState);
-	const toggleTextMessageNotifications = () =>
-		setIsTextMessageEnabled((previousState) => !previousState);
-	const toggleAlertSound = () =>
-		setIsAlertSoundEnabled((previousState) => !previousState);
-	const toggleReminderAlerts = () =>
-		setIsReminderAlertsEnabled((previousState) => !previousState);
-	const toggleAppUpdates = () =>
-		setIsAppUpdatesEnabled((previousState) => !previousState);
+	const toggleDeleteAccount = () =>
+		setDeleteAccount((previousState) => !previousState);
 
 	return (
 		<View style={styles.mainContainer}>
 			<View style={styles.mainHeader}>
 				<MaterialCommunityIcons
 					style={styles.mainHeaderIcon}
-					name="bell-outline"
+					name="cog-outline"
 					size={50}
 					color={colors.primary}
 				>
-					<Text style={styles.notificationsTitle}>Notifications</Text>
+					<Text style={styles.notificationsTitle}>More Settings</Text>
 				</MaterialCommunityIcons>
 			</View>
 
 			<View style={styles.subHeaderContainer}>
 				<ScrollView>
-					<Divider style={styles.dividerLine} />
 					<List.Item
-						title="Emails"
-						description="Receive notifications via email"
+						title="Dark Mode"
+						description="Changes the app theme to dark or light mode"
 						titleStyle={{ color: colors.text }}
 						descriptionStyle={{ color: colors.tabIconDefault }}
 						right={() => (
 							<Switch
-								value={isEmailEnabled}
-								onValueChange={toggleEmailNotifications}
+								value={darkModeEnabled}
+								onChange={() => setDarkModeEnabled(!darkModeEnabled)}
 								color={colors.primary}
 							/>
 						)}
 					/>
 					<Divider style={styles.dividerLine} />
+
 					<List.Item
-						title="Text Messages"
-						description="Receive notifications via text message"
+						title="Offline Mode"
+						description="App works without internet connection with limited functionality"
 						titleStyle={{ color: colors.text }}
 						descriptionStyle={{ color: colors.tabIconDefault }}
 						right={() => (
 							<Switch
-								value={isTextMessageEnabled}
-								onValueChange={toggleTextMessageNotifications}
+								value={offlineModeEnabled}
+								onChange={() => setOfflineModeEnabled(!offlineModeEnabled)}
 								color={colors.primary}
 							/>
 						)}
 					/>
 					<Divider style={styles.dividerLine} />
+
 					<List.Item
-						title="Reminder Alerts"
-						description="Receive reminder alerts for important events"
+						title="Sound while Typing"
+						description="Play a sound when typing"
 						titleStyle={{ color: colors.text }}
 						descriptionStyle={{ color: colors.tabIconDefault }}
 						right={() => (
 							<Switch
-								value={isAlertSoundEnabled}
-								onValueChange={toggleAlertSound}
+								value={soundOnTypingEnabled}
+								onChange={() => setSoundOnTypingEnabled(!soundOnTypingEnabled)}
 								color={colors.primary}
 							/>
 						)}
 					/>
 					<Divider style={styles.dividerLine} />
+
 					<List.Item
-						title="Alert Sounds"
-						description="Play a sound when receiving notifications"
+						title="Voice Over"
+						description="Voice feedback while typing or reading information on screen"
 						titleStyle={{ color: colors.text }}
 						descriptionStyle={{ color: colors.tabIconDefault }}
 						right={() => (
 							<Switch
-								value={isAlertSoundEnabled}
-								onValueChange={toggleAlertSound}
+								value={soundOnTypingEnabled}
+								onChange={() => setSoundOnTypingEnabled(!soundOnTypingEnabled)}
 								color={colors.primary}
 							/>
 						)}
 					/>
 					<Divider style={styles.dividerLine} />
+
 					<List.Item
-						title="App Updates"
-						description="Receive notifications about app updates"
+						title="Display Text Size"
+						description="Adjust the size of the text displayed in the app"
 						titleStyle={{ color: colors.text }}
 						descriptionStyle={{ color: colors.tabIconDefault }}
 						right={() => (
 							<Switch
-								value={isAppUpdatesEnabled}
-								onValueChange={toggleAppUpdates}
+								value={soundOnTypingEnabled}
+								onChange={() => setSoundOnTypingEnabled(!soundOnTypingEnabled)}
 								color={colors.primary}
 							/>
 						)}
 					/>
 					<Divider style={styles.dividerLine} />
+					
+					<List.Item
+						title="Clear Chat History"
+						description="Delete all chat history data"
+						titleStyle={{ color: colors.text }}
+						descriptionStyle={{ color: colors.tabIconDefault }}
+						right={() => (
+							<Switch
+								value={clearChatHistory}
+								onChange={() => setClearChatHistory(!clearChatHistory)}
+								color={colors.primary}
+							/>
+						)}
+					/>
+					<Divider style={styles.dividerLine} />
+
+					<List.Item
+						title="Delete Account"
+						description="Delete the account permanently and all associated data"
+						titleStyle={{ color: colors.text }}
+						descriptionStyle={{ color: colors.tabIconDefault }}
+						right={() => (
+							<Switch
+								value={deleteAccount}
+								onChange={() => setDeleteAccount(!deleteAccount)}
+								color={colors.primary}
+							/>
+						)}
+					/>
+					<Divider style={styles.dividerLine} />
+
+					
+
 				</ScrollView>
 
 				<MaterialCommunityIcons
@@ -131,7 +177,7 @@ const Notifications = () => {
 	);
 };
 
-export default Notifications;
+export default settingsMoreSettings;
 
 const createStyles = (colors: typeof Colors.light) =>
 	StyleSheet.create({
