@@ -108,8 +108,8 @@ const settingsMoreSettings = () => {
 						descriptionStyle={{ color: colors.tabIconDefault }}
 						right={() => (
 							<Switch
-								value={soundOnTypingEnabled}
-								onChange={() => setSoundOnTypingEnabled(!soundOnTypingEnabled)}
+								value={voiceOverEnabled}
+								onChange={() => setVoiceOverEnabled(!voiceOverEnabled)}
 								color={colors.primary}
 							/>
 						)}
@@ -123,8 +123,8 @@ const settingsMoreSettings = () => {
 						descriptionStyle={{ color: colors.tabIconDefault }}
 						right={() => (
 							<Switch
-								value={soundOnTypingEnabled}
-								onChange={() => setSoundOnTypingEnabled(!soundOnTypingEnabled)}
+								value={displayTextSize}
+								onChange={() => setDisplayTextSize(!displayTextSize)}
 								color={colors.primary}
 							/>
 						)}
