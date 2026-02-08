@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View } from 'react-native'
+import { OpaqueColorValue, StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 import { MaterialCommunityIcons } from '@expo/vector-icons'
 import { router, Router } from 'expo-router';
@@ -10,13 +10,9 @@ const emergencyMedicalID = () => {
       <Text>emergencyMedicalID</Text>
 
 
-
-
-
       <MaterialCommunityIcons
 					name="arrow-left"
 					size={34}
-					color={colors.icon}
 					style={styles.backButton}
 					onPress={() => router.back()}
 				/>
