@@ -156,6 +156,26 @@ const Settings = () => {
 							{' '}
 							App Information{' '}
 						</List.Subheader>
+						
+						<List.Item
+							title="Emergency Medical ID"
+							titleStyle={{ color: colors.text }}
+							left={(props) => (
+								<List.Icon
+									{...props}
+									icon="hospital-box-outline"
+									color={colors.primary}
+								/>
+							)}
+							right={(props) => (
+								<List.Icon
+									{...props}
+									icon="chevron-right"
+									color={colors.icon}
+								/>
+							)}
+							onPress={() => router.push('/emergencyMedicalID')}
+						/>
 
 						<List.Item
 							title="About Us"
