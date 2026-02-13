@@ -139,7 +139,7 @@ function AppShell() {
 										) : (
 											<ThemeProvider value={navigationTheme}>
 												<Stack
-													initialRouteName="index"
+													initialRouteName="onboarding1"
 													screenOptions={{
 														headerShown: false,
 														animation: 'fade',

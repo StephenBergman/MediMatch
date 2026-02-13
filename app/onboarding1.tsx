@@ -1,14 +1,161 @@
-import { StyleSheet, Text, View } from 'react-native'
-import React from 'react'
+
+import * as SecureStore from 'expo-secure-store';
+import React, { useCallback, useEffect, useState } from 'react';
+import {
+	ActivityIndicator,
+	BackHandler,
+	Image,
+	Platform,
+	StyleSheet,
+	Text,
+	View,
+} from 'react-native';
+import { ScrollView } from 'react-native-gesture-handler';
+import { Button, Icon } from 'react-native-paper';
+
+//this page will route to the login page after user accepts the terms and coniditions policy
+import { Colors } from '@/constants/theme';
+import { useAuth } from '@/features/auth/contexts/AuthContext';
+import { useColorScheme } from '@/hooks/use-color-scheme';
+import { useRouter } from 'expo-router';
+
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 const onboarding1 = () => {
-  return (
-    <View>
-      <Text>onboarding1</Text>
-    </View>
-  )
-}
+	const router = useRouter();
+	const { session, isReady } = useAuth();
+	const scheme = useColorScheme() ?? 'light';
+	const colors = Colors[scheme];
+	const [isChecking, setIsChecking] = useState(true);
 
-export default onboarding1
+	return (
+		<View style={styles.mainContainer}>
 
-const styles = StyleSheet.create({})
+			<MaterialCommunityIcons
+  				name="robot-outline"
+  				size={100}
+  				color="#000"
+			/>
+
+			<Text style={styles.cookieText}>
+				Meet Your Medical AI Assistant
+			</Text>
+
+			<Text style={styles.cookieText}>
+				Ask questions about symptoms, medications, or
+				{'\n'}
+				general health concerns and get fast, intelligent 
+				responses. Your assistant is designed to guide 
+				{'\n'}
+				you toward better decisions and help you understand your next steps.
+			</Text>
+
+			
+				<Text style={styles.cookieTermsConditions}>Terms and Conditions</Text>
+
+
+				<View style={styles.ButtonGroup}>
+					<Button
+						style={styles.declineCookiesButton}
+						mode="contained"
+						textColor="#000000"
+						onPress={() => {
+							//if user declines terms, they will exit the application
+							router.push('/')
+						}}
+					>
+						Skip
+					</Button>
+
+					<Button
+						style={styles.acceptCookiesButton}
+						mode="contained"
+						onPress={() => {
+							//if user accepts terms, they will be routed to the login page
+							router.push('/onboarding2')
+						}}
+					>
+						Next
+					</Button>
+				</View>
+		</View>
+	);
+};
+
+export default onboarding1;
+
+const styles = StyleSheet.create({
+	mainContainer: {
+		flex: 1,
+		backgroundColor: '#7e7e7eff',
+		alignItems: 'center',
+		justifyContent: 'flex-start',
+		paddingTop: 0,
+		borderColor: '#0000000',
+		borderWidth: 3,
+	},
+	policyContainer: {
+		flex: 1,
+		backgroundColor: '#ffffffff',
+		borderRadius: 15,
+		width: '100%',
+		marginTop: -10,
+		borderColor: '#0000000',
+		borderWidth: 3,
+	},
+	cookieImage: {
+		width: 200,
+		height: 200,
+		alignContent: 'center',
+		top: 80,
+		marginTop: -50,
+		marginBottom: 20,
+	},
+	cookieText: {
+		fontSize: 17,
+		textAlign: 'center',
+		alignContent: 'center',
+		marginTop: 80,
+		marginBottom: 20,
+		marginHorizontal: 20,
+		fontWeight: 'bold',
+	},
+	cookieTermsConditions: {
+		fontSize: 25,
+		fontWeight: 'bold',
+		textAlign: 'center',
+		marginTop: 10,
+	},
+	acceptCookiesButton: {
+		marginTop: 0,
+		margin: 8,
+		padding: 5,
+		backgroundColor: '#000000ff',
+		flexWrap: 'wrap',
+		alignContent: 'center',
+		borderRadius: 10,
+		borderWidth: 3,
+	},
+	declineCookiesButton: {
+		marginTop: 0,
+		margin: 8,
+		padding: 5,
+		backgroundColor: '#ffffffff',
+		borderColor: '#000000ff',
+		borderWidth: 3,
+		flexWrap: 'wrap',
+		alignContent: 'center',
+		borderRadius: 10,
+	},
+	ButtonGroup: {
+		flexDirection: 'row',
+		justifyContent: 'space-around',
+		borderRadius: '',
+		borderColor: '#00000000',
+		borderWidth: 2,
+	},
+	cookieTermsConditionsPolicyText: {
+		fontSize: 16,
+		marginBottom: 20,
+	},
+});
