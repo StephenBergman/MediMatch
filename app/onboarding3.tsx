@@ -78,12 +78,12 @@ export default onboarding1;
 const styles = StyleSheet.create({
 	mainContainer: {
 		flex: 1,
-		backgroundColor: '#7e7e7eff',
+		backgroundColor: '#CFE3F6',
 		alignItems: 'center',
 		justifyContent: 'flex-start',
 		paddingTop: 0,
 		borderColor: '#0000000',
-		borderWidth: 3,
+		borderWidth: 2,
 	},
 	policyContainer: {
 		flex: 1,
@@ -92,7 +92,7 @@ const styles = StyleSheet.create({
 		width: '100%',
 		marginTop: -10,
 		borderColor: '#0000000',
-		borderWidth: 3,
+		borderWidth: 2,
 	},
 	cookieImage: {
 		width: 200,
@@ -133,9 +133,9 @@ const styles = StyleSheet.create({
 	ButtonGroup: {
 		flexDirection: 'row',
 		justifyContent: 'space-around',
-		borderRadius: '',
-		borderColor: '#00000000',
-		borderWidth: 2,
+        width: '150%',
+        paddingHorizontal: 20,
+        bottom: -270,
 	},
 	cookieTermsConditionsPolicyText: {
 		fontSize: 16,

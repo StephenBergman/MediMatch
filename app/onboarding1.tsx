@@ -78,12 +78,12 @@ export default onboarding1;
 const styles = StyleSheet.create({
 	mainContainer: {
 		flex: 1,
-		backgroundColor: '#7e7e7eff',
+		backgroundColor: '#CFE3F6',
 		alignItems: 'center',
-		justifyContent: 'flex-start',
-		paddingTop: 0,
+		justifyContent: 'space-between',
 		borderColor: '#0000000',
-		borderWidth: 3,
+		borderWidth: 2,
+    paddingBottom: 20,
 	},
 	policyContainer: {
 		flex: 1,
@@ -92,22 +92,7 @@ const styles = StyleSheet.create({
 		width: '100%',
 		marginTop: -10,
 		borderColor: '#0000000',
-		borderWidth: 3,
-	},
-	cookieImage: {
-		width: 200,
-		height: 200,
-		alignContent: 'center',
-		top: 80,
-		marginTop: -50,
-		marginBottom: 20,
-	},
-	
-	cookieTermsConditions: {
-		fontSize: 25,
-		fontWeight: 'bold',
-		textAlign: 'center',
-		marginTop: 10,
+		borderWidth: 2,
 	},
 	acceptCookiesButton: {
 		marginTop: 0,
@@ -133,13 +118,8 @@ const styles = StyleSheet.create({
 	ButtonGroup: {
 		flexDirection: 'row',
 		justifyContent: 'space-around',
-		borderRadius: '',
-		borderColor: '#00000000',
-		borderWidth: 2,
-	},
-	cookieTermsConditionsPolicyText: {
-		fontSize: 16,
-		marginBottom: 20,
+    width: '150%',
+    paddingHorizontal: 20,
 	},
   onboardingIcon: {
     marginTop: 150,
@@ -150,15 +130,15 @@ const styles = StyleSheet.create({
 		textAlign: 'center',
 		alignContent: 'center',
 		marginTop: 20,
-		marginBottom: 10,
+		marginBottom: 5,
 		fontWeight: 'bold',
   },
   onboardingText: {
 		fontSize: 17,
 		textAlign: 'center',
 		alignContent: 'center',
-		marginTop: 20,
-		marginBottom: 20,
+		marginTop: 5,
+		marginBottom: 5,
 		marginHorizontal: 20,
 		fontWeight: 'bold',
 	},
