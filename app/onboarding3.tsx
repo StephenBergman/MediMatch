@@ -1,3 +1,4 @@
+
 import React, { useCallback, useEffect, useState } from 'react';
 import {
 	ActivityIndicator,
@@ -14,10 +15,9 @@ import { Colors } from '@/constants/theme';
 import { useAuth } from '@/features/auth/contexts/AuthContext';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useRouter } from 'expo-router';
-
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 
-const onboarding3 = () => {
+const onboarding1 = () => {
 	const router = useRouter();
 	const { session, isReady } = useAuth();
 	const scheme = useColorScheme() ?? 'light';
@@ -27,17 +27,17 @@ const onboarding3 = () => {
 	return (
 		<View style={styles.mainContainer}>
 
-			<MaterialCommunityIcons
+			<MaterialCommunityIcons style={styles.onboardingIcon}
   				name="robot-outline"
-  				size={100}
+  				size={200}
   				color="#000"
 			/>
 
-			<Text style={styles.cookieText}>
+			<Text style={styles.onboardingTitle}>
 				Meet Your Medical AI Assistant
 			</Text>
 
-			<Text style={styles.cookieText}>
+			<Text style={styles.onboardingText}>
 				Ask questions about symptoms, medications, or
 				{'\n'}
 				general health concerns and get fast, intelligent 
@@ -45,10 +45,6 @@ const onboarding3 = () => {
 				{'\n'}
 				you toward better decisions and help you understand your next steps.
 			</Text>
-
-			
-				<Text style={styles.cookieTermsConditions}>Terms and Conditions</Text>
-
 
 				<View style={styles.ButtonGroup}>
 					<Button
@@ -78,7 +74,7 @@ const onboarding3 = () => {
 	);
 };
 
-export default onboarding3;
+export default onboarding1;
 
 const styles = StyleSheet.create({
 	mainContainer: {
@@ -107,15 +103,7 @@ const styles = StyleSheet.create({
 		marginTop: -50,
 		marginBottom: 20,
 	},
-	cookieText: {
-		fontSize: 17,
-		textAlign: 'center',
-		alignContent: 'center',
-		marginTop: 80,
-		marginBottom: 20,
-		marginHorizontal: 20,
-		fontWeight: 'bold',
-	},
+	
 	cookieTermsConditions: {
 		fontSize: 25,
 		fontWeight: 'bold',
@@ -153,5 +141,26 @@ const styles = StyleSheet.create({
 	cookieTermsConditionsPolicyText: {
 		fontSize: 16,
 		marginBottom: 20,
+	},
+  onboardingIcon: {
+    marginTop: 150,
+    marginBottom: 5,
+  },
+  onboardingTitle: {
+    fontSize: 20,
+		textAlign: 'center',
+		alignContent: 'center',
+		marginTop: 20,
+		marginBottom: 10,
+		fontWeight: 'bold',
+  },
+  onboardingText: {
+		fontSize: 17,
+		textAlign: 'center',
+		alignContent: 'center',
+		marginTop: 20,
+		marginBottom: 20,
+		marginHorizontal: 20,
+		fontWeight: 'bold',
 	},
 });
