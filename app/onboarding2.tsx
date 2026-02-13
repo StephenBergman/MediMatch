@@ -28,22 +28,17 @@ const onboarding1 = () => {
 		<View style={styles.mainContainer}>
 
 			<MaterialCommunityIcons style={styles.onboardingIcon}
-  				name="robot-outline"
+  				name="hospital-box-outline"
   				size={200}
   				color="#000"
 			/>
 
 			<Text style={styles.onboardingTitle}>
-				Meet Your Medical AI Assistant
+				Find Care Near You
 			</Text>
 
 			<Text style={styles.onboardingText}>
-				Ask questions about symptoms, medications, or
-				{'\n'}
-				general health concerns and get fast, intelligent 
-				responses. Your assistant is designed to guide 
-				{'\n'}
-				you toward better decisions and help you understand your next steps.
+				You can locate nearby medical facilities like hospitals and even clinics!
 			</Text>
 
 				<View style={styles.ButtonGroup}>
