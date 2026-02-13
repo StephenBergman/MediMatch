@@ -1,5 +1,4 @@
 
-import * as SecureStore from 'expo-secure-store';
 import React, { useCallback, useEffect, useState } from 'react';
 import {
 	ActivityIndicator,
@@ -10,15 +9,12 @@ import {
 	Text,
 	View,
 } from 'react-native';
-import { ScrollView } from 'react-native-gesture-handler';
-import { Button, Icon } from 'react-native-paper';
 
-//this page will route to the login page after user accepts the terms and coniditions policy
+import { Button, Icon } from 'react-native-paper';
 import { Colors } from '@/constants/theme';
 import { useAuth } from '@/features/auth/contexts/AuthContext';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useRouter } from 'expo-router';
-
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 const onboarding1 = () => {
