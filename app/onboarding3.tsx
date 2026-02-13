@@ -21,7 +21,7 @@ import { useRouter } from 'expo-router';
 
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 
-const onboarding2 = () => {
+const onboarding3 = () => {
 	const router = useRouter();
 	const { session, isReady } = useAuth();
 	const scheme = useColorScheme() ?? 'light';
@@ -72,7 +72,7 @@ const onboarding2 = () => {
 						mode="contained"
 						onPress={() => {
 							//if user accepts terms, they will be routed to the login page
-							router.push('/onboarding3')
+							router.push('/')
 						}}
 					>
 						Next
@@ -82,7 +82,7 @@ const onboarding2 = () => {
 	);
 };
 
-export default onboarding2;
+export default onboarding3;
 
 const styles = StyleSheet.create({
 	mainContainer: {
