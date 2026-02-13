@@ -57,6 +57,12 @@ const onboarding1 = () => {
 					>
 						Skip
 					</Button>
+                 
+	        <View style={styles.circlesContainer}>
+		        <View style={[styles.dot, styles.activeDot]} />
+		        <View style={styles.dot} />
+		        <View style={styles.dot} />
+	        </View>
 
 					<Button
 						style={styles.acceptCookiesButton}
@@ -118,7 +124,7 @@ const styles = StyleSheet.create({
 	ButtonGroup: {
 		flexDirection: 'row',
 		justifyContent: 'space-around',
-    width: '150%',
+    width: '120%',
     paddingHorizontal: 20,
 	},
   onboardingIcon: {
@@ -142,4 +148,22 @@ const styles = StyleSheet.create({
 		marginHorizontal: 20,
 		fontWeight: 'bold',
 	},
+  circlesContainer: {
+	flexDirection: 'row',
+	alignItems: 'center',
+  },
+  dot: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    backgroundColor: '#000',
+    opacity: 0.3,
+    marginHorizontal: 4,
+  },
+  activeDot: {
+    opacity: 1,
+    width: 10,
+    height: 10,
+    borderRadius: 1,
+  },
 });

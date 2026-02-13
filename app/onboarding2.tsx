@@ -53,6 +53,12 @@ const onboarding1 = () => {
 					>
 						Skip
 					</Button>
+          
+          <View style={styles.circlesContainer}>
+            <View style={styles.dot} />
+            <View style={[styles.dot, styles.activeDot]} />
+            <View style={styles.dot} />
+          </View>
 
 					<Button
 						style={styles.acceptCookiesButton}
@@ -90,21 +96,6 @@ const styles = StyleSheet.create({
 		borderColor: '#0000000',
 		borderWidth: 2,
 	},
-	cookieImage: {
-		width: 200,
-		height: 200,
-		alignContent: 'center',
-		top: 80,
-		marginTop: -50,
-		marginBottom: 20,
-	},
-	
-	cookieTermsConditions: {
-		fontSize: 25,
-		fontWeight: 'bold',
-		textAlign: 'center',
-		marginTop: 10,
-	},
 	acceptCookiesButton: {
 		marginTop: 0,
 		margin: 8,
@@ -129,13 +120,9 @@ const styles = StyleSheet.create({
 	ButtonGroup: {
 		flexDirection: 'row',
 		justifyContent: 'space-around',
-    width: '150%',
+    width: '120%',
     paddingHorizontal: 20,
     bottom: -310,
-	},
-	cookieTermsConditionsPolicyText: {
-		fontSize: 16,
-		marginBottom: 20,
 	},
   onboardingIcon: {
     marginTop: 150,
@@ -158,4 +145,22 @@ const styles = StyleSheet.create({
 		marginHorizontal: 20,
 		fontWeight: 'bold',
 	},
+  circlesContainer: {
+	  flexDirection: 'row',
+	  alignItems: 'center',
+  },
+  dot: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    backgroundColor: '#000',
+    opacity: 0.3,
+    marginHorizontal: 4,
+  },
+  activeDot: {
+    opacity: 1,
+    width: 10,
+    height: 10,
+    borderRadius: 1,
+  },
 });
