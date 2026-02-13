@@ -28,22 +28,21 @@ const onboarding1 = () => {
 		<View style={styles.mainContainer}>
 
 			<MaterialCommunityIcons style={styles.onboardingIcon}
-  				name="robot-outline"
+  				name="lock-check-outline"
   				size={200}
   				color="#000"
 			/>
 
 			<Text style={styles.onboardingTitle}>
-				Meet Your Medical AI Assistant
+				Personalized Health at Your FingerTips
 			</Text>
 
 			<Text style={styles.onboardingText}>
-				Ask questions about symptoms, medications, or
-				{'\n'}
-				general health concerns and get fast, intelligent 
-				responses. Your assistant is designed to guide 
-				{'\n'}
-				you toward better decisions and help you understand your next steps.
+				Manage your health details, customize your 
+                {'\n'}
+                experience, and access your information
+                {'\n'} 
+                securely. Your profile ensures MediMatch works around your needs.
 			</Text>
 
 				<View style={styles.ButtonGroup}>
