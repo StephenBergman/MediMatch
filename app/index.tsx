@@ -58,10 +58,11 @@ const Index = () => {
 					router.replace('/(protected)/(tabs)/chat');
 					return;
 				}
-				if (accepted === 'true') {
-					router.replace('/login');
-					return;
-				}
+				//removed this logic to see if it will work incase its extra logic
+				// if (accepted === 'true') {
+				// 	router.replace('/login');
+				// 	return;
+				// }
 				setIsChecking(false);
 			})
 			.catch(() => {
