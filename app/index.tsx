@@ -58,10 +58,11 @@ const Index = () => {
 					router.replace('/(protected)/(tabs)/chat');
 					return;
 				}
-				if (accepted === 'true') {
-					router.replace('/login');
-					return;
-				}
+				//removed this logic to see if it will work incase its extra logic
+				// if (accepted === 'true') {
+				// 	router.replace('/login');
+				// 	return;
+				// }
 				setIsChecking(false);
 			})
 			.catch(() => {
@@ -455,12 +456,12 @@ export default Index;
 const styles = StyleSheet.create({
 	mainContainer: {
 		flex: 1,
-		backgroundColor: '#7e7e7eff',
+		backgroundColor: '#CFE3F6',
 		alignItems: 'center',
 		justifyContent: 'flex-start',
 		paddingTop: 0,
 		borderColor: '#0000000',
-		borderWidth: 3,
+		borderWidth: 2,
 	},
 	policyContainer: {
 		flex: 1,
@@ -469,7 +470,7 @@ const styles = StyleSheet.create({
 		width: '100%',
 		marginTop: -10,
 		borderColor: '#0000000',
-		borderWidth: 3,
+		borderWidth: 2,
 	},
 	cookieImage: {
 		width: 200,
