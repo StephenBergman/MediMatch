@@ -64,11 +64,14 @@ const Profile = () => {
 		const extension = mimeType.split('/')[1] || 'jpg';
 		const filePath = `${user.id}.${extension}`;
 
+		const response = await fetch(localUri);
+		const buffer = await response.arrayBuffer();
+
 		try {
 			setIsUploading(true);
 			const { error: uploadError } = await supabase.storage
 				.from('avatars')
-				.upload(filePath, await (await fetch(localUri)).arrayBuffer(), {
+				.upload(filePath, buffer, { 
 					contentType: mimeType,
 					upsert: true,
 				});
@@ -81,7 +84,7 @@ const Profile = () => {
 				.from('avatars')
 				.getPublicUrl(filePath);
 
-			const publicUrl = publicData.publicUrl;
+			const publicUrl = `${publicData.publicUrl}?t=${Date.now()}`; 
 			if (!publicUrl) {
 				throw new Error('Unable to resolve avatar URL.');
 			}
